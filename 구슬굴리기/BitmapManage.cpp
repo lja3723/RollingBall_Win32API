@@ -8,11 +8,10 @@ void BitmapManager::initialize(HINSTANCE m_hInstance)
 	//∫Ò∆Æ∏  ∑ŒµÂ
 	hInstance = m_hInstance;
 	floor = LoadBitmap(hInstance, MAKEINTRESOURCE(IDB_BITMAP_FLOOR));
-	for (int size = 0; size < BallSizeTypes; size++)
+	for (int size = 0; size < BallSizeCount; size++)
 	{
-		ball[size] = LoadBitmap(hInstance, MAKEINTRESOURCE(IDB_BITMAP_BALL_032 + 3 * size));
-		ball_mask[size] = LoadBitmap(hInstance, MAKEINTRESOURCE(IDB_BITMAP_BALL_032_MASK + 3 * size));
-		ball_shadow[size] = LoadBitmap(hInstance, MAKEINTRESOURCE(IDB_BITMAP_BALL_032_SHADOW + 3 * size));
+		ball[size] = LoadBitmap(hInstance, MAKEINTRESOURCE(IDB_BITMAP_BALL_032 + 2 * size));
+		ball_mask[size] = LoadBitmap(hInstance, MAKEINTRESOURCE(IDB_BITMAP_BALL_032_MASK + 2 * size));
 	}
 }
 
@@ -46,9 +45,4 @@ HBITMAP BitmapManager::get_hBitmap_ball(int BallSize)
 HBITMAP BitmapManager::get_hBitmap_ball_mask(int BallSize)
 {
 	return ball_mask[BallSize_toIdx(BallSize)];
-}
-
-HBITMAP RollingBall::BitmapManager::get_hBitmap_ball_shadow(int BallSize)
-{
-	return ball_shadow[BallSize_toIdx(BallSize)];
 }

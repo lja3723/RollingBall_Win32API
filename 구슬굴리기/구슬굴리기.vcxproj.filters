@@ -81,17 +81,5 @@
     <Image Include="..\res_bmp\ball_256_mask.bmp">
       <Filter>리소스 파일</Filter>
     </Image>
-    <Image Include="..\res_bmp\ball_032_shadow.bmp">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="..\res_bmp\ball_064_shadow.bmp">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="..\res_bmp\ball_128_shadow.bmp">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="..\res_bmp\ball_256_shadow.bmp">
-      <Filter>리소스 파일</Filter>
-    </Image>
   </ItemGroup>
 </Project>
