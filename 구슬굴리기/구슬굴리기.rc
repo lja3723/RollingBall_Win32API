@@ -79,6 +79,14 @@ IDB_BITMAP_BALL_256     BITMAP                  "C:\\Users\\W22918\\source\\repo
 
 IDB_BITMAP_BALL_256_MASK BITMAP                  "C:\\Users\\W22918\\source\\repos\\备浇奔府扁\\res_bmp\\ball_256_mask.bmp"
 
+IDB_BITMAP_BALL_032_SHADOW BITMAP                  "C:\\Users\\W22918\\source\\repos\\备浇奔府扁\\res_bmp\\ball_032_shadow.bmp"
+
+IDB_BITMAP_BALL_064_SHADOW BITMAP                  "C:\\Users\\W22918\\source\\repos\\备浇奔府扁\\res_bmp\\ball_064_shadow.bmp"
+
+IDB_BITMAP_BALL_128_SHADOW BITMAP                  "C:\\Users\\W22918\\source\\repos\\备浇奔府扁\\res_bmp\\ball_128_shadow.bmp"
+
+IDB_BITMAP_BALL_256_SHADOW BITMAP                  "C:\\Users\\W22918\\source\\repos\\备浇奔府扁\\res_bmp\\ball_256_shadow.bmp"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //

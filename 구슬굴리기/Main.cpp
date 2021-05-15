@@ -69,6 +69,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 			for (int j = 0; j < 6; j++)
 				BitBlt(hdc, i*256, j*256, 256, 256, memdc, 0, 0, SRCCOPY);
 
+		/*
 		//BallSize_small 출력
 		{
 			hBit = bmpManager.get_hBitmap_ball_mask(BallSize_small);
@@ -91,17 +92,23 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 			BitBlt(hdc, 100, 100, 256, 256, memdc, 0, 0, SRCPAINT);
 		}
 
+		*/
 		//BallSize_large 출력
 		{
-			hBit = bmpManager.get_hBitmap_ball_mask(BallSize_large);
+			hBit = bmpManager.get_hBitmap_ball_shadow(BallSize_large);
 			SelectObject(memdc, hBit);
-			BitBlt(hdc, 180, 100, 256, 256, memdc, 0, 0, SRCAND);
+			BitBlt(hdc, 180, 100, BallSize_large_shadow, BallSize_large_shadow, memdc, 0, 0, SRCAND);
 
-			hBit = bmpManager.get_hBitmap_ball(BallSize_large);
-			SelectObject(memdc, hBit);
-			BitBlt(hdc, 180, 100, 256, 256, memdc, 0, 0, SRCPAINT);
+			//hBit = bmpManager.get_hBitmap_ball_mask(BallSize_large);
+			//SelectObject(memdc, hBit);
+			//BitBlt(hdc, 180, 100, 256, 256, memdc, 0, 0, SRCAND);
+
+			//hBit = bmpManager.get_hBitmap_ball(BallSize_large);
+			//SelectObject(memdc, hBit);
+			//BitBlt(hdc, 180, 100, 256, 256, memdc, 0, 0, SRCPAINT);
 		}
 
+		/*
 		//BallSize_extra 출력
 		{
 			hBit = bmpManager.get_hBitmap_ball_mask(BallSize_extra);
@@ -112,7 +119,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 			SelectObject(memdc, hBit);
 			BitBlt(hdc, 290, 120, 256, 256, memdc, 0, 0, SRCPAINT);
 		}
-
+		*/
 		SelectObject(memdc, oldBit);
 		DeleteDC(memdc);
 		EndPaint(hwnd, &ps);

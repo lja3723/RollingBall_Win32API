@@ -158,12 +158,16 @@
   <ItemGroup>
     <Image Include="..\res_bmp\ball_032.bmp" />
     <Image Include="..\res_bmp\ball_032_mask.bmp" />
+    <Image Include="..\res_bmp\ball_032_shadow.bmp" />
     <Image Include="..\res_bmp\ball_064.bmp" />
     <Image Include="..\res_bmp\ball_064_mask.bmp" />
+    <Image Include="..\res_bmp\ball_064_shadow.bmp" />
     <Image Include="..\res_bmp\ball_128.bmp" />
     <Image Include="..\res_bmp\ball_128_mask.bmp" />
+    <Image Include="..\res_bmp\ball_128_shadow.bmp" />
     <Image Include="..\res_bmp\ball_256.bmp" />
     <Image Include="..\res_bmp\ball_256_mask.bmp" />
+    <Image Include="..\res_bmp\ball_256_shadow.bmp" />
     <Image Include="..\res_bmp\floor.bmp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
