@@ -139,9 +139,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BitmapManage.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="ObjectManage.cpp" />
+    <ClCompile Include="PhysicsControl.cpp" />
+    <ClCompile Include="PrintManage.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BitmapManage.h" />
+    <ClInclude Include="ObjectManage.h" />
+    <ClInclude Include="PhysicsControl.h" />
+    <ClInclude Include="PrintManage.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>

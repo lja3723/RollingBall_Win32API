@@ -79,6 +79,17 @@ IDB_BITMAP_BALL_256     BITMAP                  "C:\\Users\\W22918\\source\\repo
 
 IDB_BITMAP_BALL_256_MASK BITMAP                  "C:\\Users\\W22918\\source\\repos\\구슬굴리기\\res_bmp\\ball_256_mask.bmp"
 
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Accelerator
+//
+
+IDR_ACCELERATOR ACCELERATORS
+BEGIN
+    VK_RETURN,      ID_MENU,                VIRTKEY, NOINVERT
+END
+
 #endif    // 한국어(대한민국) resources
 /////////////////////////////////////////////////////////////////////////////
 
