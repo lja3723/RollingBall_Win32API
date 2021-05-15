@@ -49,75 +49,64 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLi
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 {
-	HBITMAP hBit, oldBit;
-	HDC hdc, memdc;
-	PAINTSTRUCT ps;
+	static PrintManager printManager;
 
-	static BitmapManager bmpManager;
+	static int x, y;
+
+	static bool pushed[4] = { false, false, false, false };
 
 	switch (iMsg) {
 	case WM_CREATE:
-		bmpManager.initialize(((LPCREATESTRUCT)lParam)->hInstance);
+		printManager.initialize(((LPCREATESTRUCT)lParam)->hInstance, hwnd);
+		SetTimer(hwnd, 1, 5, NULL);
 		return 0;
 	case WM_PAINT:
-		hdc = BeginPaint(hwnd, &ps);
-		hBit = bmpManager.get_hBitmap_floor();
-		memdc = CreateCompatibleDC(hdc);
-		
-		oldBit = (HBITMAP)SelectObject(memdc, hBit);
-		for (int i = 0; i < 4; i++)
-			for (int j = 0; j < 6; j++)
-				BitBlt(hdc, i*256, j*256, 256, 256, memdc, 0, 0, SRCCOPY);
-
-		//BallSize_small 출력
+		printManager.print_background(NULL);
+		printManager.print_ball(x, y);
+		return 0;
+	case WM_KEYDOWN:
+		switch (wParam)
 		{
-			hBit = bmpManager.get_hBitmap_ball_mask(BallSize_small);
-			SelectObject(memdc, hBit);
-			BitBlt(hdc, 50, 100, 256, 256, memdc, 0, 0, SRCAND);
-
-			hBit = bmpManager.get_hBitmap_ball(BallSize_small);
-			SelectObject(memdc, hBit);
-			BitBlt(hdc, 50, 100, 256, 256, memdc, 0, 0, SRCPAINT);
+		case VK_LEFT:
+			pushed[0] = true;
+			break;
+		case VK_RIGHT:
+			pushed[1] = true;
+			break;
+		case VK_UP:
+			pushed[2] = true;
+			break;
+		case VK_DOWN:
+			pushed[3] = true;
+			break;
 		}
-
-		//BallSize_medium 출력
+		return 0;
+	case WM_KEYUP:
+		switch (wParam)
 		{
-			hBit = bmpManager.get_hBitmap_ball_mask(BallSize_medium);
-			SelectObject(memdc, hBit);
-			BitBlt(hdc, 100, 100, 256, 256, memdc, 0, 0, SRCAND);
-
-			hBit = bmpManager.get_hBitmap_ball(BallSize_medium);
-			SelectObject(memdc, hBit);
-			BitBlt(hdc, 100, 100, 256, 256, memdc, 0, 0, SRCPAINT);
+		case VK_LEFT:
+			pushed[0] = false;
+			break;
+		case VK_RIGHT:
+			pushed[1] = false;
+			break;
+		case VK_UP:
+			pushed[2] = false;
+			break;
+		case VK_DOWN:
+			pushed[3] = false;
+			break;
 		}
-
-		//BallSize_large 출력
-		{
-			hBit = bmpManager.get_hBitmap_ball_mask(BallSize_large);
-			SelectObject(memdc, hBit);
-			BitBlt(hdc, 180, 100, 256, 256, memdc, 0, 0, SRCAND);
-
-			hBit = bmpManager.get_hBitmap_ball(BallSize_large);
-			SelectObject(memdc, hBit);
-			BitBlt(hdc, 180, 100, 256, 256, memdc, 0, 0, SRCPAINT);
-		}
-
-		//BallSize_extra 출력
-		{
-			hBit = bmpManager.get_hBitmap_ball_mask(BallSize_extra);
-			SelectObject(memdc, hBit);
-			BitBlt(hdc, 290, 120, 256, 256, memdc, 0, 0, SRCAND);
-
-			hBit = bmpManager.get_hBitmap_ball(BallSize_extra);
-			SelectObject(memdc, hBit);
-			BitBlt(hdc, 290, 120, 256, 256, memdc, 0, 0, SRCPAINT);
-		}
-
-		SelectObject(memdc, oldBit);
-		DeleteDC(memdc);
-		EndPaint(hwnd, &ps);
+		return 0;
+	case WM_TIMER:
+		if (pushed[0]) x -= 5;
+		if (pushed[1]) x += 5;
+		if (pushed[2]) y -= 5;
+		if (pushed[3]) y += 5;
+		InvalidateRgn(hwnd, NULL, FALSE);
 		return 0;
 	case WM_DESTROY:
+		KillTimer(hwnd, 1);
 		PostQuitMessage(0);
 		return 0;
 	}
