@@ -24,4 +24,38 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="구슬굴리기.rc">
+      <Filter>리소스 파일</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\res_bmp\floor.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\res_bmp\ball_032.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\res_bmp\ball_032_mask.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\res_bmp\ball_064.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\res_bmp\ball_064_mask.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\res_bmp\ball_128.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\res_bmp\ball_128_mask.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\res_bmp\ball_256.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\res_bmp\ball_256_mask.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+  </ItemGroup>
 </Project>
