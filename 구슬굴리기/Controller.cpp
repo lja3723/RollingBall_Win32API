@@ -27,6 +27,9 @@ void Controller::control_keydown()
 	case VK_DOWN:
 		isPushed.key_down = TRUE;
 		break;
+	case VK_SPACE:
+		isPushed.key_space = TRUE;
+		break;
 	}
 }
 
@@ -48,6 +51,9 @@ void Controller::control_keyup()
 	case VK_DOWN:
 		isPushed.key_down = FALSE;
 		break;
+	case VK_SPACE:
+		isPushed.key_space = FALSE;
+		break;
 	}
 }
 
@@ -56,15 +62,55 @@ void Controller::translate_windowEvent(UINT m_iMsg, WPARAM m_wParam, LPARAM m_lP
 	set_windowEvent(m_iMsg, m_wParam, m_lParam);
 	control_keyup();
 	control_keydown();
-	update_ballPos();
 }
 
 void Controller::update_ballPos()
 {
-	int px = 5;
-	if (isPushed.key_left) ballPos.x -= px;
-	if (isPushed.key_right) ballPos.x += px;
+	if (isPushed.key_left) x.Speed -= x.Accel;
+	if (isPushed.key_right) x.Speed += x.Accel;
 
-	if (isPushed.key_up) ballPos.y -= px;
-	if (isPushed.key_down) ballPos.y += px;
+	if (isPushed.key_up) y.Speed -= y.Accel;
+	if (isPushed.key_down) y.Speed += y.Accel;
+
+	if (isPushed.key_space) initialize_ball_data();
+
+	x.Pos += x.Speed;
+	y.Pos += y.Speed;
+}
+
+int RollingBall::Controller::get_xPos()
+{
+	return x.Pos;
+}
+int RollingBall::Controller::get_xSpeed()
+{
+	return x.Speed;
+}
+int RollingBall::Controller::get_xAccel()
+{
+	return x.Accel;
+}
+int RollingBall::Controller::get_yPos()
+{
+	return y.Pos;
+}
+int RollingBall::Controller::get_ySpeed()
+{
+	return y.Speed;
+}
+int RollingBall::Controller::get_yAccel()
+{
+	return y.Accel;
+}
+
+void RollingBall::Controller::initialize_ball_data()
+{
+	x.Pos = y.Pos = 0;
+	x.Speed = y.Speed = 0;
+	x.Accel = y.Accel = 1;
+}
+
+RollingBall::Controller::Controller()
+{
+	initialize_ball_data();
 }

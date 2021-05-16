@@ -7,12 +7,6 @@ namespace RollingBall
 {
 	class Controller
 	{
-	public:
-		struct {
-			int x = 100;
-			int y = 100;
-		} ballPos;
-
 	private:
 		struct {
 			UINT iMsg;
@@ -25,15 +19,41 @@ namespace RollingBall
 			BOOL key_right;
 			BOOL key_up;
 			BOOL key_down;
+			BOOL key_space;
 
 		} isPushed;
+
+		struct {
+			int Pos;
+			int Speed;
+			int Accel;
+		} x;
+
+		struct {
+			int Pos;
+			int Speed;
+			int Accel;
+		} y;
 
 		void set_windowEvent(UINT m_iMsg, WPARAM m_wParam, LPARAM m_lParam);
 		void control_keydown();
 		void control_keyup();
+
+
 	public:
 		void translate_windowEvent(UINT m_iMsg, WPARAM m_wParam, LPARAM m_lParam);
 		void update_ballPos();
+
+		int get_xPos();
+		int get_xSpeed();
+		int get_xAccel();
+		int get_yPos();
+		int get_ySpeed();
+		int get_yAccel();
+
+		void initialize_ball_data();
+
+		Controller();
 	};
 }
 
