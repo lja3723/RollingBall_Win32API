@@ -11,8 +11,13 @@ void RollingBallClass::update_window()
 {
 	int x = controller.ballPos.x;
 	int y = controller.ballPos.y;
-	printManager.show_background(NULL);
-	printManager.show_ball(x, y);
+	printManager.set_hDC();
+
+	printManager.draw_background_tobuffer(NULL);
+	printManager.draw_ball_tobuffer(x, y);
+
+	printManager.flush_buffer();
+	printManager.release_hDC();
 }
 
 void RollingBallClass::update_state()

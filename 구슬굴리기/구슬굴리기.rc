@@ -52,8 +52,8 @@ END
 
 IDR_MENU MENU
 BEGIN
-    MENUITEM "¸Þ´º",                          ID_MENU
-    MENUITEM "µð¹ö±ë(F9)",                     ID_DEBUGING
+    MENUITEM "¸Þ´º",                          65535
+    MENUITEM "µð¹ö±ë(F7)",                     ID_DEBUGGING
 END
 
 
@@ -62,23 +62,23 @@ END
 // Bitmap
 //
 
-IDB_BITMAP_FLOOR        BITMAP                  "C:\\Users\\W22918\\source\\repos\\±¸½½±¼¸®±â\\res_bmp\\floor.bmp"
+IDB_BITMAP_FLOOR        BITMAP                  "..\\res_bmp\\floor.bmp"
 
-IDB_BITMAP_BALL_032     BITMAP                  "C:\\Users\\W22918\\source\\repos\\±¸½½±¼¸®±â\\res_bmp\\ball_032.bmp"
+IDB_BITMAP_BALL_032     BITMAP                  "..\\res_bmp\\ball_032.bmp"
 
-IDB_BITMAP_BALL_032_MASK BITMAP                  "C:\\Users\\W22918\\source\\repos\\±¸½½±¼¸®±â\\res_bmp\\ball_032_mask.bmp"
+IDB_BITMAP_BALL_032_MASK BITMAP                  "..\\res_bmp\\ball_032_mask.bmp"
 
-IDB_BITMAP_BALL_064     BITMAP                  "C:\\Users\\W22918\\source\\repos\\±¸½½±¼¸®±â\\res_bmp\\ball_064.bmp"
+IDB_BITMAP_BALL_064     BITMAP                  "..\\res_bmp\\ball_064.bmp"
 
-IDB_BITMAP_BALL_064_MASK BITMAP                  "C:\\Users\\W22918\\source\\repos\\±¸½½±¼¸®±â\\res_bmp\\ball_064_mask.bmp"
+IDB_BITMAP_BALL_064_MASK BITMAP                  "..\\res_bmp\\ball_064_mask.bmp"
 
-IDB_BITMAP_BALL_128     BITMAP                  "C:\\Users\\W22918\\source\\repos\\±¸½½±¼¸®±â\\res_bmp\\ball_128.bmp"
+IDB_BITMAP_BALL_128     BITMAP                  "..\\res_bmp\\ball_128.bmp"
 
-IDB_BITMAP_BALL_128_MASK BITMAP                  "C:\\Users\\W22918\\source\\repos\\±¸½½±¼¸®±â\\res_bmp\\ball_128_mask.bmp"
+IDB_BITMAP_BALL_128_MASK BITMAP                  "..\\res_bmp\\ball_128_mask.bmp"
 
-IDB_BITMAP_BALL_256     BITMAP                  "C:\\Users\\W22918\\source\\repos\\±¸½½±¼¸®±â\\res_bmp\\ball_256.bmp"
+IDB_BITMAP_BALL_256     BITMAP                  "..\\res_bmp\\ball_256.bmp"
 
-IDB_BITMAP_BALL_256_MASK BITMAP                  "C:\\Users\\W22918\\source\\repos\\±¸½½±¼¸®±â\\res_bmp\\ball_256_mask.bmp"
+IDB_BITMAP_BALL_256_MASK BITMAP                  "..\\res_bmp\\ball_256_mask.bmp"
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -88,8 +88,7 @@ IDB_BITMAP_BALL_256_MASK BITMAP                  "C:\\Users\\W22918\\source\\rep
 
 IDR_ACCELERATOR ACCELERATORS
 BEGIN
-    VK_RETURN,      ID_MENU,                VIRTKEY, NOINVERT
-    VK_F9,          ID_DEBUGING,            VIRTKEY, NOINVERT
+    VK_F7,          ID_DEBUGGING,           VIRTKEY, NOINVERT
 END
 
 
@@ -98,12 +97,12 @@ END
 // Dialog
 //
 
-IDD_DIALOG_DEBUGING DIALOGEX 0, 0, 325, 164
-STYLE DS_SETFONT | DS_MODALFRAME | WS_MINIMIZEBOX | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "µð¹ö±ë ¸Þ´º"
-FONT 8, "¸¼Àº °íµñ", 400, 0, 0x81
+IDD_DIALOG_DEBUGGING DIALOGEX 0, 0, 309, 176
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_MINIMIZEBOX | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Debugging Window"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    PUSHBUTTON      "´Ý±â",IDCANCEL,268,143,50,14
+    PUSHBUTTON      "´Ý±â",IDCANCEL,252,155,50,14
 END
 
 
@@ -115,12 +114,12 @@ END
 #ifdef APSTUDIO_INVOKED
 GUIDELINES DESIGNINFO
 BEGIN
-    IDD_DIALOG_DEBUGING, DIALOG
+    IDD_DIALOG_DEBUGGING, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 318
+        RIGHTMARGIN, 302
         TOPMARGIN, 7
-        BOTTOMMARGIN, 157
+        BOTTOMMARGIN, 169
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -131,7 +130,7 @@ END
 // AFX_DIALOG_LAYOUT
 //
 
-IDD_DIALOG_DEBUGING AFX_DIALOG_LAYOUT
+IDD_DIALOG_DEBUGGING AFX_DIALOG_LAYOUT
 BEGIN
     0
 END

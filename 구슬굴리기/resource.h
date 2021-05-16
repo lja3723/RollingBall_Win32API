@@ -13,16 +13,15 @@
 #define IDB_BITMAP_BALL_256             109
 #define IDB_BITMAP_BALL_256_MASK        110
 #define IDR_ACCELERATOR                 111
-#define IDD_DIALOG_DEBUGING             112
-#define ID_MENU                         40001
-#define ID_DEBUGING                     40002
+#define IDD_DIALOG_DEBUGGING            112
+#define ID_DEBUGGING                    40001
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        113
-#define _APS_NEXT_COMMAND_VALUE         40003
+#define _APS_NEXT_COMMAND_VALUE         40002
 #define _APS_NEXT_CONTROL_VALUE         1001
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

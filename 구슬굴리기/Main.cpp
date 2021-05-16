@@ -6,7 +6,7 @@
 using namespace RollingBall;
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam);
-BOOL CALLBACK DebugDlgProc(HWND hDebugDlg, UINT iMsg, WPARAM wParam, LPARAM lParam);
+BOOL CALLBACK DebuggingDialogProc(HWND hDlg, UINT iMsg, WPARAM wParam, LPARAM lParam);
 
 static LPCTSTR WindowClassName = _T("Rolling Ball Class");
 static LPCTSTR WindowTitleName = _T("±¸½½ ±¼¸®±â");
@@ -56,7 +56,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 {
 	static HINSTANCE hInstance;
 	static RollingBallClass rollingBall;
-	static HWND hDebugDlg = NULL;
+	static HWND hDlg = NULL;
 
 	switch (iMsg) 
 	{
@@ -86,12 +86,14 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 	case WM_COMMAND:
 		switch (LOWORD(wParam))
 		{
-		case ID_DEBUGING:
-			if (!IsWindow(hDebugDlg))
+		case ID_DEBUGGING:
+			if (!IsWindow(hDlg))
 			{
-				hDebugDlg = CreateDialog(
-					hInstance, MAKEINTRESOURCE(IDD_DIALOG_DEBUGING), hwnd, DebugDlgProc);
-				ShowWindow(hDebugDlg, SW_SHOW);
+				hDlg = CreateDialog(
+					hInstance, MAKEINTRESOURCE(IDD_DIALOG_DEBUGGING), 
+					hwnd, (DLGPROC)DebuggingDialogProc
+				);
+				ShowWindow(hDlg, SW_SHOW);
 			}
 			break;
 		}
@@ -106,7 +108,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 	return DefWindowProc(hwnd, iMsg, wParam, lParam);
 }
 
-BOOL CALLBACK DebugDlgProc(HWND hDebugDlg, UINT iMsg, WPARAM wParam, LPARAM lParam)
+BOOL CALLBACK DebuggingDialogProc(HWND hDlg, UINT iMsg, WPARAM wParam, LPARAM lParam)
 {
 	switch (iMsg)
 	{
@@ -117,12 +119,12 @@ BOOL CALLBACK DebugDlgProc(HWND hDebugDlg, UINT iMsg, WPARAM wParam, LPARAM lPar
 		switch (LOWORD(wParam))
 		{
 		case IDCANCEL:
-			DestroyWindow(hDebugDlg);
-			hDebugDlg = NULL;
+			DestroyWindow(hDlg);
+			hDlg = NULL;
 			break;
 		}
 		return TRUE;
 	}
 
-	return TRUE;
+	return FALSE;
 }
