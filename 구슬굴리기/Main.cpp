@@ -6,6 +6,8 @@
 using namespace RollingBall;
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam);
+BOOL CALLBACK DebugDlgProc(HWND hDebugDlg, UINT iMsg, WPARAM wParam, LPARAM lParam);
+
 static LPCTSTR WindowClassName = _T("Rolling Ball Class");
 static LPCTSTR WindowTitleName = _T("±¸½½ ±¼¸®±â");
 static const int WindowPosition[2] = { CW_USEDEFAULT, CW_USEDEFAULT };
@@ -37,9 +39,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLi
 
 	ShowWindow(hwnd, nCmdShow);
 	UpdateWindow(hwnd);
+
+	HACCEL hAccel = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDR_ACCELERATOR));
 	while (GetMessage(&msg, NULL, 0, 0)) {
-		TranslateMessage(&msg);
-		DispatchMessage(&msg);
+		TranslateAccelerator(hwnd, hAccel, &msg);
+		{
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
 	}
 
 	return (int)msg.wParam;
@@ -47,20 +54,27 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLi
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 {
+	static HINSTANCE hInstance;
 	static RollingBallClass rollingBall;
+	static HWND hDebugDlg = NULL;
 
-	switch (iMsg) {
+	switch (iMsg) 
+	{
 	case WM_CREATE:
 		SetTimer(hwnd, 1, 5, NULL);
-		rollingBall.initialize(((LPCREATESTRUCT)lParam)->hInstance, hwnd);
+		hInstance = ((LPCREATESTRUCT)lParam)->hInstance;
+		rollingBall.initialize(hInstance, hwnd);
 		return 0;
+
 	case WM_TIMER:
 		rollingBall.update_state();
 		InvalidateRgn(hwnd, NULL, FALSE);
 		return 0;
+
 	case WM_PAINT:
 		rollingBall.update_window();
 		return 0;
+
 	case WM_KEYDOWN:
 	case WM_KEYUP:
 	case WM_LBUTTONDOWN:
@@ -68,10 +82,47 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 	case WM_MOUSEMOVE:
 		rollingBall.send_windowEvent(iMsg, wParam, lParam);
 		return 0;
+
+	case WM_COMMAND:
+		switch (LOWORD(wParam))
+		{
+		case ID_DEBUGING:
+			if (!IsWindow(hDebugDlg))
+			{
+				hDebugDlg = CreateDialog(
+					hInstance, MAKEINTRESOURCE(IDD_DIALOG_DEBUGING), hwnd, DebugDlgProc);
+				ShowWindow(hDebugDlg, SW_SHOW);
+			}
+			break;
+		}
+		break;
+
 	case WM_DESTROY:
 		KillTimer(hwnd, 1);
 		PostQuitMessage(0);
 		return 0;
 	}
+
 	return DefWindowProc(hwnd, iMsg, wParam, lParam);
+}
+
+BOOL CALLBACK DebugDlgProc(HWND hDebugDlg, UINT iMsg, WPARAM wParam, LPARAM lParam)
+{
+	switch (iMsg)
+	{
+	case WM_INITDIALOG:
+		return TRUE;
+
+	case WM_COMMAND:
+		switch (LOWORD(wParam))
+		{
+		case IDCANCEL:
+			DestroyWindow(hDebugDlg);
+			hDebugDlg = NULL;
+			break;
+		}
+		return TRUE;
+	}
+
+	return TRUE;
 }

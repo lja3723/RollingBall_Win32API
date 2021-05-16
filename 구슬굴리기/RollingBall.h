@@ -11,11 +11,10 @@ namespace RollingBall
 {
 	class RollingBallClass
 	{
-	public:
+	private:
 		PrintManager printManager;
 		Physics physics;
 		Controller controller;
-	private:
 
 	public:
 		void initialize(HINSTANCE hInstance, HWND hwnd);

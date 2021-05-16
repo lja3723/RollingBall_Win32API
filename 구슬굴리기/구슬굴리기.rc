@@ -53,6 +53,7 @@ END
 IDR_MENU MENU
 BEGIN
     MENUITEM "¸Þ´º",                          ID_MENU
+    MENUITEM "µð¹ö±ë(F9)",                     ID_DEBUGING
 END
 
 
@@ -88,6 +89,51 @@ IDB_BITMAP_BALL_256_MASK BITMAP                  "C:\\Users\\W22918\\source\\rep
 IDR_ACCELERATOR ACCELERATORS
 BEGIN
     VK_RETURN,      ID_MENU,                VIRTKEY, NOINVERT
+    VK_F9,          ID_DEBUGING,            VIRTKEY, NOINVERT
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_DIALOG_DEBUGING DIALOGEX 0, 0, 325, 164
+STYLE DS_SETFONT | DS_MODALFRAME | WS_MINIMIZEBOX | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "µð¹ö±ë ¸Þ´º"
+FONT 8, "¸¼Àº °íµñ", 400, 0, 0x81
+BEGIN
+    PUSHBUTTON      "´Ý±â",IDCANCEL,268,143,50,14
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_DIALOG_DEBUGING, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 318
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 157
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// AFX_DIALOG_LAYOUT
+//
+
+IDD_DIALOG_DEBUGING AFX_DIALOG_LAYOUT
+BEGIN
+    0
 END
 
 #endif    // ÇÑ±¹¾î(´ëÇÑ¹Î±¹) resources
