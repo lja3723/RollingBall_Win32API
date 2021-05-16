@@ -1,6 +1,6 @@
 #pragma once
-#ifndef __BitmapManage_h__
-#define __BitmapManage_h__
+#ifndef __RollingBall_h__
+#define __RollingBall_h__
 
 #include <Windows.h>
 #include "PaintManager.h"

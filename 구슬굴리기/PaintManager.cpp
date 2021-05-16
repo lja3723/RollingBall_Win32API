@@ -1,7 +1,14 @@
 #include "PaintManager.h"
-
 using namespace RollingBall;
 
+
+
+
+/********************************
+* 
+*		public functions
+*
+*********************************/
 void PaintManager::initialize(HINSTANCE m_hInstance, HWND m_hwnd, int m_BallSizeType)
 {
 	BallSizeType = m_BallSizeType;
@@ -15,53 +22,77 @@ void PaintManager::initialize(HINSTANCE m_hInstance, HWND m_hwnd, int m_BallSize
 	bitmapManager.initialize(hInstance);
 	set_hBitmap(m_BallSizeType);
 }
-
-void RollingBall::PaintManager::beginPaint()
+void PaintManager::beginPaint()
 {
 	set_windowDCmode_BeginPaint();
 	set_hDCwindow();
 	set_memoryDC();
 }
-
-void RollingBall::PaintManager::paint_background()
-{
-	draw_background_tobuffer(NULL);
-	draw_background_ruller_tobuffer();
-}
-
-void RollingBall::PaintManager::paint_ball(int posX, int posY)
-{
-	draw_ball_tobuffer(posX, posY);
-}
-
-void RollingBall::PaintManager::endPaint()
+void PaintManager::endPaint()
 {
 	flush_buffer();
 	release_hDCwindow();
 	release_memoryDC();
 }
-
-
-
-void PaintManager::set_hBitmap(int BallSizeType)
+void PaintManager::paint_background()
 {
-	hBitmap.resource.background = bitmapManager.get_hBitmap_floor();
-	hBitmap.resource.ball = bitmapManager.get_hBitmap_ball(BallSizeType);
-	hBitmap.resource.ball_mask = bitmapManager.get_hBitmap_ball_mask(BallSizeType);
+	paint_background_tobuffer(NULL);
+	paint_background_ruller_tobuffer();
+}
+void PaintManager::paint_ball(int posX, int posY)
+{
+	paint_ball_tobuffer(posX, posY);
 }
 
+
+/********************************
+*
+*		private functions
+*		- BOOL returns
+*
+*********************************/
+BOOL PaintManager::isWindowDCmode_GetDC()
+{
+	return m_isWindowDCmode_GetDC;
+}
+BOOL PaintManager::isSetWindowDC()
+{
+	return m_isSetWindowDC;
+}
+BOOL PaintManager::isSetMemoryDC()
+{
+	return m_isSetMemoryDC;
+}
+BOOL PaintManager::isAbleToPrint()
+{
+	if (!isSetWindowDC()) return FALSE;
+	if (!isSetMemoryDC()) return FALSE;
+	return TRUE;
+}
+
+
+/********************************
+*
+*		private functions
+*		- set windowDCmode
+* 
+*********************************/
 void PaintManager::set_windowDCmode_BeginPaint()
 {
 	m_isWindowDCmode_GetDC = FALSE;
 }
-
 void PaintManager::set_windowDCmode_GetDC()
 {
 	m_isWindowDCmode_GetDC = TRUE;
 }
 
 
-
+/********************************
+*
+*		private functions
+*		- Manage hDCwindow
+*
+*********************************/
 void PaintManager::set_hDCwindow()
 {
 	if (m_isSetWindowDC) return;
@@ -73,7 +104,6 @@ void PaintManager::set_hDCwindow()
 
 	m_isSetWindowDC = TRUE;
 }
-
 void PaintManager::release_hDCwindow()
 {
 	if (!m_isSetWindowDC) return;
@@ -87,7 +117,12 @@ void PaintManager::release_hDCwindow()
 }
 
 
-
+/********************************
+*
+*		private functions
+*		- Manage memoryDC
+*
+*********************************/
 void PaintManager::set_memoryDC()
 {
 	if (!m_isSetWindowDC) return;
@@ -117,7 +152,6 @@ void PaintManager::set_memoryDC()
 
 	m_isSetMemoryDC = TRUE;
 }
-
 void PaintManager::release_memoryDC()
 {
 	if (!m_isSetMemoryDC) return;
@@ -133,55 +167,39 @@ void PaintManager::release_memoryDC()
 	DeleteDC(hDC.memory.ball);
 	DeleteDC(hDC.memory.ball_mask);
 
-	//hBitmap들을 삭제함
+	//hBitmap을 삭제함
 	DeleteObject(hBitmap.hDCwindowCompatible);
 
 	m_isSetMemoryDC = FALSE;
 }
 
 
-
-BOOL RollingBall::PaintManager::isWindowDCmode_GetDC()
-{
-	return m_isWindowDCmode_GetDC;
-}
-
-BOOL RollingBall::PaintManager::isSetWindowDC()
-{
-	return m_isSetWindowDC;
-}
-
-BOOL RollingBall::PaintManager::isSetMemoryDC()
-{
-	return m_isSetMemoryDC;
-}
-
-BOOL RollingBall::PaintManager::isAbleToPrint()
-{
-	if (!isSetWindowDC()) return FALSE;
-	if (!isSetMemoryDC()) return FALSE;
-	return TRUE;
-}
-
-void RollingBall::PaintManager::flush_buffer()
-{
-	if (!isAbleToPrint()) return;
-
-	BitBlt(
-		hDC.window, 0, 0, windowRect.right, windowRect.bottom,
-		hDC.memory.hDCwindowCompatible, 0, 0,
-		SRCCOPY
-	);
-}
-
-
-
+/********************************
+*
+*		private functions
+*		- set member variable
+*
+*********************************/
 void PaintManager::set_BallSizeType(int BallSize)
 {
 	BallSizeType = BallSizeType;
 }
+void PaintManager::set_hBitmap(int BallSizeType)
+{
+	bitmapManager.set_BallSizeType(BallSizeType);
+	hBitmap.resource.background = bitmapManager.get_hBitmap_floor();
+	hBitmap.resource.ball = bitmapManager.get_hBitmap_ball();
+	hBitmap.resource.ball_mask = bitmapManager.get_hBitmap_ball_mask();
+}
 
-void PaintManager::draw_background_tobuffer(LPRECT region)
+
+/********************************
+*
+*		private functions
+*		- paint to buffer
+*
+*********************************/
+void PaintManager::paint_background_tobuffer(LPRECT region)
 {
 	if (!isAbleToPrint()) return;
 
@@ -189,8 +207,7 @@ void PaintManager::draw_background_tobuffer(LPRECT region)
 		for (int j = 0; j < 4; j++)
 			BitBlt(hDC.memory.hDCwindowCompatible, i * 256, j * 256, 256, 256, hDC.memory.background, 0, 0, SRCCOPY);
 }
-
-void PaintManager::draw_ball_tobuffer(int x, int y)
+void PaintManager::paint_ball_tobuffer(int x, int y)
 {
 	if (!isAbleToPrint()) return;
 
@@ -208,15 +225,25 @@ void PaintManager::draw_ball_tobuffer(int x, int y)
 		hDC.memory.ball, 0, 0, SRCPAINT
 	);
 }
-
-void PaintManager::draw_background_ruller_tobuffer()
+void PaintManager::paint_background_ruller_tobuffer()
 {
 
 }
 
 
-
-PaintManager::~PaintManager()
+/********************************
+*
+*		private functions
+*		- flush buffer to window
+*
+*********************************/
+void RollingBall::PaintManager::flush_buffer()
 {
+	if (!isAbleToPrint()) return;
 
+	BitBlt(
+		hDC.window, 0, 0, windowRect.right, windowRect.bottom,
+		hDC.memory.hDCwindowCompatible, 0, 0,
+		SRCCOPY
+	);
 }
