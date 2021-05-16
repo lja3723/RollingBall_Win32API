@@ -1,6 +1,6 @@
-#include "PrintManage.h"
+#include "PrintManager.h"
 
-void RollingBall::PrintManager::print_background_ruller()
+void RollingBall::PrintManager::show_background_ruller()
 {
 }
 
@@ -9,7 +9,7 @@ void RollingBall::PrintManager::initialize(HINSTANCE m_hInstance, HWND m_hwnd, i
 	hInstance = m_hInstance;
 	hwnd = m_hwnd;
 	BallSizeType = m_BallSizeType;
-	bmpManager.initialize(hInstance);
+	bitmapManager.initialize(hInstance);
 }
 
 void RollingBall::PrintManager::set_BallSizeType(int BallSize)
@@ -17,7 +17,7 @@ void RollingBall::PrintManager::set_BallSizeType(int BallSize)
 	BallSizeType = BallSizeType;
 }
 
-void RollingBall::PrintManager::print_background(LPRECT region)
+void RollingBall::PrintManager::show_background(LPRECT region)
 {
 	HDC hdc, memdc;
 	PAINTSTRUCT ps;
@@ -26,7 +26,7 @@ void RollingBall::PrintManager::print_background(LPRECT region)
 	//hdc = GetDC(hwnd);
 
 	{
-		oldBit, hBackground = bmpManager.get_hBitmap_floor();
+		oldBit, hBackground = bitmapManager.get_hBitmap_floor();
 		memdc = CreateCompatibleDC(hdc);
 		oldBit = (HBITMAP)SelectObject(memdc, hBackground);
 
@@ -41,7 +41,7 @@ void RollingBall::PrintManager::print_background(LPRECT region)
 	//ReleaseDC(hwnd, hdc);
 }
 
-void RollingBall::PrintManager::print_ball(int x, int y)
+void RollingBall::PrintManager::show_ball(int x, int y)
 {
 	HDC hdc, memdc;
 	PAINTSTRUCT ps;
@@ -52,8 +52,8 @@ void RollingBall::PrintManager::print_ball(int x, int y)
 	memdc = CreateCompatibleDC(hdc);
 
 	{
-		HBITMAP hMask = bmpManager.get_hBitmap_ball_mask(BallSizeType);
-		HBITMAP hBall = bmpManager.get_hBitmap_ball(BallSizeType);
+		HBITMAP hMask = bitmapManager.get_hBitmap_ball_mask(BallSizeType);
+		HBITMAP hBall = bitmapManager.get_hBitmap_ball(BallSizeType);
 		oldBit = (HBITMAP)SelectObject(memdc, hMask);
 		BitBlt(
 			hdc,

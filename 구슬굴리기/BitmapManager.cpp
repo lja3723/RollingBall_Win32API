@@ -1,4 +1,4 @@
-#include "BitmapManage.h"
+#include "BitmapManager.h"
 
 using namespace RollingBall;
 

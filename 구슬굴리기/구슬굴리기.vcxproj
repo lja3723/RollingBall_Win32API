@@ -139,18 +139,22 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="BitmapManage.cpp" />
+    <ClCompile Include="BitmapManager.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="ObjectManage.cpp" />
-    <ClCompile Include="PhysicsControl.cpp" />
-    <ClCompile Include="PrintManage.cpp" />
+    <ClCompile Include="ObjectManager.cpp" />
+    <ClCompile Include="Controller.cpp" />
+    <ClCompile Include="Physics.cpp" />
+    <ClCompile Include="PrintManager.cpp" />
+    <ClCompile Include="RollingBall.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BitmapManage.h" />
-    <ClInclude Include="ObjectManage.h" />
-    <ClInclude Include="PhysicsControl.h" />
-    <ClInclude Include="PrintManage.h" />
+    <ClInclude Include="BitmapManager.h" />
+    <ClInclude Include="ObjectManager.h" />
+    <ClInclude Include="Controller.h" />
+    <ClInclude Include="Physics.h" />
+    <ClInclude Include="PrintManager.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="RollingBall.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="구슬굴리기.rc" />

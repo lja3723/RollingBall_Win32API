@@ -1,12 +1,12 @@
 #pragma once
-#ifndef __BitmapManage_h__
-#define __BitmapManage_h__
+#ifndef __BitmapManager_h__
+#define __BitmapManager_h__
 #include <Windows.h>
 #include "resource.h"
 
 /*
 * 
-* BitmapManage:
+* BitmapManager:
 * 프로그램에서 사용하는 비트맵을 관리하는 클래스를 정의
 * 
 */
@@ -45,5 +45,6 @@ namespace RollingBall
 
 
 }
+
 
 #endif
