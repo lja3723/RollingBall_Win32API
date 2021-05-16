@@ -4,20 +4,20 @@ using namespace RollingBall;
 
 void RollingBallClass::initialize(HINSTANCE hInstance, HWND hwnd)
 {
-	printManager.initialize(hInstance, hwnd);
+	paintManager.initialize(hInstance, hwnd);
 }
 
 void RollingBallClass::update_window()
 {
 	int x = controller.ballPos.x;
 	int y = controller.ballPos.y;
-	printManager.set_hDC();
 
-	printManager.draw_background_tobuffer(NULL);
-	printManager.draw_ball_tobuffer(x, y);
+	paintManager.beginPaint();
 
-	printManager.flush_buffer();
-	printManager.release_hDC();
+	paintManager.paint_background();
+	paintManager.paint_ball(x, y);
+
+	paintManager.endPaint();
 }
 
 void RollingBallClass::update_state()

@@ -3,7 +3,7 @@
 #define __BitmapManage_h__
 
 #include <Windows.h>
-#include "PrintManager.h"
+#include "PaintManager.h"
 #include "Physics.h"
 #include "Controller.h"
 
@@ -12,7 +12,7 @@ namespace RollingBall
 	class RollingBallClass
 	{
 	private:
-		PrintManager printManager;
+		PaintManager paintManager;
 		Physics physics;
 		Controller controller;
 

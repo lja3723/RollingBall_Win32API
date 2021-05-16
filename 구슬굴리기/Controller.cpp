@@ -61,7 +61,7 @@ void Controller::translate_windowEvent(UINT m_iMsg, WPARAM m_wParam, LPARAM m_lP
 
 void Controller::update_ballPos()
 {
-	int px = 1;
+	int px = 5;
 	if (isPushed.key_left) ballPos.x -= px;
 	if (isPushed.key_right) ballPos.x += px;
 

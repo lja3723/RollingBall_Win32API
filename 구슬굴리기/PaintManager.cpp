@@ -1,8 +1,8 @@
-#include "PrintManager.h"
+#include "PaintManager.h"
 
 using namespace RollingBall;
 
-void PrintManager::initialize(HINSTANCE m_hInstance, HWND m_hwnd, int m_BallSizeType)
+void PaintManager::initialize(HINSTANCE m_hInstance, HWND m_hwnd, int m_BallSizeType)
 {
 	BallSizeType = m_BallSizeType;
 	hInstance = m_hInstance;
@@ -16,28 +16,53 @@ void PrintManager::initialize(HINSTANCE m_hInstance, HWND m_hwnd, int m_BallSize
 	set_hBitmap(m_BallSizeType);
 }
 
+void RollingBall::PaintManager::beginPaint()
+{
+	set_windowDCmode_BeginPaint();
+	set_hDCwindow();
+	set_memoryDC();
+}
+
+void RollingBall::PaintManager::paint_background()
+{
+	draw_background_tobuffer(NULL);
+	draw_background_ruller_tobuffer();
+}
+
+void RollingBall::PaintManager::paint_ball(int posX, int posY)
+{
+	draw_ball_tobuffer(posX, posY);
+}
+
+void RollingBall::PaintManager::endPaint()
+{
+	flush_buffer();
+	release_hDCwindow();
+	release_memoryDC();
+}
 
 
-void PrintManager::set_hBitmap(int BallSizeType)
+
+void PaintManager::set_hBitmap(int BallSizeType)
 {
 	hBitmap.resource.background = bitmapManager.get_hBitmap_floor();
 	hBitmap.resource.ball = bitmapManager.get_hBitmap_ball(BallSizeType);
 	hBitmap.resource.ball_mask = bitmapManager.get_hBitmap_ball_mask(BallSizeType);
 }
 
-void PrintManager::set_windowDCmode_BeginPaint()
+void PaintManager::set_windowDCmode_BeginPaint()
 {
 	m_isWindowDCmode_GetDC = FALSE;
 }
 
-void PrintManager::set_windowDCmode_GetDC()
+void PaintManager::set_windowDCmode_GetDC()
 {
 	m_isWindowDCmode_GetDC = TRUE;
 }
 
 
 
-void PrintManager::set_hDCwindow()
+void PaintManager::set_hDCwindow()
 {
 	if (m_isSetWindowDC) return;
 
@@ -49,7 +74,7 @@ void PrintManager::set_hDCwindow()
 	m_isSetWindowDC = TRUE;
 }
 
-void PrintManager::release_hDCwindow()
+void PaintManager::release_hDCwindow()
 {
 	if (!m_isSetWindowDC) return;
 
@@ -63,7 +88,7 @@ void PrintManager::release_hDCwindow()
 
 
 
-void PrintManager::set_memoryDC()
+void PaintManager::set_memoryDC()
 {
 	if (!m_isSetWindowDC) return;
 	if (m_isSetMemoryDC) return;
@@ -93,7 +118,7 @@ void PrintManager::set_memoryDC()
 	m_isSetMemoryDC = TRUE;
 }
 
-void PrintManager::release_memoryDC()
+void PaintManager::release_memoryDC()
 {
 	if (!m_isSetMemoryDC) return;
 	//holding에 저장된 각 memoryDC의 기본 hBitmap을 선택함
@@ -108,46 +133,37 @@ void PrintManager::release_memoryDC()
 	DeleteDC(hDC.memory.ball);
 	DeleteDC(hDC.memory.ball_mask);
 
+	//hBitmap들을 삭제함
+	DeleteObject(hBitmap.hDCwindowCompatible);
+
 	m_isSetMemoryDC = FALSE;
 }
 
-void PrintManager::set_hDC()
-{
-	set_hDCwindow();
-	set_memoryDC();
-}
-
-void PrintManager::release_hDC()
-{
-	release_hDCwindow();
-	release_memoryDC();
-}
 
 
-
-BOOL RollingBall::PrintManager::isWindowDCmode_GetDC()
+BOOL RollingBall::PaintManager::isWindowDCmode_GetDC()
 {
 	return m_isWindowDCmode_GetDC;
 }
 
-BOOL RollingBall::PrintManager::isSetWindowDC()
+BOOL RollingBall::PaintManager::isSetWindowDC()
 {
 	return m_isSetWindowDC;
 }
 
-BOOL RollingBall::PrintManager::isSetMemoryDC()
+BOOL RollingBall::PaintManager::isSetMemoryDC()
 {
 	return m_isSetMemoryDC;
 }
 
-BOOL RollingBall::PrintManager::isAbleToPrint()
+BOOL RollingBall::PaintManager::isAbleToPrint()
 {
 	if (!isSetWindowDC()) return FALSE;
 	if (!isSetMemoryDC()) return FALSE;
 	return TRUE;
 }
 
-void RollingBall::PrintManager::flush_buffer()
+void RollingBall::PaintManager::flush_buffer()
 {
 	if (!isAbleToPrint()) return;
 
@@ -160,12 +176,12 @@ void RollingBall::PrintManager::flush_buffer()
 
 
 
-void PrintManager::set_BallSizeType(int BallSize)
+void PaintManager::set_BallSizeType(int BallSize)
 {
 	BallSizeType = BallSizeType;
 }
 
-void PrintManager::draw_background_tobuffer(LPRECT region)
+void PaintManager::draw_background_tobuffer(LPRECT region)
 {
 	if (!isAbleToPrint()) return;
 
@@ -174,7 +190,7 @@ void PrintManager::draw_background_tobuffer(LPRECT region)
 			BitBlt(hDC.memory.hDCwindowCompatible, i * 256, j * 256, 256, 256, hDC.memory.background, 0, 0, SRCCOPY);
 }
 
-void PrintManager::draw_ball_tobuffer(int x, int y)
+void PaintManager::draw_ball_tobuffer(int x, int y)
 {
 	if (!isAbleToPrint()) return;
 
@@ -193,14 +209,14 @@ void PrintManager::draw_ball_tobuffer(int x, int y)
 	);
 }
 
-void PrintManager::draw_background_ruller_tobuffer()
+void PaintManager::draw_background_ruller_tobuffer()
 {
 
 }
 
 
 
-PrintManager::~PrintManager()
+PaintManager::~PaintManager()
 {
 
 }

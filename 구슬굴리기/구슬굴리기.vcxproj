@@ -144,7 +144,7 @@
     <ClCompile Include="ObjectManager.cpp" />
     <ClCompile Include="Controller.cpp" />
     <ClCompile Include="Physics.cpp" />
-    <ClCompile Include="PrintManager.cpp" />
+    <ClCompile Include="PaintManager.cpp" />
     <ClCompile Include="RollingBall.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -152,7 +152,7 @@
     <ClInclude Include="ObjectManager.h" />
     <ClInclude Include="Controller.h" />
     <ClInclude Include="Physics.h" />
-    <ClInclude Include="PrintManager.h" />
+    <ClInclude Include="PaintManager.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="RollingBall.h" />
   </ItemGroup>
