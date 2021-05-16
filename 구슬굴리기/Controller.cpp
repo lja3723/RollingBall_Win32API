@@ -72,7 +72,12 @@ void Controller::update_ballPos()
 	if (isPushed.key_up) y.Speed -= y.Accel;
 	if (isPushed.key_down) y.Speed += y.Accel;
 
-	if (isPushed.key_space) initialize_ball_data();
+	if (isPushed.key_space)
+	{
+		int xpos = x.Pos, ypos = y.Pos;
+		initialize_ball_data();
+		x.Pos = xpos, y.Pos = ypos;
+	}
 
 	x.Pos += x.Speed;
 	y.Pos += y.Speed;
