@@ -2,6 +2,7 @@
 #include <tchar.h>
 #include "resource.h"
 #include "RollingBall.h"
+#define PROGRAM_VER	"1.0"
 
 using namespace RollingBall;
 
