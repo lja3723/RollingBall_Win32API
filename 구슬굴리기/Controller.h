@@ -15,11 +15,15 @@ namespace RollingBall
 		} windowEvent;
 
 		struct {
-			BOOL key_left;
-			BOOL key_right;
-			BOOL key_up;
-			BOOL key_down;
-			BOOL key_space;
+			struct {
+				BOOL left;
+				BOOL right;
+				BOOL up;
+				BOOL down;
+				BOOL space;
+				BOOL H;
+				BOOL control;
+			} key;
 
 		} isPushed;
 
@@ -36,13 +40,12 @@ namespace RollingBall
 		} y;
 
 		void set_windowEvent(UINT m_iMsg, WPARAM m_wParam, LPARAM m_lParam);
-		void control_keydown();
-		void control_keyup();
+		void detect_keyPushed();
 
 
 	public:
 		void translate_windowEvent(UINT m_iMsg, WPARAM m_wParam, LPARAM m_lParam);
-		void update_ballPos();
+		void update_ballPos(HWND hwnd);
 
 		int get_xPos();
 		int get_xSpeed();

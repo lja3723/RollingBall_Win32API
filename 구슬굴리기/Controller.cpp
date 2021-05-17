@@ -1,4 +1,5 @@
 #include "Controller.h"
+#include <tchar.h>
 
 using namespace RollingBall;
 
@@ -9,50 +10,37 @@ void Controller::set_windowEvent(UINT m_iMsg, WPARAM m_wParam, LPARAM m_lParam)
 	windowEvent.lParam = m_lParam;
 }
 
-void Controller::control_keydown()
+void Controller::detect_keyPushed()
 {
-	if (windowEvent.iMsg != WM_KEYDOWN) return;
+	BOOL flag_key = FALSE;
+	if (windowEvent.iMsg == WM_KEYDOWN)
+		flag_key = TRUE;
+	else if (windowEvent.iMsg == WM_KEYUP)
+		flag_key = FALSE;
+	else return;
 
 	switch (windowEvent.wParam)
 	{
 	case VK_LEFT:
-		isPushed.key_left = TRUE;
+		isPushed.key.left = flag_key;
 		break;
 	case VK_RIGHT:
-		isPushed.key_right = TRUE;
+		isPushed.key.right = flag_key;
 		break;
 	case VK_UP:
-		isPushed.key_up = TRUE;
+		isPushed.key.up = flag_key;
 		break;
 	case VK_DOWN:
-		isPushed.key_down = TRUE;
+		isPushed.key.down = flag_key;
 		break;
 	case VK_SPACE:
-		isPushed.key_space = TRUE;
+		isPushed.key.space = flag_key;
 		break;
-	}
-}
-
-void Controller::control_keyup()
-{
-	if (windowEvent.iMsg != WM_KEYUP) return;
-
-	switch (windowEvent.wParam)
-	{
-	case VK_LEFT:
-		isPushed.key_left = FALSE;
+	case _T('H'): case _T('h'):
+		isPushed.key.H = flag_key;
 		break;
-	case VK_RIGHT:
-		isPushed.key_right = FALSE;
-		break;
-	case VK_UP:
-		isPushed.key_up = FALSE;
-		break;
-	case VK_DOWN:
-		isPushed.key_down = FALSE;
-		break;
-	case VK_SPACE:
-		isPushed.key_space = FALSE;
+	case VK_CONTROL:
+		isPushed.key.control = flag_key;
 		break;
 	}
 }
@@ -60,23 +48,35 @@ void Controller::control_keyup()
 void Controller::translate_windowEvent(UINT m_iMsg, WPARAM m_wParam, LPARAM m_lParam)
 {
 	set_windowEvent(m_iMsg, m_wParam, m_lParam);
-	control_keyup();
-	control_keydown();
+	detect_keyPushed();
 }
 
-void Controller::update_ballPos()
+void Controller::update_ballPos(HWND hwnd)
 {
-	if (isPushed.key_left) x.Speed -= x.Accel;
-	if (isPushed.key_right) x.Speed += x.Accel;
+	if (isPushed.key.left) x.Speed -= x.Accel;
+	if (isPushed.key.right) x.Speed += x.Accel;
 
-	if (isPushed.key_up) y.Speed -= y.Accel;
-	if (isPushed.key_down) y.Speed += y.Accel;
+	if (isPushed.key.up) y.Speed -= y.Accel;
+	if (isPushed.key.down) y.Speed += y.Accel;
 
-	if (isPushed.key_space)
+	if (isPushed.key.space)
 	{
 		int xpos = x.Pos, ypos = y.Pos;
 		initialize_ball_data();
 		x.Pos = xpos, y.Pos = ypos;
+	}
+	if (isPushed.key.H)
+	{
+		RECT rt;
+		GetClientRect(hwnd, &rt);
+		x.Pos = rt.right * 5;
+		y.Pos = rt.bottom * 5;
+		if (isPushed.key.control)
+		{
+			initialize_ball_data();
+			x.Pos = rt.right * 5;
+			y.Pos = rt.bottom * 5;
+		}
 	}
 
 	x.Pos += x.Speed;
