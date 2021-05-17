@@ -10,7 +10,7 @@ HBITMAP BitmapManager::ball_mask[BallSizeCount] = { NULL, };
 
 BitmapManager::~BitmapManager()
 {
-	if (object_count == 0)
+	if (object_count == 1)
 	{
 		hInstance = NULL;
 		DeleteObject(floor);
