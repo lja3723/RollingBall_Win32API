@@ -17,7 +17,7 @@ namespace RollingBall
 	class PaintManager
 	{
 	private:
-		static int object_count;
+		static BOOL isCreatedMemoryDC;
 		BitmapManager bitmapManager;
 
 		HINSTANCE hInstance;
@@ -53,7 +53,8 @@ namespace RollingBall
 
 		BOOL m_isWindowDCmode_GetDC;
 		BOOL m_isSetWindowDC;
-		BOOL m_isSetMemoryDC;
+		BOOL m_isSetObjectMemoryDC;
+		BOOL m_isSetWindowBufferDC;
 
 		int BallSizeType;
 
@@ -97,7 +98,9 @@ namespace RollingBall
 		//hDC.memory들을 얻고 설정한다.
 		void set_memoryDC();
 		//hDC.memory들을 삭제한다.
-		void release_memoryDC();
+		void release_ObjectMemoryDC();
+		
+		void release_windowBufferDC();
 
 
 		//멤버 변수를 설정한다
