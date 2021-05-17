@@ -68,7 +68,7 @@ void BitmapManager::set_hDCwindowBuffer()
 	HDC hdc = GetDC(hwnd);
 
 	GetClientRect(hwnd, &rt);
-	hDCwindowBuffer = CreateCompatibleBitmap(hdc, rt.right, rt.left);
+	hDCwindowBuffer = CreateCompatibleBitmap(hdc, rt.right, rt.bottom);
 	ReleaseDC(hwnd, hdc);
 }
 
