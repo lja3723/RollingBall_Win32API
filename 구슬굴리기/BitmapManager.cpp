@@ -2,7 +2,7 @@
 
 using namespace RollingBall;
 
-int BitmapManager::object_count = 0;
+int BitmapManager::isLoadedBitmap = FALSE;
 HINSTANCE BitmapManager::hInstance = NULL;
 HBITMAP BitmapManager::floor = NULL;
 HBITMAP BitmapManager::ball[BallSizeCount] = { NULL, };
@@ -10,7 +10,7 @@ HBITMAP BitmapManager::ball_mask[BallSizeCount] = { NULL, };
 
 BitmapManager::~BitmapManager()
 {
-	if (object_count == 0)
+	if (isLoadedBitmap)
 	{
 		hInstance = NULL;
 		DeleteObject(floor);
@@ -20,12 +20,12 @@ BitmapManager::~BitmapManager()
 			DeleteObject(ball_mask[size]);
 		}
 	}
-	object_count--;
+	isLoadedBitmap = FALSE;
 }
 
 void BitmapManager::initialize(HINSTANCE m_hInstance, int m_BallSizeType)
 {
-	if (object_count == 0)
+	if (!isLoadedBitmap)
 	{
 		//∫Ò∆Æ∏  ∑ŒµÂ
 		hInstance = m_hInstance;
@@ -38,7 +38,7 @@ void BitmapManager::initialize(HINSTANCE m_hInstance, int m_BallSizeType)
 	}
 	set_BallSizeType(m_BallSizeType);
 
-	object_count++;
+	isLoadedBitmap = TRUE;
 }
 
 void BitmapManager::set_BallSizeType(int m_BallSizeType)

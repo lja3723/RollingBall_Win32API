@@ -17,9 +17,9 @@ namespace RollingBall
 	class PaintManager
 	{
 	private:
+		static BOOL isCreatedMemoryDC;
 		BitmapManager bitmapManager;
 
-		
 		HINSTANCE hInstance;
 		HWND hwnd;
 		PAINTSTRUCT ps;
@@ -27,9 +27,9 @@ namespace RollingBall
 
 		struct {
 			HDC window;
-			HDC current;
+			//HDC current;
 			struct {
-				HDC hDCwindowCompatible;
+				HDC windowBuffer;
 				HDC background;
 				HDC ball;
 				HDC ball_mask;
@@ -44,7 +44,7 @@ namespace RollingBall
 				HBITMAP ball_mask;
 			} resource;
 			struct {
-				HBITMAP hDCwindowCompatible;
+				HBITMAP windowBuffer;
 				HBITMAP background;
 				HBITMAP ball;
 				HBITMAP ball_mask;
@@ -53,12 +53,15 @@ namespace RollingBall
 
 		BOOL m_isWindowDCmode_GetDC;
 		BOOL m_isSetWindowDC;
-		BOOL m_isSetMemoryDC;
+		BOOL m_isSetObjectMemoryDC;
+		BOOL m_isSetWindowBufferDC;
 
 		int BallSizeType;
 
 	
 	public:
+		~PaintManager();
+
 		//PrintManager 클래스 변수를 사용하기 전 반드시 수행해야 함
 		void initialize(HINSTANCE m_hInstance, HWND m_hwnd, int m_BallSizeType = BallSize_medium);
 
@@ -95,7 +98,9 @@ namespace RollingBall
 		//hDC.memory들을 얻고 설정한다.
 		void set_memoryDC();
 		//hDC.memory들을 삭제한다.
-		void release_memoryDC();
+		void release_ObjectMemoryDC();
+		
+		void release_windowBufferDC();
 
 
 		//멤버 변수를 설정한다
