@@ -30,7 +30,7 @@ namespace RollingBall
 	class BitmapManager
 	{
 	private:
-		static int object_count;
+		static BOOL isLoadedBitmap;
 		static HINSTANCE hInstance;
 		static HBITMAP floor;
 		static HBITMAP ball[BallSizeCount];
