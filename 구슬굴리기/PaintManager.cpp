@@ -9,7 +9,7 @@ using namespace RollingBall;
 *		initialization
 *
 *********************************/
-int PaintManager::isCreatedMemoryDC = FALSE;
+int PaintManager::object_count = 0;
 
 
 /********************************
@@ -19,11 +19,7 @@ int PaintManager::isCreatedMemoryDC = FALSE;
 *********************************/
 RollingBall::PaintManager::~PaintManager()
 {
-	if (isCreatedMemoryDC)
-	{
-		release_ObjectMemoryDC();
-		isCreatedMemoryDC = FALSE;
-	}
+
 }
 void PaintManager::initialize(HINSTANCE m_hInstance, HWND m_hwnd, int m_BallSizeType)
 {
@@ -33,8 +29,7 @@ void PaintManager::initialize(HINSTANCE m_hInstance, HWND m_hwnd, int m_BallSize
 
 	set_windowDCmode_BeginPaint();
 	m_isSetWindowDC = FALSE;
-	m_isSetObjectMemoryDC = FALSE;
-	m_isSetWindowBufferDC = FALSE;
+	m_isSetMemoryDC = FALSE;
 
 	bitmapManager.initialize(hInstance);
 	set_hBitmap(m_BallSizeType);
@@ -49,7 +44,7 @@ void PaintManager::endPaint()
 {
 	flush_buffer();
 	release_hDCwindow();
-	release_windowBufferDC();
+	release_memoryDC();
 }
 void PaintManager::paint_background()
 {
@@ -78,7 +73,7 @@ BOOL PaintManager::isSetWindowDC()
 }
 BOOL PaintManager::isSetMemoryDC()
 {
-	return m_isSetObjectMemoryDC;
+	return m_isSetMemoryDC;
 }
 BOOL PaintManager::isAbleToPrint()
 {
@@ -143,51 +138,43 @@ void PaintManager::release_hDCwindow()
 void PaintManager::set_memoryDC()
 {
 	if (!m_isSetWindowDC) return;
-	if (m_isSetObjectMemoryDC) return;
+	if (m_isSetMemoryDC) return;
 
-	if (!isCreatedMemoryDC)
-	{
-		//화면 DC와 호환이 되는 memDC를 생성
-		hDC.memory.windowBuffer = CreateCompatibleDC(hDC.window);
-		//화면 DC화 호환되는 memDC와 호환되는 memory DC 생성
-		hDC.memory.background = CreateCompatibleDC(hDC.memory.windowBuffer);
-		hDC.memory.ball = CreateCompatibleDC(hDC.memory.windowBuffer);
-		hDC.memory.ball_mask = CreateCompatibleDC(hDC.memory.windowBuffer);
-
-		//생성한 memory DC들에 hBitmap을 선택시킴
-		hBitmap.holdingOld.background
-			= (HBITMAP)SelectObject(hDC.memory.background, hBitmap.resource.background);
-		hBitmap.holdingOld.ball
-			= (HBITMAP)SelectObject(hDC.memory.ball, hBitmap.resource.ball);
-		hBitmap.holdingOld.ball_mask
-			= (HBITMAP)SelectObject(hDC.memory.ball_mask, hBitmap.resource.ball_mask);
-		
-		isCreatedMemoryDC = TRUE;
-		m_isSetObjectMemoryDC = TRUE;
-	}
+	//화면 DC와 호환이 되는 memDC를 생성
+	hDC.memory.windowBuffer = CreateCompatibleDC(hDC.window);
+	//화면 DC화 호환되는 memDC와 호환되는 memory DC 생성
+	hDC.memory.background = CreateCompatibleDC(hDC.memory.windowBuffer);
+	hDC.memory.ball = CreateCompatibleDC(hDC.memory.windowBuffer);
+	hDC.memory.ball_mask = CreateCompatibleDC(hDC.memory.windowBuffer);
 
 	//화면 DC와 호환되는 hBitmap을 로드한다
 	GetClientRect(hwnd, &windowRect);
 	hBitmap.hDCwindowCompatible
 		= CreateCompatibleBitmap(hDC.window, windowRect.right, windowRect.bottom);
 
-	//화면 DC와 호환되는 hBitmap을 windowBuffer memDC에 선택시킨다
+	//생성한 memory DC들에 hBitmap을 선택시킴
 	hBitmap.holdingOld.windowBuffer
 		= (HBITMAP)SelectObject(hDC.memory.windowBuffer, hBitmap.hDCwindowCompatible);
+	hBitmap.holdingOld.background
+		= (HBITMAP)SelectObject(hDC.memory.background, hBitmap.resource.background);
+	hBitmap.holdingOld.ball
+		= (HBITMAP)SelectObject(hDC.memory.ball, hBitmap.resource.ball);
+	hBitmap.holdingOld.ball_mask
+		= (HBITMAP)SelectObject(hDC.memory.ball_mask, hBitmap.resource.ball_mask);
 
-	m_isSetWindowBufferDC = TRUE;;
+	m_isSetMemoryDC = TRUE;
 }
-void PaintManager::release_ObjectMemoryDC()
+void PaintManager::release_memoryDC()
 {
-	if (!m_isSetObjectMemoryDC) return;
+	if (!m_isSetMemoryDC) return;
 	//holding에 저장된 각 memoryDC의 기본 hBitmap을 선택함
-	//SelectObject(hDC.memory.windowBuffer, hBitmap.holdingOld.windowBuffer);
+	SelectObject(hDC.memory.windowBuffer, hBitmap.holdingOld.windowBuffer);
 	SelectObject(hDC.memory.background, hBitmap.holdingOld.background);
 	SelectObject(hDC.memory.ball, hBitmap.holdingOld.ball);
 	SelectObject(hDC.memory.ball_mask, hBitmap.holdingOld.ball_mask);
 
 	//memDC들을 삭제함
-	//DeleteDC(hDC.memory.windowBuffer);
+	DeleteDC(hDC.memory.windowBuffer);
 	DeleteDC(hDC.memory.background);
 	DeleteDC(hDC.memory.ball);
 	DeleteDC(hDC.memory.ball_mask);
@@ -195,16 +182,7 @@ void PaintManager::release_ObjectMemoryDC()
 	//hBitmap을 삭제함
 	DeleteObject(hBitmap.hDCwindowCompatible);
 
-	m_isSetObjectMemoryDC = FALSE;
-}
-void PaintManager::release_windowBufferDC()
-{
-	if (!m_isSetWindowBufferDC) return;
-
-	SelectObject(hDC.memory.windowBuffer, hBitmap.holdingOld.windowBuffer);
-	DeleteDC(hDC.memory.windowBuffer);
-
-	m_isSetWindowBufferDC = FALSE;
+	m_isSetMemoryDC = FALSE;
 }
 
 
