@@ -17,6 +17,7 @@ namespace RollingBall
 	class PaintManager
 	{
 	private:
+		static int object_count;
 		BitmapManager bitmapManager;
 
 		HINSTANCE hInstance;

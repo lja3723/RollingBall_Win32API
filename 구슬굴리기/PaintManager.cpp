@@ -3,6 +3,14 @@ using namespace RollingBall;
 
 
 
+/********************************
+*
+*		static variables
+*		initialization
+*
+*********************************/
+int PaintManager::object_count = 0;
+
 
 /********************************
 * 
