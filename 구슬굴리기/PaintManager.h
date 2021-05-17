@@ -19,7 +19,6 @@ namespace RollingBall
 	private:
 		BitmapManager bitmapManager;
 
-		
 		HINSTANCE hInstance;
 		HWND hwnd;
 		PAINTSTRUCT ps;
@@ -27,7 +26,7 @@ namespace RollingBall
 
 		struct {
 			HDC window;
-			HDC current;
+			//HDC current;
 			struct {
 				HDC hDCwindowCompatible;
 				HDC background;
