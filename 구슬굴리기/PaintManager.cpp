@@ -17,6 +17,14 @@ int PaintManager::object_count = 0;
 *		public functions
 *
 *********************************/
+RollingBall::PaintManager::PaintManager()
+{
+
+}
+RollingBall::PaintManager::~PaintManager()
+{
+
+}
 void PaintManager::initialize(HINSTANCE m_hInstance, HWND m_hwnd, int m_BallSizeType)
 {
 	BallSizeType = m_BallSizeType;

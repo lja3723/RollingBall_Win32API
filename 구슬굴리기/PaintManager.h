@@ -59,6 +59,9 @@ namespace RollingBall
 
 	
 	public:
+		PaintManager();
+		~PaintManager();
+
 		//PrintManager 클래스 변수를 사용하기 전 반드시 수행해야 함
 		void initialize(HINSTANCE m_hInstance, HWND m_hwnd, int m_BallSizeType = BallSize_medium);
 
