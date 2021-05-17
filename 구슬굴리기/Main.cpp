@@ -2,15 +2,17 @@
 #include <tchar.h>
 #include "resource.h"
 #include "RollingBall.h"
-#define PROGRAM_VER	"1.0"
+#define PROGRAM_NAME _T("备浇 奔府扁")
+#define PROGRAM_VER	_T("1.0")
 
 using namespace RollingBall;
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam);
 BOOL CALLBACK DebuggingDialogProc(HWND hDlg, UINT iMsg, WPARAM wParam, LPARAM lParam);
+BOOL CALLBACK ProgramInfoDialogProc(HWND hDlg, UINT iMsg, WPARAM wParam, LPARAM lParam);
 
 static LPCTSTR WindowClassName = _T("Rolling Ball Class");
-static LPCTSTR WindowTitleName = _T("备浇 奔府扁");
+static LPCTSTR WindowTitleName = PROGRAM_NAME;
 static const int WindowPosition[2] = { CW_USEDEFAULT, CW_USEDEFAULT };
 static const int WindowSize[2] = { 720, 480 };
 
@@ -57,7 +59,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 {
 	static HINSTANCE hInstance;
 	static RollingBallClass rollingBall;
-	static HWND hDlg = NULL;
+	static HWND hDebugDlg = NULL;
+	static HWND hProgramInfoDlg = NULL;
 
 	switch (iMsg) 
 	{
@@ -88,13 +91,25 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 		switch (LOWORD(wParam))
 		{
 		case ID_DEBUGGING:
-			if (!IsWindow(hDlg))
+			if (!IsWindow(hDebugDlg))
 			{
-				hDlg = CreateDialog(
+				hDebugDlg = CreateDialog(
 					hInstance, MAKEINTRESOURCE(IDD_DIALOG_DEBUGGING), 
 					hwnd, (DLGPROC)DebuggingDialogProc
 				);
-				ShowWindow(hDlg, SW_SHOW);
+				ShowWindow(hDebugDlg, SW_SHOW);
+			}
+			break;
+		case ID_PROGRAM_INFO:
+			if (!IsWindow(hProgramInfoDlg))
+			{
+				hProgramInfoDlg = CreateDialog(
+					hInstance, MAKEINTRESOURCE(IDD_DIALOG_PROGRAM_INFO),
+					hwnd, (DLGPROC)ProgramInfoDialogProc
+				);
+				SetDlgItemText(hProgramInfoDlg, IDC_TEXT_PROGRAM_NAME, PROGRAM_NAME);
+				SetDlgItemText(hProgramInfoDlg, IDC_TEXT_PROGRAM_VER, PROGRAM_VER);
+				ShowWindow(hProgramInfoDlg, SW_SHOW);
 			}
 			break;
 		}
@@ -110,6 +125,27 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 }
 
 BOOL CALLBACK DebuggingDialogProc(HWND hDlg, UINT iMsg, WPARAM wParam, LPARAM lParam)
+{
+	switch (iMsg)
+	{
+	case WM_INITDIALOG:
+		return TRUE;
+
+	case WM_COMMAND:
+		switch (LOWORD(wParam))
+		{
+		case IDCANCEL:
+			DestroyWindow(hDlg);
+			hDlg = NULL;
+			break;
+		}
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+BOOL CALLBACK ProgramInfoDialogProc(HWND hDlg, UINT iMsg, WPARAM wParam, LPARAM lParam)
 {
 	switch (iMsg)
 	{

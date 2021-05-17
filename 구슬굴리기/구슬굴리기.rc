@@ -52,8 +52,9 @@ END
 
 IDR_MENU MENU
 BEGIN
-    MENUITEM "메뉴",                          65535
+    MENUITEM "메뉴",                          ID_MENU
     MENUITEM "디버깅(F7)",                     ID_DEBUGGING
+    MENUITEM "프로그램 정보",                     ID_PROGRAM_INFO
 END
 
 
@@ -105,6 +106,22 @@ BEGIN
     PUSHBUTTON      "닫기",IDCANCEL,252,155,50,14
 END
 
+IDD_DIALOG_PROGRAM_INFO DIALOGEX 0, 0, 179, 99
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "프로그램 정보"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    PUSHBUTTON      "확인",IDCANCEL,122,78,50,14
+    LTEXT           "프로그램 이름:",IDC_STATIC,20,20,73,8
+    LTEXT           "프로그램 개발자:",IDC_STATIC,20,50,73,8
+    LTEXT           "개발자 이메일:\t\t",IDC_STATIC,20,60,73,8
+    LTEXT           "프로그램 버전:",IDC_STATIC,20,30,50,8
+    LTEXT           "{name}",IDC_TEXT_PROGRAM_NAME,93,20,79,8
+    LTEXT           "{version}",IDC_TEXT_PROGRAM_VER,93,30,79,8
+    LTEXT           "Tech",IDC_STATIC,93,50,79,8
+    LTEXT           "lja3723@gmail.com",IDC_STATIC,93,60,79,8
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -121,6 +138,22 @@ BEGIN
         TOPMARGIN, 7
         BOTTOMMARGIN, 169
     END
+
+    IDD_DIALOG_PROGRAM_INFO, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 172
+        VERTGUIDE, 20
+        VERTGUIDE, 93
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 92
+        HORZGUIDE, 20
+        HORZGUIDE, 30
+        HORZGUIDE, 40
+        HORZGUIDE, 50
+        HORZGUIDE, 60
+        HORZGUIDE, 70
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -131,6 +164,11 @@ END
 //
 
 IDD_DIALOG_DEBUGGING AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_DIALOG_PROGRAM_INFO AFX_DIALOG_LAYOUT
 BEGIN
     0
 END
