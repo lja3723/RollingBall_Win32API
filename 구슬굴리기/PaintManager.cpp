@@ -17,10 +17,6 @@ int PaintManager::object_count = 0;
 *		public functions
 *
 *********************************/
-RollingBall::PaintManager::PaintManager()
-{
-
-}
 RollingBall::PaintManager::~PaintManager()
 {
 
