@@ -19,7 +19,7 @@ void PaintManager::initialize(HINSTANCE m_hInstance, HWND m_hwnd, int m_BallSize
 	m_isSetWindowDC = FALSE;
 	m_isSetMemoryDC = FALSE;
 
-	bitmapManager.initialize(hInstance, hwnd);
+	bitmapManager.initialize(hInstance);
 	set_hBitmap(m_BallSizeType);
 }
 void PaintManager::beginPaint()
@@ -135,7 +135,10 @@ void PaintManager::set_memoryDC()
 	hDC.memory.ball = CreateCompatibleDC(hDC.memory.hDCwindowCompatible);
 	hDC.memory.ball_mask = CreateCompatibleDC(hDC.memory.hDCwindowCompatible);
 
-	set_hBitmap(BallSizeType);
+	//화면 DC와 호환되는 hBitmap을 로드한다
+	GetClientRect(hwnd, &windowRect);
+	hBitmap.hDCwindowCompatible
+		= CreateCompatibleBitmap(hDC.window, windowRect.right, windowRect.bottom);
 
 	//생성한 memory DC들에 hBitmap을 선택시킴
 	hBitmap.holdingOld.hDCwindowCompatible
@@ -164,6 +167,9 @@ void PaintManager::release_memoryDC()
 	DeleteDC(hDC.memory.ball);
 	DeleteDC(hDC.memory.ball_mask);
 
+	//hBitmap을 삭제함
+	DeleteObject(hBitmap.hDCwindowCompatible);
+
 	m_isSetMemoryDC = FALSE;
 }
 
@@ -184,7 +190,6 @@ void PaintManager::set_hBitmap(int BallSizeType)
 	hBitmap.resource.background = bitmapManager.get_hBitmap_floor();
 	hBitmap.resource.ball = bitmapManager.get_hBitmap_ball();
 	hBitmap.resource.ball_mask = bitmapManager.get_hBitmap_ball_mask();
-	hBitmap.hDCwindowCompatible = bitmapManager.get_hBitmap_hDCwindowBuffer();
 }
 
 
