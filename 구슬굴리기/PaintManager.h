@@ -28,7 +28,7 @@ namespace RollingBall
 			HDC window;
 			//HDC current;
 			struct {
-				HDC hDCwindowCompatible;
+				HDC windowBuffer;
 				HDC background;
 				HDC ball;
 				HDC ball_mask;
@@ -43,7 +43,7 @@ namespace RollingBall
 				HBITMAP ball_mask;
 			} resource;
 			struct {
-				HBITMAP hDCwindowCompatible;
+				HBITMAP windowBuffer;
 				HBITMAP background;
 				HBITMAP ball;
 				HBITMAP ball_mask;
