@@ -45,6 +45,7 @@ void BitmapManager::initialize(HINSTANCE m_hInstance, HWND m_hwnd, int m_BallSiz
 			ball_mask[size] = LoadBitmap(hInstance, MAKEINTRESOURCE(IDB_BITMAP_BALL_032_MASK + 2 * size));
 		}
 	}
+	set_BallSizeType(m_BallSizeType);
 	set_hDCwindowBuffer();
 
 	object_count++;
