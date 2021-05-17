@@ -69,13 +69,13 @@ void Controller::update_ballPos(HWND hwnd)
 	{
 		RECT rt;
 		GetClientRect(hwnd, &rt);
-		x.Pos = rt.right * 5;
-		y.Pos = rt.bottom * 5;
+		x.Pos = rt.right / 2;
+		y.Pos = rt.bottom / 2;
 		if (isPushed.key.control)
 		{
 			initialize_ball_data();
-			x.Pos = rt.right * 5;
-			y.Pos = rt.bottom * 5;
+			x.Pos = rt.right / 2;
+			y.Pos = rt.bottom / 2;
 		}
 	}
 
@@ -112,7 +112,7 @@ void RollingBall::Controller::initialize_ball_data()
 {
 	x.Pos = y.Pos = 0;
 	x.Speed = y.Speed = 0;
-	x.Accel = y.Accel = 1;
+	x.Accel = y.Accel = 0.1;
 }
 
 RollingBall::Controller::Controller()

@@ -28,15 +28,15 @@ namespace RollingBall
 		} isPushed;
 
 		struct {
-			int Pos;
-			int Speed;
-			int Accel;
+			double Pos;
+			double Speed;
+			double Accel;
 		} x;
 
 		struct {
-			int Pos;
-			int Speed;
-			int Accel;
+			double Pos;
+			double Speed;
+			double Accel;
 		} y;
 
 		void set_windowEvent(UINT m_iMsg, WPARAM m_wParam, LPARAM m_lParam);

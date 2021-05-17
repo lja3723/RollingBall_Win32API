@@ -11,8 +11,8 @@ void RollingBallClass::initialize(HINSTANCE m_hInstance, HWND m_hwnd)
 
 void RollingBallClass::update_window()
 {
-	int x = controller.get_xPos() / 10;
-	int y = controller.get_yPos() / 10;
+	int x = controller.get_xPos();
+	int y = controller.get_yPos();
 
 	paintManager.beginPaint();
 
