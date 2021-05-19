@@ -62,6 +62,7 @@ namespace RollingBall
 
 			BOOL isSetMemDCres;
 			BOOL isSetHBitmapRes;
+			BOOL isBackedUpHBitmapRes;
 
 			BOOL isDoubleBufferingStart;
 			BOOL isInit;
@@ -122,6 +123,8 @@ namespace RollingBall
 		BOOL isSetMemDCres();
 		BOOL isSetHBitmapWindowBuffer();
 		BOOL isSetHBitmapRes();
+		BOOL isBackedUpHBitmapWindowBuffer();
+		BOOL isBackedUpHBitmapRes();
 
 		//기타 정보를 알려줌
 		BOOL isDoubleBufferingStart();
@@ -176,11 +179,11 @@ namespace RollingBall
 
 		//hBitmap.old 변수를 관리함
 		void hBitmap_old_windowBuffer_init();
-		void hBitmap_old_windowBuffer_set();
-		void hBitmap_old_windowBuffer_release();
+		void hBitmap_old_windowBuffer_backup();
+		void hBitmap_old_windowBuffer_rollback();
 		void hBitmap_old_res_init();
-		void hBitmap_old_res_set();
-		void hBitmap_old_res_release();
+		void hBitmap_old_res_backup();
+		void hBitmap_old_res_rollback();
 
 
 
