@@ -63,23 +63,23 @@ END
 // Bitmap
 //
 
-IDB_BITMAP_FLOOR        BITMAP                  "..\\res_bmp\\floor.bmp"
+IDB_FLOOR_WOOD1_256     BITMAP                  "..\\res\\bmp\\floor\\wood1_256.bmp"
 
-IDB_BITMAP_BALL_032     BITMAP                  "..\\res_bmp\\ball_032.bmp"
+IDB_BALL_IRON1_032      BITMAP                  "..\\res\\bmp\\ball\\iron1_032.bmp"
 
-IDB_BITMAP_BALL_032_MASK BITMAP                  "..\\res_bmp\\ball_032_mask.bmp"
+IDB_BALL_IRON1_032M     BITMAP                  "..\\res\\bmp\\ball\\mask\\iron1_032.bmp"
 
-IDB_BITMAP_BALL_064     BITMAP                  "..\\res_bmp\\ball_064.bmp"
+IDB_BALL_IRON1_064      BITMAP                  "..\\res\\bmp\\ball\\iron1_064.bmp"
 
-IDB_BITMAP_BALL_064_MASK BITMAP                  "..\\res_bmp\\ball_064_mask.bmp"
+IDB_BALL_IRON1_064M     BITMAP                  "..\\res\\bmp\\ball\\mask\\iron1_064.bmp"
 
-IDB_BITMAP_BALL_128     BITMAP                  "..\\res_bmp\\ball_128.bmp"
+IDB_BALL_IRON1_128      BITMAP                  "..\\res\\bmp\\ball\\iron1_128.bmp"
 
-IDB_BITMAP_BALL_128_MASK BITMAP                  "..\\res_bmp\\ball_128_mask.bmp"
+IDB_BALL_IRON1_128M     BITMAP                  "..\\res\\bmp\\ball\\mask\\iron1_128.bmp"
 
-IDB_BITMAP_BALL_256     BITMAP                  "..\\res_bmp\\ball_256.bmp"
+IDB_BALL_IRON1_256      BITMAP                  "..\\res\\bmp\\ball\\iron1_256.bmp"
 
-IDB_BITMAP_BALL_256_MASK BITMAP                  "..\\res_bmp\\ball_256_mask.bmp"
+IDB_BALL_IRON1_256M     BITMAP                  "..\\res\\bmp\\ball\\mask\\iron1_256.bmp"
 
 
 /////////////////////////////////////////////////////////////////////////////

@@ -30,11 +30,11 @@ void BitmapManager::init(HINSTANCE m_hInstance, int m_BallSizeType)
 	{
 		//∫Ò∆Æ∏  ∑ŒµÂ
 		hInstance = m_hInstance;
-		floor = LoadBitmap(hInstance, MAKEINTRESOURCE(IDB_BITMAP_FLOOR));
+		floor = LoadBitmap(hInstance, MAKEINTRESOURCE(IDB_FLOOR_WOOD1_256));
 		for (int size = 0; size < BallSizeCount; size++)
 		{
-			ball[size] = LoadBitmap(hInstance, MAKEINTRESOURCE(IDB_BITMAP_BALL_032 + 2 * size));
-			ball_mask[size] = LoadBitmap(hInstance, MAKEINTRESOURCE(IDB_BITMAP_BALL_032_MASK + 2 * size));
+			ball[size] = LoadBitmap(hInstance, MAKEINTRESOURCE(IDB_BALL_IRON1_032 + 2 * size));
+			ball_mask[size] = LoadBitmap(hInstance, MAKEINTRESOURCE(IDB_BALL_IRON1_032M + 2 * size));
 		}
 	}
 	set_BallSizeType(m_BallSizeType);
