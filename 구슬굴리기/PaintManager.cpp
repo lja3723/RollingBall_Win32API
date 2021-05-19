@@ -40,6 +40,7 @@ void PaintManager::init(HINSTANCE hInstance, HWND hwnd, int BallSizeType)
 
 	init_flags();
 	init_bitmapManager();
+	idx = bitmapManager.get_indexer();
 
 	set_BallSizeType(BallSizeType);
 	hBitmap_res_set();

@@ -18,6 +18,7 @@ namespace RollingBall
 	{
 	private:
 		BitmapManager bitmapManager;
+		BitmapIndexer idx;
 
 		//Win32API에서 사용되는 변수들의 집합체
 		struct {

@@ -8,6 +8,13 @@ HINSTANCE BitmapManager::hInstance = NULL;
 HBITMAP BitmapManager::floor = NULL;
 HBITMAP BitmapManager::ball[BallSizeCount] = { NULL, };
 HBITMAP BitmapManager::ball_mask[BallSizeCount] = { NULL, };
+const UINT BitmapManager::BMPFILEMACRO[BITMAPMANAGER_BITMAP_FILE_COUNT]
+= {
+	IDB_BALL_IRON1_032, IDB_BALL_IRON1_064, IDB_BALL_IRON1_128, IDB_BALL_IRON1_256,
+	IDB_BALL_IRON1_032M, IDB_BALL_IRON1_064M, IDB_BALL_IRON1_128M, IDB_BALL_IRON1_256M,
+	IDB_FLOOR_WOOD1_256
+};
+
 
 
 BitmapManager::~BitmapManager()

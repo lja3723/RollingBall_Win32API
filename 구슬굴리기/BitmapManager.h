@@ -37,6 +37,7 @@
 #define FloorSize = 256
 
 #include <Windows.h>
+#include <tchar.h>
 #include "resource.h"
 
 /*
@@ -48,6 +49,16 @@
 
 namespace RollingBall
 {
+	class BitmapIndexer
+	{
+	private:
+		BitmapManager& bitmapManager;
+	public:
+		void ref_bitmapManager(BitmapManager& bm);
+		HBITMAP get(int object = 0, int texture = 0, int size = 32, BOOL mask = FALSE);
+		HBITMAP get(LPCTSTR object = _T("ball"), LPCTSTR texture = _T("iron1"), int size = 32, BOOL mask = FALSE);
+		HBITMAP get_current();
+	};
 
 	class BitmapManager
 	{
@@ -57,7 +68,8 @@ namespace RollingBall
 		static HBITMAP floor;
 		static HBITMAP ball[BallSizeCount];
 		static HBITMAP ball_mask[BallSizeCount];
-		//const static UINT BMPFILEMACRO[];
+		static const UINT BMPFILEMACRO[BITMAPMANAGER_BITMAP_FILE_COUNT];
+		BitmapIndexer index;
 
 		int BallSizeType;
 
@@ -71,6 +83,7 @@ namespace RollingBall
 		HBITMAP get_hBitmap_floor();
 		HBITMAP get_hBitmap_ball();
 		HBITMAP get_hBitmap_ball_mask();
+		BitmapIndexer get_indexer();
 	private:
 		int BallSize_toIdx(int BallSize);
 	};
