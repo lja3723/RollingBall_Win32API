@@ -11,6 +11,7 @@ using namespace RollingBall;
 *********************************/
 
 
+
 /********************************
 * 
 *		public functions
@@ -46,11 +47,6 @@ void PaintManager::init(HINSTANCE hInstance, HWND hwnd, int BallSizeType)
 
 	flag.isInit = TRUE;
 }
-void PaintManager::init_bitmapManager()
-{
-	bitmapManager.init(winAPI.hInstance);
-	flag.isInitBitmapManager = TRUE;
-}
 void PaintManager::beginPaint()
 {
 	hDCwindowMode_set_BeginPaint();
@@ -74,13 +70,13 @@ void PaintManager::paint_ball(int posX, int posY)
 }
 
 
+
 /********************************
 *
 *		private functions
 *		- initialization
 *
 *********************************/
-
 //처음 init 될 때 한 번만 호출되는 함수
 void PaintManager::init_flags()
 {
@@ -93,6 +89,12 @@ void PaintManager::init_flags()
 	flag.isInit = FALSE;
 	flag.isInitBitmapManager = FALSE;
 }
+void PaintManager::init_bitmapManager()
+{
+	bitmapManager.init(winAPI.hInstance);
+	flag.isInitBitmapManager = TRUE;
+}
+
 
 
 /********************************
@@ -101,6 +103,15 @@ void PaintManager::init_flags()
 *		- BOOL returns
 *
 *********************************/
+BOOL PaintManager::isInit()
+{
+	return flag.isInit;
+}
+BOOL PaintManager::isInitBitmapManager()
+{
+	return flag.isInitBitmapManager;
+}
+
 BOOL PaintManager::isHDCwindowMode_GetDC()
 {
 	return flag.isHDCwindowMode_GetDC;
@@ -109,6 +120,7 @@ BOOL PaintManager::isHDCwindowMode_BeginPaint()
 {
 	return !isHDCwindowMode_GetDC();
 }
+
 BOOL PaintManager::isSetHDCwindow()
 {
 	return winAPI.hDC.window != NULL;
@@ -129,17 +141,10 @@ BOOL PaintManager::isSetHBitmapRes()
 {
 	return flag.isSetHBitmapRes;
 }
+
 BOOL PaintManager::isDoubleBufferingStart()
 {
 	return flag.isDoubleBufferingStart;
-}
-BOOL PaintManager::isInit()
-{
-	return flag.isInit;
-}
-BOOL PaintManager::isInitBitmapManager()
-{
-	return flag.isInitBitmapManager;
 }
 BOOL PaintManager::isReadyToPaint()
 {
@@ -147,11 +152,12 @@ BOOL PaintManager::isReadyToPaint()
 }
 
 
+
 /********************************
 *
 *		private functions
-*		- set windowDCmode
-* 
+*		- hDCwindow Management
+*
 *********************************/
 void PaintManager::hDCwindowMode_set_BeginPaint()
 {
@@ -162,13 +168,10 @@ void PaintManager::hDCwindowMode_set_GetDC()
 	flag.isHDCwindowMode_GetDC = TRUE;
 }
 
-
-/********************************
-*
-*		private functions
-*		- Manage hDCwindow
-*
-*********************************/
+void PaintManager::hDCwindow_init()
+{
+	winAPI.hDC.window = NULL;
+}
 void PaintManager::hDCwindow_set()
 {
 	if (isSetHDCwindow())
@@ -190,10 +193,137 @@ void PaintManager::hDCwindow_release()
 
 	hDCwindow_init();
 }
-void PaintManager::hDCwindow_init()
+
+
+
+
+/********************************
+*
+*		private functions
+*		- hDC.mem management
+*
+*********************************/
+void PaintManager::memDC_windowBuffer_init()
 {
-	winAPI.hDC.window = NULL;
+	winAPI.hDC.mem.windowBuffer = NULL;
 }
+void PaintManager::memDC_windowBuffer_set()
+{	
+	if (isSetMemDCwindowBuffer())
+		memDC_windowBuffer_release();
+	
+	//화면 DC와 호환이 되는 memDC를 생성
+	winAPI.hDC.mem.windowBuffer = CreateCompatibleDC(winAPI.hDC.window);
+}
+void PaintManager::memDC_windowBuffer_release()
+{
+	if (!isSetMemDCwindowBuffer()) return;
+
+	DeleteDC(winAPI.hDC.mem.windowBuffer);
+	memDC_windowBuffer_init();
+}
+
+void PaintManager::memDC_res_init()
+{
+	winAPI.hDC.mem.res.background = NULL;
+	winAPI.hDC.mem.res.ball = NULL;
+	winAPI.hDC.mem.res.ball_mask = NULL;
+}
+void PaintManager::memDC_res_set()
+{
+	if (isSetMemDCres())
+		memDC_res_release();
+
+	//화면 DC화 호환되는 memDC와 호환되는 memory DC 생성
+	winAPI.hDC.mem.res.background = CreateCompatibleDC(winAPI.hDC.mem.windowBuffer);
+	winAPI.hDC.mem.res.ball = CreateCompatibleDC(winAPI.hDC.mem.windowBuffer);
+	winAPI.hDC.mem.res.ball_mask = CreateCompatibleDC(winAPI.hDC.mem.windowBuffer);
+
+	flag.isSetMemDCres = TRUE;
+}
+void PaintManager::memDC_res_release()
+{
+	if (!isSetMemDCres()) return;
+
+	DeleteDC(winAPI.hDC.mem.res.background);
+	DeleteDC(winAPI.hDC.mem.res.ball);
+	DeleteDC(winAPI.hDC.mem.res.ball_mask);
+	memDC_res_init();
+
+	flag.isSetMemDCres = FALSE;
+}
+
+
+
+/********************************
+*
+*		private functions
+*		- hBitmap management
+*
+*********************************/
+void PaintManager::hBitmap_windowBuffer_init()
+{
+	winAPI.hBitmap.windowBuffer = NULL;
+}
+void PaintManager::hBitmap_windowBuffer_set()
+{
+	if (isSetHBitmapWindowBuffer())
+		hBitmap_windowBuffer_release();
+
+	//화면 DC와 호환되는 hBitmap을 로드한다
+	GetClientRect(winAPI.hwnd, &winAPI.windowRect);
+	winAPI.hBitmap.windowBuffer
+		= CreateCompatibleBitmap(winAPI.hDC.window, winAPI.windowRect.right, winAPI.windowRect.bottom);
+}
+void PaintManager::hBitmap_windowBuffer_release()
+{
+	if (!isSetHBitmapWindowBuffer()) return;
+	//hBitmap을 삭제함
+	DeleteObject(winAPI.hBitmap.windowBuffer);
+	hBitmap_windowBuffer_init();
+}
+void PaintManager::hBitmap_res_init()
+{
+	winAPI.hBitmap.res.background = NULL;
+	winAPI.hBitmap.res.ball = NULL;
+	winAPI.hBitmap.res.ball_mask = NULL;
+
+	flag.isSetHBitmapRes = FALSE;
+}
+void PaintManager::hBitmap_res_set()
+{
+	winAPI.hBitmap.res.background = bitmapManager.get_hBitmap_floor();
+	winAPI.hBitmap.res.ball = bitmapManager.get_hBitmap_ball();
+	winAPI.hBitmap.res.ball_mask = bitmapManager.get_hBitmap_ball_mask();
+
+	flag.isSetHBitmapRes = TRUE;
+}
+
+void PaintManager::hBitmap_old_windowBuffer_init()
+{
+	
+}
+void PaintManager::hBitmap_old_windowBuffer_set()
+{
+
+}
+void PaintManager::hBitmap_old_windowBuffer_release()
+{
+
+}
+void PaintManager::hBitmap_old_res_init()
+{
+
+}
+void PaintManager::hBitmap_old_res_set()
+{
+
+}
+void PaintManager::hBitmap_old_res_release()
+{
+
+}
+
 
 
 /********************************
@@ -239,7 +369,7 @@ void PaintManager::doubleBuffering_stop()
 	//memDC들을 release함
 	memDC_windowBuffer_release();
 	memDC_res_release();
-	
+
 
 	hBitmap_windowBuffer_release();
 	hBitmap_windowBuffer_init();
@@ -248,135 +378,11 @@ void PaintManager::doubleBuffering_stop()
 }
 
 
-/********************************
-*
-*		private functions
-*		- manage hDC.mem
-*
-*********************************/
-void PaintManager::memDC_windowBuffer_set()
-{	
-	if (isSetMemDCwindowBuffer())
-		memDC_windowBuffer_release();
-	
-	//화면 DC와 호환이 되는 memDC를 생성
-	winAPI.hDC.mem.windowBuffer = CreateCompatibleDC(winAPI.hDC.window);
-}
-void PaintManager::memDC_windowBuffer_release()
-{
-	if (!isSetMemDCwindowBuffer()) return;
-
-	DeleteDC(winAPI.hDC.mem.windowBuffer);
-	memDC_windowBuffer_init();
-}
-void PaintManager::memDC_windowBuffer_init()
-{
-	winAPI.hDC.mem.windowBuffer = NULL;	
-}
-void PaintManager::memDC_res_set()
-{
-	if (isSetMemDCres())
-		memDC_res_release();
-
-	//화면 DC화 호환되는 memDC와 호환되는 memory DC 생성
-	winAPI.hDC.mem.res.background = CreateCompatibleDC(winAPI.hDC.mem.windowBuffer);
-	winAPI.hDC.mem.res.ball = CreateCompatibleDC(winAPI.hDC.mem.windowBuffer);
-	winAPI.hDC.mem.res.ball_mask = CreateCompatibleDC(winAPI.hDC.mem.windowBuffer);
-
-	flag.isSetMemDCres = TRUE;
-}
-void PaintManager::memDC_res_release()
-{
-	if (!isSetMemDCres()) return;
-
-	DeleteDC(winAPI.hDC.mem.res.background);
-	DeleteDC(winAPI.hDC.mem.res.ball);
-	DeleteDC(winAPI.hDC.mem.res.ball_mask);
-	memDC_res_init();
-
-	flag.isSetMemDCres = FALSE;
-}
-void PaintManager::memDC_res_init()
-{
-	winAPI.hDC.mem.res.background = NULL;
-	winAPI.hDC.mem.res.ball = NULL;
-	winAPI.hDC.mem.res.ball_mask = NULL;
-}
-
 
 /********************************
 *
 *		private functions
-*		- manage hBitmap var
-*
-*********************************/
-void PaintManager::hBitmap_windowBuffer_init()
-{
-	winAPI.hBitmap.windowBuffer = NULL;
-}
-void PaintManager::hBitmap_windowBuffer_set()
-{
-	if (isSetHBitmapWindowBuffer())
-		hBitmap_windowBuffer_release();
-
-	//화면 DC와 호환되는 hBitmap을 로드한다
-	GetClientRect(winAPI.hwnd, &winAPI.windowRect);
-	winAPI.hBitmap.windowBuffer
-		= CreateCompatibleBitmap(winAPI.hDC.window, winAPI.windowRect.right, winAPI.windowRect.bottom);
-}
-void PaintManager::hBitmap_windowBuffer_release()
-{
-	if (!isSetHBitmapWindowBuffer()) return;
-	//hBitmap을 삭제함
-	DeleteObject(winAPI.hBitmap.windowBuffer);
-	hBitmap_windowBuffer_init();
-}
-void PaintManager::hBitmap_res_init()
-{
-	winAPI.hBitmap.res.background = NULL;
-	winAPI.hBitmap.res.ball = NULL;
-	winAPI.hBitmap.res.ball_mask = NULL;
-
-	flag.isSetHBitmapRes = FALSE;
-}
-void PaintManager::hBitmap_res_set()
-{
-	winAPI.hBitmap.res.background = bitmapManager.get_hBitmap_floor();
-	winAPI.hBitmap.res.ball = bitmapManager.get_hBitmap_ball();
-	winAPI.hBitmap.res.ball_mask = bitmapManager.get_hBitmap_ball_mask();
-
-	flag.isSetHBitmapRes = TRUE;
-}
-void PaintManager::hBitmap_old_windowBuffer_init()
-{
-	
-}
-void PaintManager::hBitmap_old_windowBuffer_set()
-{
-
-}
-void PaintManager::hBitmap_old_windowBuffer_release()
-{
-
-}
-void PaintManager::hBitmap_old_res_init()
-{
-
-}
-void PaintManager::hBitmap_old_res_set()
-{
-
-}
-void PaintManager::hBitmap_old_res_release()
-{
-
-}
-
-
-/********************************
-*
-*		private functions
-*		- set member variable
+*		- variable management
 *
 *********************************/
 void PaintManager::set_BallSizeType(int m_BallSizeType)
@@ -385,10 +391,11 @@ void PaintManager::set_BallSizeType(int m_BallSizeType)
 }
 
 
+
 /********************************
 *
 *		private functions
-*		- paint to buffer
+*		- paint management
 *
 *********************************/
 void PaintManager::paint_background_tobuffer()
@@ -403,6 +410,10 @@ void PaintManager::paint_background_tobuffer()
 				SRCCOPY
 			);
 }
+void PaintManager::paint_background_ruller_tobuffer()
+{
+
+}
 void PaintManager::paint_ball_tobuffer(int x, int y)
 {
 	if (!isReadyToPaint()) return;
@@ -411,29 +422,18 @@ void PaintManager::paint_ball_tobuffer(int x, int y)
 	BitBlt(
 		winAPI.hDC.mem.windowBuffer,
 		x - ballType / 2, y - ballType / 2, ballType, ballType,
-		winAPI.hDC.mem.res.ball_mask, 0, 0, 
+		winAPI.hDC.mem.res.ball_mask, 0, 0,
 		SRCAND
 	);
 
 	BitBlt(
 		winAPI.hDC.mem.windowBuffer,
 		x - ballType / 2, y - ballType / 2, ballType, ballType,
-		winAPI.hDC.mem.res.ball, 0, 0, 
+		winAPI.hDC.mem.res.ball, 0, 0,
 		SRCPAINT
 	);
 }
-void PaintManager::paint_background_ruller_tobuffer()
-{
 
-}
-
-
-/********************************
-*
-*		private functions
-*		- flush buffer to window
-*
-*********************************/
 void PaintManager::flush_buffer()
 {
 	if (!isReadyToPaint()) return;
@@ -445,3 +445,5 @@ void PaintManager::flush_buffer()
 		SRCCOPY
 	);
 }
+
+

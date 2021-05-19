@@ -17,6 +17,9 @@ namespace RollingBall
 	class PaintManager
 	{
 	private:
+		BitmapManager bitmapManager;
+
+		//Win32API에서 사용되는 변수들의 집합체
 		struct {
 			HINSTANCE hInstance;
 			HWND hwnd;
@@ -25,7 +28,6 @@ namespace RollingBall
 
 			struct {
 				HDC window;
-				//HDC current;
 				struct {
 					HDC windowBuffer;
 					struct {
@@ -54,6 +56,7 @@ namespace RollingBall
 			} hBitmap;
 		} winAPI;
 		
+		//여러가지 플래그를 저장하는 변수
 		struct {
 			BOOL isHDCwindowMode_GetDC;
 
@@ -64,79 +67,114 @@ namespace RollingBall
 			BOOL isInit;
 			BOOL isInitBitmapManager;
 		} flag;
-
-		BitmapManager bitmapManager;
 	
 	public:
 		~PaintManager();
 
-		//PrintManager 클래스 변수를 사용하기 전 반드시 수행해야 함
+		//PrintManager 클래스 변수를 사용하기 전 반드시 수행해야 한다
 		void init(HINSTANCE hInstance, HWND hwnd, int BallSizeType = BallSize_medium);
-		void init_bitmapManager();
 
 		//페인트를 시작한다
 		void beginPaint();
+
 		//페인트를 마친다
 		void endPaint();
 
-		//오브젝트를 페인트한다
+		//배경을 페인트한다
 		void paint_background();
+
+		//공을 페인트한다
 		void paint_ball(int posX, int posY);
 	
 	
 	private:
+		/********************************
+		*
+		*	init management
+		*
+		*********************************/
+		//클래스의 각종 플래그변수를 초기화
+		//PaintManager::init()에서만 호출되어야 함
 		void init_flags();
 
-		//BOOL 멤버 변수 값을 리턴한다
+		//BitmapManager 변수를 초기화
+		//PaintManager::init()에서만 호출되어야 함
+		void init_bitmapManager();
+
+
+
+		/********************************
+		*
+		*	bool returns
+		*
+		*********************************/
+		//각종 초기화 여부를 알려줌
+		BOOL isInit();
+		BOOL isInitBitmapManager();
+
+		//hDC.window를 얻는 모드가 무엇인지 알려줌
 		BOOL isHDCwindowMode_GetDC();
 		BOOL isHDCwindowMode_BeginPaint();
 
+		//변수가 세팅되었는지 알려줌
 		BOOL isSetHDCwindow();
 		BOOL isSetMemDCwindowBuffer();
 		BOOL isSetMemDCres();
 		BOOL isSetHBitmapWindowBuffer();
 		BOOL isSetHBitmapRes();
 
+		//기타 정보를 알려줌
 		BOOL isDoubleBufferingStart();
-		BOOL isInit();
-		BOOL isInitBitmapManager();
 		BOOL isReadyToPaint();
 
 
-		//hDC.window를 BeginPaint로 얻고 반납하도록 설정한다
+
+		/********************************
+		*
+		*	hDC.window management
+		*
+		*********************************/
+		//hDC.window를 어떤 방식으로 얻을지 설정함
+		//BeginPaint 또는 GetDC으로 얻을 수 있음
 		void hDCwindowMode_set_BeginPaint();
-		//hDC.window를 GetDC로 얻고 반납하도록 설정한다
 		void hDCwindowMode_set_GetDC();
-
-
-		//hDC.window를 설정한 모드에 따라 얻는다
-		void hDCwindow_set();
-		//hDC.window를 설정한 모드에 따라 반납한다
-		void hDCwindow_release();
-		//hDC.window를 초기화한다
+	
+		//hDC.window를 관리함
 		void hDCwindow_init();
+		void hDCwindow_set();
+		void hDCwindow_release();
 		
 
-		//더블버퍼링을 시작한다.
-		void doubleBuffering_start();
-		//더블버퍼링을 종료한다.
-		void doubleBuffering_stop();
-		
-		//hDC.mem 요소를 관리하는 함수이다
+
+		/********************************
+		*
+		*	hDC.mem management
+		*
+		*********************************/
+		//hDC.mem 요소를 관리함
+		void memDC_windowBuffer_init();
 		void memDC_windowBuffer_set();
 		void memDC_windowBuffer_release();
-		void memDC_windowBuffer_init();
+
+		void memDC_res_init();
 		void memDC_res_set();
 		void memDC_res_release();
-		void memDC_res_init();
 
 
-		//hBitmap 변수를 관리한다.
+
+		/********************************
+		*
+		*	hBitmap management
+		*
+		*********************************/
+		//hBitmap 변수를 관리함
 		void hBitmap_windowBuffer_init();
 		void hBitmap_windowBuffer_set();
 		void hBitmap_windowBuffer_release();
 		void hBitmap_res_init();
 		void hBitmap_res_set();
+
+		//hBitmap.old 변수를 관리함
 		void hBitmap_old_windowBuffer_init();
 		void hBitmap_old_windowBuffer_set();
 		void hBitmap_old_windowBuffer_release();
@@ -144,16 +182,40 @@ namespace RollingBall
 		void hBitmap_old_res_set();
 		void hBitmap_old_res_release();
 
+
+
+		/********************************
+		*
+		*	double buffering management
+		*
+		*********************************/
+		//더블버퍼링을 시작하고 종료함
+		void doubleBuffering_start();
+		void doubleBuffering_stop();
+
+
+
+		/********************************
+		*
+		*	variable management
+		*
+		*********************************/
+		//BallSizeType을 설정함
 		void set_BallSizeType(int m_BallSizeType);
 
 
-		//오브젝트를 버퍼에 그린다.
-		void paint_background_ruller_tobuffer();
+
+		/********************************
+		*
+		*	paint management
+		*
+		*********************************/
+		//오브젝트를 버퍼에 그림
 		void paint_background_tobuffer();
+		void paint_background_ruller_tobuffer();
 		void paint_ball_tobuffer(int x, int y);
 
-
-		//버퍼에 그려진 그림을 윈도우로 출력한다.
+		//버퍼에 그려진 그림을 윈도우로 출력
 		void flush_buffer();
 	};
 }
