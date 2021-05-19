@@ -3,6 +3,26 @@
 using namespace RollingBall;
 
 
+
+int RollingBall::BitmapIndexer::get(int object, int texture, int size, BOOL mask)
+{
+	int idx = 0;
+	return 0;
+}
+
+int RollingBall::BitmapIndexer::get(LPCTSTR object, LPCTSTR texture, int size, BOOL mask)
+{
+	return 0;
+}
+
+HBITMAP RollingBall::BitmapIndexer::get_current()
+{
+	return HBITMAP();
+}
+
+
+
+
 int BitmapManager::isLoadedBitmap = FALSE;
 HINSTANCE BitmapManager::hInstance = NULL;
 HBITMAP BitmapManager::floor = NULL;

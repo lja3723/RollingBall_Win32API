@@ -52,8 +52,8 @@ namespace RollingBall
 	class BitmapIndexer
 	{
 	public:
-		HBITMAP get(int object = 0, int texture = 0, int size = 32, BOOL mask = FALSE);
-		HBITMAP get(LPCTSTR object = _T("ball"), LPCTSTR texture = _T("iron1"), int size = 32, BOOL mask = FALSE);
+		int get(int object = 0, int texture = 0, int size = 32, BOOL mask = FALSE);
+		int get(LPCTSTR object = _T("ball"), LPCTSTR texture = _T("iron1"), int size = 32, BOOL mask = FALSE);
 		HBITMAP get_current();
 	};
 
@@ -66,6 +66,7 @@ namespace RollingBall
 		static HBITMAP floor;
 		static HBITMAP ball[BallSizeCount];
 		static HBITMAP ball_mask[BallSizeCount];
+		static HBITMAP bitmap[BITMAPMANAGER_BITMAP_FILE_COUNT];
 		static const UINT BMPFILEMACRO[BITMAPMANAGER_BITMAP_FILE_COUNT];
 		BitmapIndexer index;
 
@@ -82,6 +83,12 @@ namespace RollingBall
 		HBITMAP get_hBitmap_ball();
 		HBITMAP get_hBitmap_ball_mask();
 		BitmapIndexer get_indexer();
+
+		HBITMAP operator[](int idx)
+		{
+			return bitmap[BMPFILEMACRO[idx]];
+		}
+
 	private:
 		int BallSize_toIdx(int BallSize);
 	};
