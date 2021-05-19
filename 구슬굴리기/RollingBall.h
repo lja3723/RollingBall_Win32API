@@ -12,17 +12,17 @@ namespace RollingBall
 	class RollingBallClass
 	{
 	private:
-		PaintManager paintManager;
-		Physics physics;
-		Controller controller;
-
 		struct {
 			HINSTANCE hInstance;
 			HWND hwnd;
 		} winAPI;
 
+		PaintManager paintManager;
+		Physics physics;
+		Controller controller;
+
 	public:
-		void initialize(HINSTANCE m_hInstance, HWND m_hwnd);
+		void init(HINSTANCE m_hInstance, HWND m_hwnd);
 		void update_window();
 		void update_state();
 		void send_windowEvent(UINT m_iMsg, WPARAM m_wParam, LPARAM m_lParam);
