@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #ifndef __Controller_h__
 #define __Controller_h__
 #include <Windows.h>

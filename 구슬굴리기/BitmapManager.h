@@ -1,17 +1,17 @@
-#pragma once
+ï»¿#pragma once
 #ifndef __BitmapManager_h__
 #define __BitmapManager_h__
 
-//±¸½½ Å©±âÀÇ Á¾·ù
+//êµ¬ìŠ¬ í¬ê¸°ì˜ ì¢…ë¥˜
 #define BallSizeCount 4
 
-//±¸½½ Å©±â Á¾·ùÀÇ °¢ Å©±â
+//êµ¬ìŠ¬ í¬ê¸° ì¢…ë¥˜ì˜ ê° í¬ê¸°
 #define BallSize_small 32
 #define BallSize_medium 64
 #define BallSize_large 128
 #define BallSize_extra 256
 
-//¹Ù´Ú ÅØ½ºÃÄ Å©±â
+//ë°”ë‹¥ í…ìŠ¤ì³ í¬ê¸°
 #define FloorSize = 256
 
 #include <Windows.h>
@@ -20,7 +20,7 @@
 /*
 * 
 * BitmapManager:
-* ÇÁ·Î±×·¥¿¡¼­ »ç¿ëÇÏ´Â ºñÆ®¸ÊÀ» °ü¸®ÇÏ´Â Å¬·¡½º¸¦ Á¤ÀÇ
+* í”„ë¡œê·¸ë¨ì—ì„œ ì‚¬ìš©í•˜ëŠ” ë¹„íŠ¸ë§µì„ ê´€ë¦¬í•˜ëŠ” í´ë˜ìŠ¤ë¥¼ ì •ì˜
 * 
 */
 

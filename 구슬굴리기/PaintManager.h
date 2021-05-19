@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #ifndef __PaintManager_h__
 #define __PaintManager_h__
 
@@ -8,7 +8,7 @@
 /*
 *
 * PaintManager:
-* ÇÁ·Î±×·¥ÀÇ ½Ã°¢Àû Ç¥ÇöÀ» Àü´ãÇÏ´Â Å¬·¡½º¸¦ Á¤ÀÇ
+* í”„ë¡œê·¸ë¨ì˜ ì‹œê°ì  í‘œí˜„ì„ ì „ë‹´í•˜ëŠ” í´ë˜ìŠ¤ë¥¼ ì •ì˜
 *
 */
 
@@ -19,7 +19,7 @@ namespace RollingBall
 	private:
 		BitmapManager bitmapManager;
 
-		//Win32API¿¡¼­ »ç¿ëµÇ´Â º¯¼öµéÀÇ ÁıÇÕÃ¼
+		//Win32APIì—ì„œ ì‚¬ìš©ë˜ëŠ” ë³€ìˆ˜ë“¤ì˜ ì§‘í•©ì²´
 		struct {
 			HINSTANCE hInstance;
 			HWND hwnd;
@@ -56,7 +56,7 @@ namespace RollingBall
 			} hBitmap;
 		} winAPI;
 		
-		//¿©·¯°¡Áö ÇÃ·¡±×¸¦ ÀúÀåÇÏ´Â º¯¼ö
+		//ì—¬ëŸ¬ê°€ì§€ í”Œë˜ê·¸ë¥¼ ì €ì¥í•˜ëŠ” ë³€ìˆ˜
 		struct {
 			BOOL isHDCwindowMode_GetDC;
 
@@ -73,19 +73,19 @@ namespace RollingBall
 	public:
 		~PaintManager();
 
-		//PrintManager Å¬·¡½º º¯¼ö¸¦ »ç¿ëÇÏ±â Àü ¹İµå½Ã ¼öÇàÇØ¾ß ÇÑ´Ù
+		//PrintManager í´ë˜ìŠ¤ ë³€ìˆ˜ë¥¼ ì‚¬ìš©í•˜ê¸° ì „ ë°˜ë“œì‹œ ìˆ˜í–‰í•´ì•¼ í•œë‹¤
 		void init(HINSTANCE hInstance, HWND hwnd, int BallSizeType = BallSize_medium);
 
-		//ÆäÀÎÆ®¸¦ ½ÃÀÛÇÑ´Ù
+		//í˜ì¸íŠ¸ë¥¼ ì‹œì‘í•œë‹¤
 		void beginPaint();
 
-		//ÆäÀÎÆ®¸¦ ¸¶Ä£´Ù
+		//í˜ì¸íŠ¸ë¥¼ ë§ˆì¹œë‹¤
 		void endPaint();
 
-		//¹è°æÀ» ÆäÀÎÆ®ÇÑ´Ù
+		//ë°°ê²½ì„ í˜ì¸íŠ¸í•œë‹¤
 		void paint_background();
 
-		//°øÀ» ÆäÀÎÆ®ÇÑ´Ù
+		//ê³µì„ í˜ì¸íŠ¸í•œë‹¤
 		void paint_ball(int posX, int posY);
 	
 	
@@ -95,12 +95,12 @@ namespace RollingBall
 		*	init management
 		*
 		*********************************/
-		//Å¬·¡½ºÀÇ °¢Á¾ ÇÃ·¡±×º¯¼ö¸¦ ÃÊ±âÈ­
-		//PaintManager::init()¿¡¼­¸¸ È£ÃâµÇ¾î¾ß ÇÔ
+		//í´ë˜ìŠ¤ì˜ ê°ì¢… í”Œë˜ê·¸ë³€ìˆ˜ë¥¼ ì´ˆê¸°í™”
+		//PaintManager::init()ì—ì„œë§Œ í˜¸ì¶œë˜ì–´ì•¼ í•¨
 		void init_flags();
 
-		//BitmapManager º¯¼ö¸¦ ÃÊ±âÈ­
-		//PaintManager::init()¿¡¼­¸¸ È£ÃâµÇ¾î¾ß ÇÔ
+		//BitmapManager ë³€ìˆ˜ë¥¼ ì´ˆê¸°í™”
+		//PaintManager::init()ì—ì„œë§Œ í˜¸ì¶œë˜ì–´ì•¼ í•¨
 		void init_bitmapManager();
 
 
@@ -110,15 +110,15 @@ namespace RollingBall
 		*	bool returns
 		*
 		*********************************/
-		//°¢Á¾ ÃÊ±âÈ­ ¿©ºÎ¸¦ ¾Ë·ÁÁÜ
+		//ê°ì¢… ì´ˆê¸°í™” ì—¬ë¶€ë¥¼ ì•Œë ¤ì¤Œ
 		BOOL isInit();
 		BOOL isInitBitmapManager();
 
-		//hDC.window¸¦ ¾ò´Â ¸ğµå°¡ ¹«¾ùÀÎÁö ¾Ë·ÁÁÜ
+		//hDC.windowë¥¼ ì–»ëŠ” ëª¨ë“œê°€ ë¬´ì—‡ì¸ì§€ ì•Œë ¤ì¤Œ
 		BOOL isHDCwindowMode_GetDC();
 		BOOL isHDCwindowMode_BeginPaint();
 
-		//º¯¼ö°¡ ¼¼ÆÃµÇ¾ú´ÂÁö ¾Ë·ÁÁÜ
+		//ë³€ìˆ˜ê°€ ì„¸íŒ…ë˜ì—ˆëŠ”ì§€ ì•Œë ¤ì¤Œ
 		BOOL isSetHDCwindow();
 		BOOL isSetMemDCwindowBuffer();
 		BOOL isSetMemDCres();
@@ -127,7 +127,7 @@ namespace RollingBall
 		BOOL isBackedUpHBitmapWindowBuffer();
 		BOOL isBackedUpHBitmapRes();
 
-		//±âÅ¸ Á¤º¸¸¦ ¾Ë·ÁÁÜ
+		//ê¸°íƒ€ ì •ë³´ë¥¼ ì•Œë ¤ì¤Œ
 		BOOL isDoubleBufferingStart();
 		BOOL isReadyToPaint();
 		BOOL isInitDoubleBuffering();
@@ -139,12 +139,12 @@ namespace RollingBall
 		*	hDC.window management
 		*
 		*********************************/
-		//hDC.window¸¦ ¾î¶² ¹æ½ÄÀ¸·Î ¾òÀ»Áö ¼³Á¤ÇÔ
-		//BeginPaint ¶Ç´Â GetDCÀ¸·Î ¾òÀ» ¼ö ÀÖÀ½
+		//hDC.windowë¥¼ ì–´ë–¤ ë°©ì‹ìœ¼ë¡œ ì–»ì„ì§€ ì„¤ì •í•¨
+		//BeginPaint ë˜ëŠ” GetDCìœ¼ë¡œ ì–»ì„ ìˆ˜ ìˆìŒ
 		void hDCwindowMode_set_BeginPaint();
 		void hDCwindowMode_set_GetDC();
 	
-		//hDC.window¸¦ °ü¸®ÇÔ
+		//hDC.windowë¥¼ ê´€ë¦¬í•¨
 		void hDCwindow_init();
 		void hDCwindow_set();
 		void hDCwindow_release();
@@ -156,7 +156,7 @@ namespace RollingBall
 		*	hDC.mem management
 		*
 		*********************************/
-		//hDC.mem ¿ä¼Ò¸¦ °ü¸®ÇÔ
+		//hDC.mem ìš”ì†Œë¥¼ ê´€ë¦¬í•¨
 		void memDC_windowBuffer_init();
 		void memDC_windowBuffer_set();
 		void memDC_windowBuffer_release();
@@ -175,14 +175,14 @@ namespace RollingBall
 		*	hBitmap management
 		*
 		*********************************/
-		//hBitmap º¯¼ö¸¦ °ü¸®ÇÔ
+		//hBitmap ë³€ìˆ˜ë¥¼ ê´€ë¦¬í•¨
 		void hBitmap_windowBuffer_init();
 		void hBitmap_windowBuffer_set();
 		void hBitmap_windowBuffer_release();
 		void hBitmap_res_init();
 		void hBitmap_res_set();
 
-		//hBitmap.old º¯¼ö¸¦ °ü¸®ÇÔ
+		//hBitmap.old ë³€ìˆ˜ë¥¼ ê´€ë¦¬í•¨
 		void hBitmap_old_windowBuffer_init();
 		void hBitmap_old_windowBuffer_backup();
 		void hBitmap_old_windowBuffer_rollback();
@@ -197,12 +197,12 @@ namespace RollingBall
 		*	double buffering management
 		*
 		*********************************/
-		//´õºí¹öÆÛ¸µÀ» Ã³À½À¸·Î ½ÃÀÛÇÏ±â À§ÇÑ ÁØºñ¸¦ ÇÔ
+		//ë”ë¸”ë²„í¼ë§ì„ ì²˜ìŒìœ¼ë¡œ ì‹œì‘í•˜ê¸° ìœ„í•œ ì¤€ë¹„ë¥¼ í•¨
 		void doubleBuffering_init();
-		//´õºí¹öÆÛ¸µÀ» ½ÃÀÛÇÏ°í Á¾·áÇÔ
+		//ë”ë¸”ë²„í¼ë§ì„ ì‹œì‘í•˜ê³  ì¢…ë£Œí•¨
 		void doubleBuffering_start();
 		void doubleBuffering_stop();
-		//ÇÁ·Î±×·¥À» Á¾·áÇÒ ¶§ ÁøÇàÇÔ
+		//í”„ë¡œê·¸ë¨ì„ ì¢…ë£Œí•  ë•Œ ì§„í–‰í•¨
 		void doubleBuffering_halt();
 
 
@@ -212,7 +212,7 @@ namespace RollingBall
 		*	variable management
 		*
 		*********************************/
-		//BallSizeTypeÀ» ¼³Á¤ÇÔ
+		//BallSizeTypeì„ ì„¤ì •í•¨
 		void set_BallSizeType(int m_BallSizeType);
 
 
@@ -222,12 +222,12 @@ namespace RollingBall
 		*	paint management
 		*
 		*********************************/
-		//¿ÀºêÁ§Æ®¸¦ ¹öÆÛ¿¡ ±×¸²
+		//ì˜¤ë¸Œì íŠ¸ë¥¼ ë²„í¼ì— ê·¸ë¦¼
 		void paint_background_tobuffer();
 		void paint_background_ruller_tobuffer();
 		void paint_ball_tobuffer(int x, int y);
 
-		//¹öÆÛ¿¡ ±×·ÁÁø ±×¸²À» À©µµ¿ì·Î Ãâ·Â
+		//ë²„í¼ì— ê·¸ë ¤ì§„ ê·¸ë¦¼ì„ ìœˆë„ìš°ë¡œ ì¶œë ¥
 		void flush_buffer();
 	};
 }

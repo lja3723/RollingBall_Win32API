@@ -1,4 +1,4 @@
-#include "PaintManager.h"
+ï»¿#include "PaintManager.h"
 using namespace RollingBall;
 
 
@@ -76,7 +76,7 @@ void PaintManager::paint_ball(int posX, int posY)
 *		- initialization
 *
 *********************************/
-//Ã³À½ init µÉ ¶§ ÇÑ ¹ø¸¸ È£ÃâµÇ´Â ÇÔ¼ö
+//ì²˜ìŒ init ë  ë•Œ í•œ ë²ˆë§Œ í˜¸ì¶œë˜ëŠ” í•¨ìˆ˜
 void PaintManager::init_flags()
 {
 	hDCwindowMode_set_BeginPaint();
@@ -226,7 +226,7 @@ void PaintManager::memDC_windowBuffer_set()
 	if (isSetMemDCwindowBuffer())
 		memDC_windowBuffer_release();
 	
-	//È­¸é DC¿Í È£È¯ÀÌ µÇ´Â memDC¸¦ »ı¼º
+	//í™”ë©´ DCì™€ í˜¸í™˜ì´ ë˜ëŠ” memDCë¥¼ ìƒì„±
 	winAPI.hDC.mem.windowBuffer = CreateCompatibleDC(winAPI.hDC.window);
 }
 void PaintManager::memDC_windowBuffer_release()
@@ -248,7 +248,7 @@ void PaintManager::memDC_res_set()
 	if (isSetMemDCres())
 		memDC_res_release();
 
-	//È­¸é DCÈ­ È£È¯µÇ´Â memDC¿Í È£È¯µÇ´Â memory DC »ı¼º
+	//í™”ë©´ DCí™” í˜¸í™˜ë˜ëŠ” memDCì™€ í˜¸í™˜ë˜ëŠ” memory DC ìƒì„±
 	winAPI.hDC.mem.res.background = CreateCompatibleDC(winAPI.hDC.mem.windowBuffer);
 	winAPI.hDC.mem.res.ball = CreateCompatibleDC(winAPI.hDC.mem.windowBuffer);
 	winAPI.hDC.mem.res.ball_mask = CreateCompatibleDC(winAPI.hDC.mem.windowBuffer);
@@ -295,7 +295,7 @@ void PaintManager::hBitmap_windowBuffer_set()
 	if (isSetHBitmapWindowBuffer())
 		hBitmap_windowBuffer_release();
 
-	//È­¸é DC¿Í È£È¯µÇ´Â hBitmapÀ» ·ÎµåÇÑ´Ù
+	//í™”ë©´ DCì™€ í˜¸í™˜ë˜ëŠ” hBitmapì„ ë¡œë“œí•œë‹¤
 	GetClientRect(winAPI.hwnd, &winAPI.windowRect);
 	winAPI.hBitmap.windowBuffer
 		= CreateCompatibleBitmap(winAPI.hDC.window, winAPI.windowRect.right, winAPI.windowRect.bottom);
@@ -303,7 +303,7 @@ void PaintManager::hBitmap_windowBuffer_set()
 void PaintManager::hBitmap_windowBuffer_release()
 {
 	if (!isSetHBitmapWindowBuffer()) return;
-	//hBitmapÀ» »èÁ¦ÇÔ
+	//hBitmapì„ ì‚­ì œí•¨
 	DeleteObject(winAPI.hBitmap.windowBuffer);
 	hBitmap_windowBuffer_init();
 }
@@ -386,13 +386,13 @@ void PaintManager::hBitmap_old_res_rollback()
 *********************************/
 void PaintManager::doubleBuffering_init()
 {	
-	//doublebufferingÀÌ Ã³À½ ½ÃÀÛµÇ¾úÀ»¶§¸¸ ¾Æ·¡ ÀÛ¾÷ ¼öÇà
-	//hDC.memory.windowBuffer¿Í hDC.mem.res¸¦ »ı¼ºÇÏ´Â °Í°ú
-	//hDC.mem.res¿¡ hBitmap.res¸¦ ¼±ÅÃÇÏ´Â °ÍÀº ÇÑ¹ø¸¸ ¼öÇàÇØµµ µÊ
+	//doublebufferingì´ ì²˜ìŒ ì‹œì‘ë˜ì—ˆì„ë•Œë§Œ ì•„ë˜ ì‘ì—… ìˆ˜í–‰
+	//hDC.memory.windowBufferì™€ hDC.mem.resë¥¼ ìƒì„±í•˜ëŠ” ê²ƒê³¼
+	//hDC.mem.resì— hBitmap.resë¥¼ ì„ íƒí•˜ëŠ” ê²ƒì€ í•œë²ˆë§Œ ìˆ˜í–‰í•´ë„ ë¨
 	if (isInitDoubleBuffering()) return;
 
-	//hDC.mem.window¿Í hDC.mem.res¸¦ »ı¼ºÇÏ°í 
-	//hBitmap.res¸¦ hDC.mem.res¿¡ ¼±ÅÃ½ÃÅ²´Ù
+	//hDC.mem.windowì™€ hDC.mem.resë¥¼ ìƒì„±í•˜ê³  
+	//hBitmap.resë¥¼ hDC.mem.resì— ì„ íƒì‹œí‚¨ë‹¤
 	memDC_create();
 	hBitmap_old_res_backup();
 
@@ -403,11 +403,11 @@ void PaintManager::doubleBuffering_start()
 	if (isDoubleBufferingStart()) return;
 	if (!isSetHDCwindow()) return;
 
-	//´õºí¹öÆÛ¸µ ÃÊ±âÀÛ¾÷ÀÌ ¾ÈµÆÀ¸¸é ¿ì¼± ¼öÇàÇÏµµ·Ï ÇÑ´Ù
+	//ë”ë¸”ë²„í¼ë§ ì´ˆê¸°ì‘ì—…ì´ ì•ˆëìœ¼ë©´ ìš°ì„  ìˆ˜í–‰í•˜ë„ë¡ í•œë‹¤
 	if (!isInitDoubleBuffering())
 		doubleBuffering_init();
 
-	//hBitmap.windowBuffer¸¦ »ı¼ºÇÑ µÚ ±×°ÍÀ» hDC.mem.windowBuffer¿¡ ¼±ÅÃ½ÃÅ²´Ù
+	//hBitmap.windowBufferë¥¼ ìƒì„±í•œ ë’¤ ê·¸ê²ƒì„ hDC.mem.windowBufferì— ì„ íƒì‹œí‚¨ë‹¤
 	hBitmap_windowBuffer_set();
 	hBitmap_old_windowBuffer_backup();
 
@@ -417,19 +417,19 @@ void PaintManager::doubleBuffering_stop()
 {
 	if (!isDoubleBufferingStart()) return;
 
-	//hBitmap.windowBuffer¸¦ hDC.mem.windowBuffer¿¡¼­ ·Ñ¹éÇÏ°í releaseÇÑ´Ù
+	//hBitmap.windowBufferë¥¼ hDC.mem.windowBufferì—ì„œ ë¡¤ë°±í•˜ê³  releaseí•œë‹¤
 	hBitmap_old_windowBuffer_rollback();
 	hBitmap_windowBuffer_release();
 
-	//¾Æ·¡´Â ÇÁ·Î±×·¥ÀÌ Á¾·áµÉ ¶§ ¼öÇàµÇ¾î¾ß ÇÑ´Ù
+	//ì•„ë˜ëŠ” í”„ë¡œê·¸ë¨ì´ ì¢…ë£Œë  ë•Œ ìˆ˜í–‰ë˜ì–´ì•¼ í•œë‹¤
 	//doubleBuffering_halt();
 
 	flag.isDoubleBufferingStart = FALSE;
 }
 void PaintManager::doubleBuffering_halt()
 {
-	//doublebufferingÀ» ³¡³»°í ÇÁ·Î±×·¥À» Á¾·áÇÒ ¶§ ¸¶Áö¸·À¸·Î ¾Æ·¡ ÀÛ¾÷ ¼öÇà
-	//hDC.mem.windowBuffer¿Í hDC.mem.res¸¦ »èÁ¦ÇÔ
+	//doublebufferingì„ ëë‚´ê³  í”„ë¡œê·¸ë¨ì„ ì¢…ë£Œí•  ë•Œ ë§ˆì§€ë§‰ìœ¼ë¡œ ì•„ë˜ ì‘ì—… ìˆ˜í–‰
+	//hDC.mem.windowBufferì™€ hDC.mem.resë¥¼ ì‚­ì œí•¨
 	hBitmap_old_res_rollback();
 	memDC_delete();
 }

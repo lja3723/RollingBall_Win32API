@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #ifndef __ObjectManager_h__
 #define __ObjectManager_h__
 

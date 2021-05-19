@@ -1,6 +1,6 @@
-//{{NO_DEPENDENCIES}}
-// Microsoft Visual C++¿¡¼­ »ý¼ºÇÑ Æ÷ÇÔ ÆÄÀÏÀÔ´Ï´Ù.
-// ±¸½½±¼¸®±â.rc¿¡¼­ »ç¿ëµÇ°í ÀÖ½À´Ï´Ù.
+ï»¿//{{NO_DEPENDENCIES}}
+// Microsoft Visual C++ì—ì„œ ìƒì„±í•œ í¬í•¨ íŒŒì¼ìž…ë‹ˆë‹¤.
+// êµ¬ìŠ¬êµ´ë¦¬ê¸°.rcì—ì„œ ì‚¬ìš©ë˜ê³  ìžˆìŠµë‹ˆë‹¤.
 //
 #define IDR_MENU                        101
 #define IDR_ACCELERATOR                 102

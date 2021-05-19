@@ -1,4 +1,4 @@
-#include "BitmapManager.h"
+ï»¿#include "BitmapManager.h"
 
 using namespace RollingBall;
 
@@ -28,7 +28,7 @@ void BitmapManager::init(HINSTANCE m_hInstance, int m_BallSizeType)
 {
 	if (!isLoadedBitmap)
 	{
-		//ºñÆ®¸Ê ·Îµå
+		//ë¹„íŠ¸ë§µ ë¡œë“œ
 		hInstance = m_hInstance;
 		floor = LoadBitmap(hInstance, MAKEINTRESOURCE(IDB_FLOOR_WOOD1_256));
 		for (int size = 0; size < BallSizeCount; size++)

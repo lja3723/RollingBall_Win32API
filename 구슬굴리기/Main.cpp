@@ -1,8 +1,8 @@
-#include <Windows.h>
+ï»¿#include <Windows.h>
 #include <tchar.h>
 #include "resource.h"
 #include "RollingBall.h"
-#define PROGRAM_NAME _T("±¸½½ ±¼¸®±â")
+#define PROGRAM_NAME _T("êµ¬ìŠ¬ êµ´ë¦¬ê¸°")
 #define PROGRAM_VER	_T("1.0")
 
 using namespace RollingBall;
