@@ -9,7 +9,6 @@ using namespace RollingBall;
 *		initialization
 *
 *********************************/
-int PaintManager::doublebuff_count = 0;
 
 
 
@@ -20,7 +19,7 @@ int PaintManager::doublebuff_count = 0;
 *********************************/
 PaintManager::~PaintManager()
 {
-
+	doubleBuffering_halt();
 }
 void PaintManager::init(HINSTANCE hInstance, HWND hwnd, int BallSizeType)
 {
@@ -88,7 +87,8 @@ void PaintManager::init_flags()
 
 	flag.isDoubleBufferingStart = FALSE;
 	flag.isInit = FALSE;
-	flag.isInitBitmapManager = FALSE;
+	flag.isInitBitmapManager = FALSE; 
+	flag.isInitDoubleBuffering = FALSE;
 }
 void PaintManager::init_bitmapManager()
 {
@@ -159,6 +159,11 @@ BOOL PaintManager::isReadyToPaint()
 {
 	return isDoubleBufferingStart();
 }
+BOOL PaintManager::isInitDoubleBuffering()
+{
+	return flag.isInitDoubleBuffering;
+}
+
 
 
 
@@ -260,6 +265,17 @@ void PaintManager::memDC_res_release()
 	memDC_res_init();
 
 	flag.isSetMemDCres = FALSE;
+}
+
+void RollingBall::PaintManager::memDC_create()
+{
+	memDC_windowBuffer_set();
+	memDC_res_set();
+}
+void RollingBall::PaintManager::memDC_delete()
+{
+	memDC_windowBuffer_release();
+	memDC_res_release();
 }
 
 
@@ -368,25 +384,32 @@ void PaintManager::hBitmap_old_res_rollback()
 *		- double buffering manage
 *
 *********************************/
+void PaintManager::doubleBuffering_init()
+{	
+	//doublebuffering이 처음 시작되었을때만 아래 작업 수행
+	//hDC.memory.windowBuffer와 hDC.mem.res를 생성하는 것과
+	//hDC.mem.res에 hBitmap.res를 선택하는 것은 한번만 수행해도 됨
+	if (isInitDoubleBuffering()) return;
+
+	//hDC.mem.window와 hDC.mem.res를 생성하고 
+	//hBitmap.res를 hDC.mem.res에 선택시킨다
+	memDC_create();
+	hBitmap_old_res_backup();
+
+	flag.isInitDoubleBuffering = TRUE;
+}
 void PaintManager::doubleBuffering_start()
 {
 	if (isDoubleBufferingStart()) return;
 	if (!isSetHDCwindow()) return;
 
-	memDC_windowBuffer_set();
+	//더블버퍼링 초기작업이 안됐으면 우선 수행하도록 한다
+	if (!isInitDoubleBuffering())
+		doubleBuffering_init();
 
-	//hBitmap.windowBuffer를 설정함
+	//hBitmap.windowBuffer를 생성한 뒤 그것을 hDC.mem.windowBuffer에 선택시킨다
 	hBitmap_windowBuffer_set();
 	hBitmap_old_windowBuffer_backup();
-
-	if (doublebuff_count == 0)
-	{
-		//hDC.mem.res 설정
-		memDC_res_set();
-
-		//생성한 memory DC들에 hBitmap을 선택시키면서 hBitmap.old에 백업
-		hBitmap_old_res_backup();
-	}
 
 	flag.isDoubleBufferingStart = TRUE;
 }
@@ -394,15 +417,23 @@ void PaintManager::doubleBuffering_stop()
 {
 	if (!isDoubleBufferingStart()) return;
 
+	//hBitmap.windowBuffer를 hDC.mem.windowBuffer에서 롤백하고 release한다
 	hBitmap_old_windowBuffer_rollback();
 	hBitmap_windowBuffer_release();
-	memDC_windowBuffer_release();
 
-	hBitmap_old_res_rollback();
-	memDC_res_release();
+	//아래는 프로그램이 종료될 때 수행되어야 한다
+	//doubleBuffering_halt();
 
 	flag.isDoubleBufferingStart = FALSE;
 }
+void PaintManager::doubleBuffering_halt()
+{
+	//doublebuffering을 끝내고 프로그램을 종료할 때 마지막으로 아래 작업 수행
+	//hDC.mem.windowBuffer와 hDC.mem.res를 삭제함
+	hBitmap_old_res_rollback();
+	memDC_delete();
+}
+
 
 
 

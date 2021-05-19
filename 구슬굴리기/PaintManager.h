@@ -17,8 +17,6 @@ namespace RollingBall
 	class PaintManager
 	{
 	private:
-		static int doublebuff_count;
-
 		BitmapManager bitmapManager;
 
 		//Win32API에서 사용되는 변수들의 집합체
@@ -69,6 +67,7 @@ namespace RollingBall
 			BOOL isDoubleBufferingStart;
 			BOOL isInit;
 			BOOL isInitBitmapManager;
+			BOOL isInitDoubleBuffering;
 		} flag;
 	
 	public:
@@ -131,6 +130,7 @@ namespace RollingBall
 		//기타 정보를 알려줌
 		BOOL isDoubleBufferingStart();
 		BOOL isReadyToPaint();
+		BOOL isInitDoubleBuffering();
 
 
 
@@ -165,6 +165,9 @@ namespace RollingBall
 		void memDC_res_set();
 		void memDC_res_release();
 
+		void memDC_create();
+		void memDC_delete();
+
 
 
 		/********************************
@@ -194,9 +197,13 @@ namespace RollingBall
 		*	double buffering management
 		*
 		*********************************/
+		//더블버퍼링을 처음으로 시작하기 위한 준비를 함
+		void doubleBuffering_init();
 		//더블버퍼링을 시작하고 종료함
 		void doubleBuffering_start();
 		void doubleBuffering_stop();
+		//프로그램을 종료할 때 진행함
+		void doubleBuffering_halt();
 
 
 
