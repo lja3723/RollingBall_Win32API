@@ -51,10 +51,7 @@ namespace RollingBall
 {
 	class BitmapIndexer
 	{
-	private:
-		BitmapManager& bitmapManager;
 	public:
-		void ref_bitmapManager(BitmapManager& bm);
 		HBITMAP get(int object = 0, int texture = 0, int size = 32, BOOL mask = FALSE);
 		HBITMAP get(LPCTSTR object = _T("ball"), LPCTSTR texture = _T("iron1"), int size = 32, BOOL mask = FALSE);
 		HBITMAP get_current();
@@ -63,6 +60,7 @@ namespace RollingBall
 	class BitmapManager
 	{
 	private:
+		friend class BitmapIndexer;
 		static BOOL isLoadedBitmap;
 		static HINSTANCE hInstance;
 		static HBITMAP floor;
@@ -87,6 +85,7 @@ namespace RollingBall
 	private:
 		int BallSize_toIdx(int BallSize);
 	};
+
 }
 
 #endif

@@ -84,6 +84,35 @@ void Controller::update_ballPos(HWND hwnd)
 
 	x.Pos += x.Speed;
 	y.Pos += y.Speed;
+
+	RECT rt;
+
+	GetClientRect(hwnd, &rt);
+	if (32 > x.Pos || x.Pos > rt.right - 32)
+	{
+		x.Speed = -0.7*x.Speed;
+		if (32 > x.Pos)
+			x.Pos = 32;
+		else
+			x.Pos = rt.right - 32;
+	}
+	if (32 > y.Pos || y.Pos > rt.bottom - 32)
+	{
+		y.Speed = -0.7*y.Speed;
+		if (32 > y.Pos)
+			y.Pos = 32;
+		else
+			y.Pos = rt.bottom - 32;
+	}
+
+	double fraction = 0.005;
+	x.Speed *= (1 - fraction);
+	y.Speed *= (1 - fraction);
+
+	if (-0.01 < x.Speed && x.Speed < 0.01)
+		x.Speed = 0;
+	if (-0.01 < y.Speed && y.Speed < 0.01)
+		y.Speed = 0;
 }
 
 int RollingBall::Controller::get_xPos()
@@ -113,9 +142,9 @@ int RollingBall::Controller::get_yAccel()
 
 void RollingBall::Controller::initialize_ball_data()
 {
-	x.Pos = y.Pos = 0;
+	x.Pos = y.Pos = 150;
 	x.Speed = y.Speed = 0;
-	x.Accel = y.Accel = 0.1;
+	x.Accel = y.Accel = 0.2;
 }
 
 RollingBall::Controller::Controller()

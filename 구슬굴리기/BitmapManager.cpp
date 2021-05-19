@@ -73,6 +73,11 @@ HBITMAP BitmapManager::get_hBitmap_ball_mask()
 	return ball_mask[BallSize_toIdx(BallSizeType)];
 }
 
+BitmapIndexer BitmapManager::get_indexer()
+{
+	return index;
+}
+
 
 int BitmapManager::BallSize_toIdx(int BallSize)
 {
