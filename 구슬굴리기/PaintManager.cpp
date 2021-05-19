@@ -373,17 +373,18 @@ void PaintManager::doubleBuffering_start()
 	if (isDoubleBufferingStart()) return;
 	if (!isSetHDCwindow()) return;
 
+	memDC_windowBuffer_set();
+
 	//hBitmap.windowBuffer를 설정함
 	hBitmap_windowBuffer_set();
+	hBitmap_old_windowBuffer_backup();
 
 	if (doublebuff_count == 0)
 	{
-		//memDC들을 설정함
-		memDC_windowBuffer_set();
+		//hDC.mem.res 설정
 		memDC_res_set();
 
 		//생성한 memory DC들에 hBitmap을 선택시키면서 hBitmap.old에 백업
-		hBitmap_old_windowBuffer_backup();
 		hBitmap_old_res_backup();
 	}
 
@@ -393,14 +394,12 @@ void PaintManager::doubleBuffering_stop()
 {
 	if (!isDoubleBufferingStart()) return;
 
-	//holding에 저장된 각 memoryDC의 기본 hBitmap을 선택함
-
-	//memDC들을 release함
-	memDC_windowBuffer_release();
-	memDC_res_release();
-
-	//hBitmap.windowBuffer를 release함
+	hBitmap_old_windowBuffer_rollback();
 	hBitmap_windowBuffer_release();
+	memDC_windowBuffer_release();
+
+	hBitmap_old_res_rollback();
+	memDC_res_release();
 
 	flag.isDoubleBufferingStart = FALSE;
 }
