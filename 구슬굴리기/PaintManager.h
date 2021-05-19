@@ -17,6 +17,8 @@ namespace RollingBall
 	class PaintManager
 	{
 	private:
+		static int doublebuff_count;
+
 		BitmapManager bitmapManager;
 
 		//Win32API에서 사용되는 변수들의 집합체

@@ -9,6 +9,7 @@ using namespace RollingBall;
 *		initialization
 *
 *********************************/
+int PaintManager::doublebuff_count = 0;
 
 
 
@@ -375,13 +376,16 @@ void PaintManager::doubleBuffering_start()
 	//hBitmap.windowBuffer를 설정함
 	hBitmap_windowBuffer_set();
 
-	//memDC들을 설정함
-	memDC_windowBuffer_set();
-	memDC_res_set();
+	if (doublebuff_count == 0)
+	{
+		//memDC들을 설정함
+		memDC_windowBuffer_set();
+		memDC_res_set();
 
-	//생성한 memory DC들에 hBitmap을 선택시키면서 hBitmap.old에 백업
-	hBitmap_old_windowBuffer_backup();
-	hBitmap_old_res_backup();
+		//생성한 memory DC들에 hBitmap을 선택시키면서 hBitmap.old에 백업
+		hBitmap_old_windowBuffer_backup();
+		hBitmap_old_res_backup();
+	}
 
 	flag.isDoubleBufferingStart = TRUE;
 }
