@@ -66,7 +66,7 @@ void PaintManager::endPaint()
 }
 void PaintManager::paint_background()
 {
-	paint_background_tobuffer(NULL);
+	paint_background_tobuffer();
 	paint_background_ruller_tobuffer();
 }
 void PaintManager::paint_ball(int posX, int posY)
@@ -87,10 +87,8 @@ void PaintManager::init_flags()
 {
 	hDCwindowMode_set_BeginPaint();
 
-	flag.isSetHDCwindow = FALSE;
-	flag.isSetMemDCwindowBuffer = FALSE;
 	flag.isSetMemDCres = FALSE;
-	flag.isSetHBitmapWindowBuffer = FALSE;
+	flag.isSetHBitmapRes = FALSE;
 
 	flag.isDoubleBufferingStart = FALSE;
 	flag.isInit = FALSE;
@@ -114,11 +112,11 @@ BOOL PaintManager::isHDCwindowMode_BeginPaint()
 }
 BOOL PaintManager::isSetHDCwindow()
 {
-	return flag.isSetHDCwindow;
+	return winAPI.hDC.window != NULL;
 }
 BOOL PaintManager::isSetMemDCwindowBuffer()
 {
-	return flag.isSetMemDCwindowBuffer;
+	return winAPI.hDC.mem.windowBuffer != NULL;
 }
 BOOL PaintManager::isSetMemDCres()
 {
@@ -126,7 +124,11 @@ BOOL PaintManager::isSetMemDCres()
 }
 BOOL PaintManager::isSetHBitmapWindowBuffer()
 {
-	return flag.isSetHBitmapWindowBuffer;
+	return winAPI.hBitmap.windowBuffer != NULL;
+}
+BOOL PaintManager::isSetHBitmapRes()
+{
+	return flag.isSetHBitmapRes;
 }
 BOOL PaintManager::isDoubleBufferingStart()
 {
@@ -142,9 +144,7 @@ BOOL PaintManager::isInitBitmapManager()
 }
 BOOL PaintManager::isReadyToPaint()
 {
-	if (!isSetHDCwindow()) return FALSE;
-	if (!isDoubleBufferingStart()) return FALSE;
-	return TRUE;
+	return isDoubleBufferingStart();
 }
 
 
@@ -179,8 +179,6 @@ void PaintManager::hDCwindow_set()
 		winAPI.hDC.window = GetDC(winAPI.hwnd);
 	else
 		winAPI.hDC.window = BeginPaint(winAPI.hwnd, &winAPI.ps);
-
-	flag.isSetHDCwindow = TRUE;
 }
 void PaintManager::hDCwindow_release()
 {
@@ -192,8 +190,6 @@ void PaintManager::hDCwindow_release()
 		EndPaint(winAPI.hwnd, &winAPI.ps);
 
 	hDCwindow_init();
-
-	flag.isSetHDCwindow = FALSE;
 }
 void PaintManager::hDCwindow_init()
 {
@@ -263,16 +259,13 @@ void PaintManager::memDC_windowBuffer_set()
 	
 	//화면 DC와 호환이 되는 memDC를 생성
 	winAPI.hDC.mem.windowBuffer = CreateCompatibleDC(winAPI.hDC.window);
-
-	flag.isSetMemDCwindowBuffer = TRUE;
 }
 void PaintManager::memDC_windowBuffer_release()
 {
 	if (!isSetMemDCwindowBuffer()) return;
 
 	DeleteDC(winAPI.hDC.mem.windowBuffer);
-
-	flag.isSetMemDCwindowBuffer = FALSE;
+	memDC_windowBuffer_init();
 }
 void PaintManager::memDC_windowBuffer_init()
 {
@@ -332,23 +325,21 @@ void PaintManager::hBitmap_windowBuffer_set()
 	GetClientRect(winAPI.hwnd, &winAPI.windowRect);
 	winAPI.hBitmap.windowBuffer
 		= CreateCompatibleBitmap(winAPI.hDC.window, winAPI.windowRect.right, winAPI.windowRect.bottom);
-
-	flag.isSetHBitmapWindowBuffer = TRUE;
 }
-void RollingBall::PaintManager::hBitmap_windowBuffer_release()
+void PaintManager::hBitmap_windowBuffer_release()
 {
 	if (!isSetHBitmapWindowBuffer()) return;
 	//hBitmap을 삭제함
 	DeleteObject(winAPI.hBitmap.windowBuffer);
 	hBitmap_windowBuffer_init();
-
-	flag.isSetHBitmapWindowBuffer = FALSE;
 }
 void PaintManager::hBitmap_res_init()
 {
 	winAPI.hBitmap.res.background = NULL;
 	winAPI.hBitmap.res.ball = NULL;
 	winAPI.hBitmap.res.ball_mask = NULL;
+
+	flag.isSetHBitmapRes = FALSE;
 }
 void PaintManager::hBitmap_res_set(int BallSizeType)
 {
@@ -356,6 +347,8 @@ void PaintManager::hBitmap_res_set(int BallSizeType)
 	winAPI.hBitmap.res.background = bitmapManager.get_hBitmap_floor();
 	winAPI.hBitmap.res.ball = bitmapManager.get_hBitmap_ball();
 	winAPI.hBitmap.res.ball_mask = bitmapManager.get_hBitmap_ball_mask();
+
+	flag.isSetHBitmapRes = TRUE;
 }
 
 
@@ -365,7 +358,7 @@ void PaintManager::hBitmap_res_set(int BallSizeType)
 *		- paint to buffer
 *
 *********************************/
-void PaintManager::paint_background_tobuffer(LPRECT region)
+void PaintManager::paint_background_tobuffer()
 {
 	if (!isReadyToPaint()) return;
 
@@ -383,16 +376,16 @@ void PaintManager::paint_ball_tobuffer(int x, int y)
 
 	BitBlt(
 		winAPI.hDC.mem.windowBuffer,
-		x - BallSizeType / 2, y - BallSizeType / 2,
-		BallSizeType, BallSizeType,
-		winAPI.hDC.mem.res.ball_mask, 0, 0, SRCAND
+		x - BallSizeType / 2, y - BallSizeType / 2, BallSizeType, BallSizeType,
+		winAPI.hDC.mem.res.ball_mask, 0, 0, 
+		SRCAND
 	);
 
 	BitBlt(
 		winAPI.hDC.mem.windowBuffer,
-		x - BallSizeType / 2, y - BallSizeType / 2,
-		BallSizeType, BallSizeType,
-		winAPI.hDC.mem.res.ball, 0, 0, SRCPAINT
+		x - BallSizeType / 2, y - BallSizeType / 2, BallSizeType, BallSizeType,
+		winAPI.hDC.mem.res.ball, 0, 0, 
+		SRCPAINT
 	);
 }
 void PaintManager::paint_background_ruller_tobuffer()
@@ -407,12 +400,13 @@ void PaintManager::paint_background_ruller_tobuffer()
 *		- flush buffer to window
 *
 *********************************/
-void RollingBall::PaintManager::flush_buffer()
+void PaintManager::flush_buffer()
 {
 	if (!isReadyToPaint()) return;
 
 	BitBlt(
-		winAPI.hDC.window, 0, 0, winAPI.windowRect.right, winAPI.windowRect.bottom,
+		winAPI.hDC.window, 
+		0, 0, winAPI.windowRect.right, winAPI.windowRect.bottom,
 		winAPI.hDC.mem.windowBuffer, 0, 0,
 		SRCCOPY
 	);

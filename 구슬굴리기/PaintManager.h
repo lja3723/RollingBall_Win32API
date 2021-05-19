@@ -57,10 +57,8 @@ namespace RollingBall
 		struct {
 			BOOL isHDCwindowMode_GetDC;
 
-			BOOL isSetHDCwindow;
-			BOOL isSetMemDCwindowBuffer;
 			BOOL isSetMemDCres;
-			BOOL isSetHBitmapWindowBuffer;
+			BOOL isSetHBitmapRes;
 
 			BOOL isDoubleBufferingStart;
 			BOOL isInit;
@@ -99,6 +97,7 @@ namespace RollingBall
 		BOOL isSetMemDCwindowBuffer();
 		BOOL isSetMemDCres();
 		BOOL isSetHBitmapWindowBuffer();
+		BOOL isSetHBitmapRes();
 
 		BOOL isDoubleBufferingStart();
 		BOOL isInit();
@@ -145,7 +144,7 @@ namespace RollingBall
 
 		//오브젝트를 버퍼에 그린다.
 		void paint_background_ruller_tobuffer();
-		void paint_background_tobuffer(LPRECT region);
+		void paint_background_tobuffer();
 		void paint_ball_tobuffer(int x, int y);
 
 
