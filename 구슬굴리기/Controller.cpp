@@ -53,19 +53,13 @@ void Controller::translate_windowEvent(UINT m_iMsg, WPARAM m_wParam, LPARAM m_lP
 
 void Controller::update_ballPos(HWND hwnd)
 {
-	if (isPushed.key.left) x.Speed -= x.Accel;
-	if (isPushed.key.right) x.Speed += x.Accel;
-
-	if (isPushed.key.up) y.Speed -= y.Accel;
-	if (isPushed.key.down) y.Speed += y.Accel;
-
 	if (isPushed.key.space)
 	{
 		int xpos = x.Pos, ypos = y.Pos;
 		initialize_ball_data();
 		x.Pos = xpos, y.Pos = ypos;
 	}
-	if (isPushed.key.H)
+	else if (isPushed.key.H)
 	{
 		RECT rt;
 		GetClientRect(hwnd, &rt);
@@ -78,6 +72,15 @@ void Controller::update_ballPos(HWND hwnd)
 			y.Pos = rt.bottom / 2;
 		}
 	}
+	else
+	{
+
+		if (isPushed.key.left) x.Speed -= x.Accel;
+		if (isPushed.key.right) x.Speed += x.Accel;
+
+		if (isPushed.key.up) y.Speed -= y.Accel;
+		if (isPushed.key.down) y.Speed += y.Accel;
+	}	
 
 	x.Pos += x.Speed;
 	y.Pos += y.Speed;
