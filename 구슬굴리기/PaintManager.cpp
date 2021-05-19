@@ -20,7 +20,7 @@ PaintManager::~PaintManager()
 {
 
 }
-void PaintManager::init(HINSTANCE hInstance, HWND hwnd, int m_BallSizeType)
+void PaintManager::init(HINSTANCE hInstance, HWND hwnd, int BallSizeType)
 {
 	winAPI.hInstance = hInstance;
 	winAPI.hwnd = hwnd;
@@ -41,9 +41,8 @@ void PaintManager::init(HINSTANCE hInstance, HWND hwnd, int m_BallSizeType)
 
 	init_flags();
 	init_bitmapManager();
-	BallSizeType = m_BallSizeType;
-
-	hBitmap_res_set(m_BallSizeType);
+	set_BallSizeType(BallSizeType);
+	hBitmap_res_set();
 
 	flag.isInit = TRUE;
 }
@@ -308,13 +307,9 @@ void PaintManager::memDC_res_init()
 /********************************
 *
 *		private functions
-*		- set member variable
+*		- manage hBitmap var
 *
 *********************************/
-void PaintManager::set_BallSizeType(int BallSize)
-{
-	BallSizeType = BallSizeType;
-}
 void PaintManager::hBitmap_windowBuffer_init()
 {
 	winAPI.hBitmap.windowBuffer = NULL;
@@ -344,14 +339,49 @@ void PaintManager::hBitmap_res_init()
 
 	flag.isSetHBitmapRes = FALSE;
 }
-void PaintManager::hBitmap_res_set(int BallSizeType)
+void PaintManager::hBitmap_res_set()
 {
-	bitmapManager.set_BallSizeType(BallSizeType);
 	winAPI.hBitmap.res.background = bitmapManager.get_hBitmap_floor();
 	winAPI.hBitmap.res.ball = bitmapManager.get_hBitmap_ball();
 	winAPI.hBitmap.res.ball_mask = bitmapManager.get_hBitmap_ball_mask();
 
 	flag.isSetHBitmapRes = TRUE;
+}
+void PaintManager::hBitmap_old_windowBuffer_init()
+{
+	
+}
+void PaintManager::hBitmap_old_windowBuffer_set()
+{
+
+}
+void PaintManager::hBitmap_old_windowBuffer_release()
+{
+
+}
+void PaintManager::hBitmap_old_res_init()
+{
+
+}
+void PaintManager::hBitmap_old_res_set()
+{
+
+}
+void PaintManager::hBitmap_old_res_release()
+{
+
+}
+
+
+/********************************
+*
+*		private functions
+*		- set member variable
+*
+*********************************/
+void PaintManager::set_BallSizeType(int m_BallSizeType)
+{
+	bitmapManager.set_BallSizeType(m_BallSizeType);
 }
 
 
@@ -376,17 +406,18 @@ void PaintManager::paint_background_tobuffer()
 void PaintManager::paint_ball_tobuffer(int x, int y)
 {
 	if (!isReadyToPaint()) return;
+	int ballType = bitmapManager.get_BallSizeType();
 
 	BitBlt(
 		winAPI.hDC.mem.windowBuffer,
-		x - BallSizeType / 2, y - BallSizeType / 2, BallSizeType, BallSizeType,
+		x - ballType / 2, y - ballType / 2, ballType, ballType,
 		winAPI.hDC.mem.res.ball_mask, 0, 0, 
 		SRCAND
 	);
 
 	BitBlt(
 		winAPI.hDC.mem.windowBuffer,
-		x - BallSizeType / 2, y - BallSizeType / 2, BallSizeType, BallSizeType,
+		x - ballType / 2, y - ballType / 2, ballType, ballType,
 		winAPI.hDC.mem.res.ball, 0, 0, 
 		SRCPAINT
 	);

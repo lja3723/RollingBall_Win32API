@@ -66,13 +66,12 @@ namespace RollingBall
 		} flag;
 
 		BitmapManager bitmapManager;
-		int BallSizeType;
 	
 	public:
 		~PaintManager();
 
 		//PrintManager 클래스 변수를 사용하기 전 반드시 수행해야 함
-		void init(HINSTANCE hInstance, HWND hwnd, int m_BallSizeType = BallSize_medium);
+		void init(HINSTANCE hInstance, HWND hwnd, int BallSizeType = BallSize_medium);
 		void init_bitmapManager();
 
 		//페인트를 시작한다
@@ -86,7 +85,6 @@ namespace RollingBall
 	
 	
 	private:
-
 		void init_flags();
 
 		//BOOL 멤버 변수 값을 리턴한다
@@ -133,13 +131,20 @@ namespace RollingBall
 		void memDC_res_init();
 
 
-		//멤버 변수를 설정한다
+		//hBitmap 변수를 관리한다.
 		void hBitmap_windowBuffer_init();
 		void hBitmap_windowBuffer_set();
 		void hBitmap_windowBuffer_release();
 		void hBitmap_res_init();
-		void hBitmap_res_set(int BallSizeType);
-		void set_BallSizeType(int BallSize);
+		void hBitmap_res_set();
+		void hBitmap_old_windowBuffer_init();
+		void hBitmap_old_windowBuffer_set();
+		void hBitmap_old_windowBuffer_release();
+		void hBitmap_old_res_init();
+		void hBitmap_old_res_set();
+		void hBitmap_old_res_release();
+
+		void set_BallSizeType(int m_BallSizeType);
 
 
 		//오브젝트를 버퍼에 그린다.

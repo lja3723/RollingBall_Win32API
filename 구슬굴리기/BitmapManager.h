@@ -43,11 +43,11 @@ namespace RollingBall
 		void init(HINSTANCE m_hInstance, int m_BallSizeType = BallSize_medium);
 
 		void set_BallSizeType(int m_BallSizeType);
+		int get_BallSizeType();
 
 		HBITMAP get_hBitmap_floor();
 		HBITMAP get_hBitmap_ball();
 		HBITMAP get_hBitmap_ball_mask();
-		int get_BallSizeType();
 	private:
 		int BallSize_toIdx(int BallSize);
 	};

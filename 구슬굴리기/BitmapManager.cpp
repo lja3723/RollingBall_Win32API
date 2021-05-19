@@ -2,11 +2,13 @@
 
 using namespace RollingBall;
 
+
 int BitmapManager::isLoadedBitmap = FALSE;
 HINSTANCE BitmapManager::hInstance = NULL;
 HBITMAP BitmapManager::floor = NULL;
 HBITMAP BitmapManager::ball[BallSizeCount] = { NULL, };
 HBITMAP BitmapManager::ball_mask[BallSizeCount] = { NULL, };
+
 
 BitmapManager::~BitmapManager()
 {
@@ -22,7 +24,6 @@ BitmapManager::~BitmapManager()
 	}
 	isLoadedBitmap = FALSE;
 }
-
 void BitmapManager::init(HINSTANCE m_hInstance, int m_BallSizeType)
 {
 	if (!isLoadedBitmap)
@@ -41,30 +42,30 @@ void BitmapManager::init(HINSTANCE m_hInstance, int m_BallSizeType)
 	isLoadedBitmap = TRUE;
 }
 
+
 void BitmapManager::set_BallSizeType(int m_BallSizeType)
 {
 	BallSizeType = m_BallSizeType;
 }
+int BitmapManager::get_BallSizeType()
+{
+	return BallSizeType;
+}
+
 
 HBITMAP BitmapManager::get_hBitmap_floor()
 {
 	return floor;
 }
-
 HBITMAP BitmapManager::get_hBitmap_ball()
 {
 	return ball[BallSize_toIdx(BallSizeType)];
 }
-
 HBITMAP BitmapManager::get_hBitmap_ball_mask()
 {
 	return ball_mask[BallSize_toIdx(BallSizeType)];
 }
 
-int BitmapManager::get_BallSizeType()
-{
-	return BallSizeType;
-}
 
 int BitmapManager::BallSize_toIdx(int BallSize)
 {
