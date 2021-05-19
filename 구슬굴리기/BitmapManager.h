@@ -2,6 +2,30 @@
 #ifndef __BitmapManager_h__
 #define __BitmapManager_h__
 
+//오브젝트 개수(floor, ball, ...)
+#define BITMAPMANAGER_OBJECT_COUNT 2
+
+//공 텍스쳐 개수(iron1, iron2, ...)
+#define BITMAPMANAGER_BALL_TEXTURE_COUNT 1
+
+//공 텍스쳐 사이즈 개수(032, 064, ...)
+#define BITMAPMANAGER_BALL_TEXTURE_SIZE_COUNT 4
+
+//바닥 텍스쳐 개수(wood1, ...)
+#define BITMAPMANAGER_FLOOR_TEXTURE_COUNT 1
+
+//바닥 텍스쳐 사이즈 개수(032, 064, ...)
+#define BITMAPMANAGER_FLOOR_TEXTURE_SIZE_COUNT 1
+
+//bmp 파일 개수
+#define BITMAPMANAGER_BITMAP_FILE_COUNT \
+	2 * \
+	  BITMAPMANAGER_BALL_TEXTURE_COUNT \
+	* BITMAPMANAGER_BALL_TEXTURE_SIZE_COUNT \
+	+ \
+	  BITMAPMANAGER_FLOOR_TEXTURE_COUNT \
+	* BITMAPMANAGER_FLOOR_TEXTURE_SIZE_COUNT
+
 //구슬 크기의 종류
 #define BallSizeCount 4
 
@@ -35,6 +59,7 @@ namespace RollingBall
 		static HBITMAP floor;
 		static HBITMAP ball[BallSizeCount];
 		static HBITMAP ball_mask[BallSizeCount];
+		//const static UINT BMPFILEMACRO[];
 
 		int BallSizeType;
 
