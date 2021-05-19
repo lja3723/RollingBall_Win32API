@@ -28,12 +28,11 @@ void PaintManager::init(HINSTANCE hInstance, HWND hwnd, int m_BallSizeType)
 	memset(&winAPI.windowRect, 0, sizeof(winAPI.windowRect));
 
 	hDCwindow_init();
-	memoryDC_init();
+	memDC_windowBuffer_init();
+	memDC_res_init();
 
-	winAPI.hBitmap.windowBuffer = NULL;
-	winAPI.hBitmap.res.background = NULL;
-	winAPI.hBitmap.res.ball = NULL;
-	winAPI.hBitmap.res.ball_mask = NULL;
+	hBitmap_windowBuffer_init();
+	hBitmap_res_init();
 
 	winAPI.hBitmap.old.windowBuffer = NULL;
 	winAPI.hBitmap.old.res.background = NULL;
@@ -44,7 +43,7 @@ void PaintManager::init(HINSTANCE hInstance, HWND hwnd, int m_BallSizeType)
 	init_bitmapManager();
 	BallSizeType = m_BallSizeType;
 
-	set_hBitmap_res(m_BallSizeType);
+	hBitmap_res_set(m_BallSizeType);
 
 	flag.isInit = TRUE;
 }
@@ -53,18 +52,17 @@ void PaintManager::init_bitmapManager()
 	bitmapManager.init(winAPI.hInstance);
 	flag.isInitBitmapManager = TRUE;
 }
-
 void PaintManager::beginPaint()
 {
 	hDCwindowMode_set_BeginPaint();
 	hDCwindow_set();
-	memoryDC_set();
+	doubleBuffering_start();
 }
 void PaintManager::endPaint()
 {
 	flush_buffer();
 	hDCwindow_release();
-	memoryDC_release();
+	doubleBuffering_stop();
 }
 void PaintManager::paint_background()
 {
@@ -83,11 +81,18 @@ void PaintManager::paint_ball(int posX, int posY)
 *		- initialization
 *
 *********************************/
-void RollingBall::PaintManager::init_flags()
+
+//처음 init 될 때 한 번만 호출되는 함수
+void PaintManager::init_flags()
 {
 	hDCwindowMode_set_BeginPaint();
+
 	flag.isSetHDCwindow = FALSE;
-	flag.isSetMemoryDC = FALSE;
+	flag.isSetMemDCwindowBuffer = FALSE;
+	flag.isSetMemDCres = FALSE;
+	flag.isSetHBitmapWindowBuffer = FALSE;
+
+	flag.isDoubleBufferingStart = FALSE;
 	flag.isInit = FALSE;
 	flag.isInitBitmapManager = FALSE;
 }
@@ -111,9 +116,21 @@ BOOL PaintManager::isSetHDCwindow()
 {
 	return flag.isSetHDCwindow;
 }
-BOOL PaintManager::isSetMemoryDC()
+BOOL PaintManager::isSetMemDCwindowBuffer()
 {
-	return flag.isSetMemoryDC;
+	return flag.isSetMemDCwindowBuffer;
+}
+BOOL PaintManager::isSetMemDCres()
+{
+	return flag.isSetMemDCres;
+}
+BOOL PaintManager::isSetHBitmapWindowBuffer()
+{
+	return flag.isSetHBitmapWindowBuffer;
+}
+BOOL PaintManager::isDoubleBufferingStart()
+{
+	return flag.isDoubleBufferingStart;
 }
 BOOL PaintManager::isInit()
 {
@@ -126,7 +143,7 @@ BOOL PaintManager::isInitBitmapManager()
 BOOL PaintManager::isReadyToPaint()
 {
 	if (!isSetHDCwindow()) return FALSE;
-	if (!isSetMemoryDC()) return FALSE;
+	if (!isDoubleBufferingStart()) return FALSE;
 	return TRUE;
 }
 
@@ -156,10 +173,7 @@ void PaintManager::hDCwindowMode_set_GetDC()
 void PaintManager::hDCwindow_set()
 {
 	if (isSetHDCwindow())
-	{
 		hDCwindow_release();
-		hDCwindow_init();
-	}
 
 	if (isHDCwindowMode_GetDC())
 		winAPI.hDC.window = GetDC(winAPI.hwnd);
@@ -190,25 +204,17 @@ void PaintManager::hDCwindow_init()
 /********************************
 *
 *		private functions
-*		- Manage memoryDC
+*		- double buffering manage
 *
 *********************************/
-void PaintManager::memoryDC_set()
+void PaintManager::doubleBuffering_start()
 {
+	if (isDoubleBufferingStart()) return;
 	if (!isSetHDCwindow()) return;
-	if (isSetMemoryDC()) return;
 
-	//화면 DC와 호환이 되는 memDC를 생성
-	winAPI.hDC.mem.windowBuffer = CreateCompatibleDC(winAPI.hDC.window);
-	//화면 DC화 호환되는 memDC와 호환되는 memory DC 생성
-	winAPI.hDC.mem.res.background = CreateCompatibleDC(winAPI.hDC.mem.windowBuffer);
-	winAPI.hDC.mem.res.ball = CreateCompatibleDC(winAPI.hDC.mem.windowBuffer);
-	winAPI.hDC.mem.res.ball_mask = CreateCompatibleDC(winAPI.hDC.mem.windowBuffer);
-
-	//화면 DC와 호환되는 hBitmap을 로드한다
-	GetClientRect(winAPI.hwnd, &winAPI.windowRect);
-	winAPI.hBitmap.windowBuffer
-		= CreateCompatibleBitmap(winAPI.hDC.window, winAPI.windowRect.right, winAPI.windowRect.bottom);
+	hBitmap_windowBuffer_set();
+	memDC_windowBuffer_set();
+	memDC_res_set();
 
 	//생성한 memory DC들에 hBitmap을 선택시킴
 	winAPI.hBitmap.old.windowBuffer
@@ -220,34 +226,83 @@ void PaintManager::memoryDC_set()
 	winAPI.hBitmap.old.res.ball_mask
 		= (HBITMAP)SelectObject(winAPI.hDC.mem.res.ball_mask, winAPI.hBitmap.res.ball_mask);
 
-	flag.isSetMemoryDC = TRUE;
+	flag.isDoubleBufferingStart = TRUE;
 }
-void PaintManager::memoryDC_release()
+void PaintManager::doubleBuffering_stop()
 {
-	if (!isSetMemoryDC()) return;
+	if (!isDoubleBufferingStart()) return;
+
 	//holding에 저장된 각 memoryDC의 기본 hBitmap을 선택함
 	SelectObject(winAPI.hDC.mem.windowBuffer, winAPI.hBitmap.old.windowBuffer);
 	SelectObject(winAPI.hDC.mem.res.background, winAPI.hBitmap.old.res.background);
 	SelectObject(winAPI.hDC.mem.res.ball, winAPI.hBitmap.old.res.ball);
 	SelectObject(winAPI.hDC.mem.res.ball_mask, winAPI.hBitmap.old.res.ball_mask);
 
-	//memDC들을 삭제함
+	//memDC들을 release함
+	memDC_windowBuffer_release();
+	memDC_res_release();
+	
+
+	hBitmap_windowBuffer_release();
+	hBitmap_windowBuffer_init();
+
+	flag.isDoubleBufferingStart = FALSE;
+}
+
+
+/********************************
+*
+*		private functions
+*		- manage hDC.mem
+*
+*********************************/
+void PaintManager::memDC_windowBuffer_set()
+{	
+	if (isSetMemDCwindowBuffer())
+		memDC_windowBuffer_release();
+	
+	//화면 DC와 호환이 되는 memDC를 생성
+	winAPI.hDC.mem.windowBuffer = CreateCompatibleDC(winAPI.hDC.window);
+
+	flag.isSetMemDCwindowBuffer = TRUE;
+}
+void PaintManager::memDC_windowBuffer_release()
+{
+	if (!isSetMemDCwindowBuffer()) return;
+
 	DeleteDC(winAPI.hDC.mem.windowBuffer);
+
+	flag.isSetMemDCwindowBuffer = FALSE;
+}
+void PaintManager::memDC_windowBuffer_init()
+{
+	winAPI.hDC.mem.windowBuffer = NULL;	
+}
+void PaintManager::memDC_res_set()
+{
+	if (isSetMemDCres())
+		memDC_res_release();
+
+	//화면 DC화 호환되는 memDC와 호환되는 memory DC 생성
+	winAPI.hDC.mem.res.background = CreateCompatibleDC(winAPI.hDC.mem.windowBuffer);
+	winAPI.hDC.mem.res.ball = CreateCompatibleDC(winAPI.hDC.mem.windowBuffer);
+	winAPI.hDC.mem.res.ball_mask = CreateCompatibleDC(winAPI.hDC.mem.windowBuffer);
+
+	flag.isSetMemDCres = TRUE;
+}
+void PaintManager::memDC_res_release()
+{
+	if (!isSetMemDCres()) return;
+
 	DeleteDC(winAPI.hDC.mem.res.background);
 	DeleteDC(winAPI.hDC.mem.res.ball);
 	DeleteDC(winAPI.hDC.mem.res.ball_mask);
+	memDC_res_init();
 
-	//memDC들을 초기화함
-	memoryDC_init();
-
-	//hBitmap을 삭제함
-	DeleteObject(winAPI.hBitmap.windowBuffer);
-
-	flag.isSetMemoryDC = FALSE;
+	flag.isSetMemDCres = FALSE;
 }
-void PaintManager::memoryDC_init()
+void PaintManager::memDC_res_init()
 {
-	winAPI.hDC.mem.windowBuffer = NULL;
 	winAPI.hDC.mem.res.background = NULL;
 	winAPI.hDC.mem.res.ball = NULL;
 	winAPI.hDC.mem.res.ball_mask = NULL;
@@ -264,7 +319,38 @@ void PaintManager::set_BallSizeType(int BallSize)
 {
 	BallSizeType = BallSizeType;
 }
-void PaintManager::set_hBitmap_res(int BallSizeType)
+void PaintManager::hBitmap_windowBuffer_init()
+{
+	winAPI.hBitmap.windowBuffer = NULL;
+}
+void PaintManager::hBitmap_windowBuffer_set()
+{
+	if (isSetHBitmapWindowBuffer())
+		hBitmap_windowBuffer_release();
+
+	//화면 DC와 호환되는 hBitmap을 로드한다
+	GetClientRect(winAPI.hwnd, &winAPI.windowRect);
+	winAPI.hBitmap.windowBuffer
+		= CreateCompatibleBitmap(winAPI.hDC.window, winAPI.windowRect.right, winAPI.windowRect.bottom);
+
+	flag.isSetHBitmapWindowBuffer = TRUE;
+}
+void RollingBall::PaintManager::hBitmap_windowBuffer_release()
+{
+	if (!isSetHBitmapWindowBuffer()) return;
+	//hBitmap을 삭제함
+	DeleteObject(winAPI.hBitmap.windowBuffer);
+	hBitmap_windowBuffer_init();
+
+	flag.isSetHBitmapWindowBuffer = FALSE;
+}
+void PaintManager::hBitmap_res_init()
+{
+	winAPI.hBitmap.res.background = NULL;
+	winAPI.hBitmap.res.ball = NULL;
+	winAPI.hBitmap.res.ball_mask = NULL;
+}
+void PaintManager::hBitmap_res_set(int BallSizeType)
 {
 	bitmapManager.set_BallSizeType(BallSizeType);
 	winAPI.hBitmap.res.background = bitmapManager.get_hBitmap_floor();

@@ -56,8 +56,13 @@ namespace RollingBall
 		
 		struct {
 			BOOL isHDCwindowMode_GetDC;
+
 			BOOL isSetHDCwindow;
-			BOOL isSetMemoryDC;
+			BOOL isSetMemDCwindowBuffer;
+			BOOL isSetMemDCres;
+			BOOL isSetHBitmapWindowBuffer;
+
+			BOOL isDoubleBufferingStart;
 			BOOL isInit;
 			BOOL isInitBitmapManager;
 		} flag;
@@ -89,8 +94,13 @@ namespace RollingBall
 		//BOOL 멤버 변수 값을 리턴한다
 		BOOL isHDCwindowMode_GetDC();
 		BOOL isHDCwindowMode_BeginPaint();
+
 		BOOL isSetHDCwindow();
-		BOOL isSetMemoryDC();
+		BOOL isSetMemDCwindowBuffer();
+		BOOL isSetMemDCres();
+		BOOL isSetHBitmapWindowBuffer();
+
+		BOOL isDoubleBufferingStart();
 		BOOL isInit();
 		BOOL isInitBitmapManager();
 		BOOL isReadyToPaint();
@@ -110,15 +120,26 @@ namespace RollingBall
 		void hDCwindow_init();
 		
 
-		//hDC.memory들을 얻고 설정한다.
-		void memoryDC_set();
-		//hDC.memory들을 삭제한다.
-		void memoryDC_release();
-		//hDC.memory들을 초기화한다.
-		void memoryDC_init();
+		//더블버퍼링을 시작한다.
+		void doubleBuffering_start();
+		//더블버퍼링을 종료한다.
+		void doubleBuffering_stop();
+		
+		//hDC.mem 요소를 관리하는 함수이다
+		void memDC_windowBuffer_set();
+		void memDC_windowBuffer_release();
+		void memDC_windowBuffer_init();
+		void memDC_res_set();
+		void memDC_res_release();
+		void memDC_res_init();
+
 
 		//멤버 변수를 설정한다
-		void set_hBitmap_res(int BallSizeType);
+		void hBitmap_windowBuffer_init();
+		void hBitmap_windowBuffer_set();
+		void hBitmap_windowBuffer_release();
+		void hBitmap_res_init();
+		void hBitmap_res_set(int BallSizeType);
 		void set_BallSizeType(int BallSize);
 
 
