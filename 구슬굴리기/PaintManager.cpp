@@ -208,7 +208,10 @@ void PaintManager::doubleBuffering_start()
 	if (isDoubleBufferingStart()) return;
 	if (!isSetHDCwindow()) return;
 
+	//hBitmap.windowBuffer를 설정함
 	hBitmap_windowBuffer_set();
+
+	//memDC들을 설정함
 	memDC_windowBuffer_set();
 	memDC_res_set();
 
