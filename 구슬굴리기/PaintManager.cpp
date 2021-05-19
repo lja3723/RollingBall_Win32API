@@ -35,13 +35,12 @@ void PaintManager::init(HINSTANCE hInstance, HWND hwnd, int BallSizeType)
 	hBitmap_windowBuffer_init();
 	hBitmap_res_init();
 
-	winAPI.hBitmap.old.windowBuffer = NULL;
-	winAPI.hBitmap.old.res.background = NULL;
-	winAPI.hBitmap.old.res.ball = NULL;
-	winAPI.hBitmap.old.res.ball_mask = NULL;
+	hBitmap_old_windowBuffer_init();
+	hBitmap_old_res_init();
 
 	init_flags();
 	init_bitmapManager();
+
 	set_BallSizeType(BallSizeType);
 	hBitmap_res_set();
 
@@ -84,6 +83,7 @@ void PaintManager::init_flags()
 
 	flag.isSetMemDCres = FALSE;
 	flag.isSetHBitmapRes = FALSE;
+	flag.isBackedUpHBitmapRes = FALSE;
 
 	flag.isDoubleBufferingStart = FALSE;
 	flag.isInit = FALSE;
@@ -140,6 +140,14 @@ BOOL PaintManager::isSetHBitmapWindowBuffer()
 BOOL PaintManager::isSetHBitmapRes()
 {
 	return flag.isSetHBitmapRes;
+}
+BOOL PaintManager::isBackedUpHBitmapWindowBuffer()
+{
+	return winAPI.hBitmap.old.windowBuffer != NULL;
+}
+BOOL PaintManager::isBackedUpHBitmapRes()
+{
+	return flag.isBackedUpHBitmapRes;
 }
 
 BOOL PaintManager::isDoubleBufferingStart()
@@ -301,27 +309,54 @@ void PaintManager::hBitmap_res_set()
 
 void PaintManager::hBitmap_old_windowBuffer_init()
 {
-	
+	winAPI.hBitmap.old.windowBuffer = NULL;
 }
-void PaintManager::hBitmap_old_windowBuffer_set()
+void PaintManager::hBitmap_old_windowBuffer_backup()
 {
+	if (!isSetMemDCwindowBuffer()) return;
+	if (isBackedUpHBitmapWindowBuffer())
+		hBitmap_old_res_rollback();
 
+	winAPI.hBitmap.old.windowBuffer
+		= (HBITMAP)SelectObject(winAPI.hDC.mem.windowBuffer, winAPI.hBitmap.windowBuffer);
 }
-void PaintManager::hBitmap_old_windowBuffer_release()
+void PaintManager::hBitmap_old_windowBuffer_rollback()
 {
-
+	if (!isBackedUpHBitmapWindowBuffer()) return;
+	SelectObject(winAPI.hDC.mem.windowBuffer, winAPI.hBitmap.old.windowBuffer);
+	hBitmap_old_windowBuffer_init();
 }
 void PaintManager::hBitmap_old_res_init()
 {
-
+	winAPI.hBitmap.old.res.background = NULL;
+	winAPI.hBitmap.old.res.ball = NULL;
+	winAPI.hBitmap.old.res.ball_mask = NULL;
 }
-void PaintManager::hBitmap_old_res_set()
+void PaintManager::hBitmap_old_res_backup()
 {
+	if (!isSetMemDCres()) return;
+	if (!isBackedUpHBitmapRes())
+		hBitmap_old_res_rollback();
 
+	winAPI.hBitmap.old.res.background
+		= (HBITMAP)SelectObject(winAPI.hDC.mem.res.background, winAPI.hBitmap.res.background);
+	winAPI.hBitmap.old.res.ball
+		= (HBITMAP)SelectObject(winAPI.hDC.mem.res.ball, winAPI.hBitmap.res.ball);
+	winAPI.hBitmap.old.res.ball_mask
+		= (HBITMAP)SelectObject(winAPI.hDC.mem.res.ball_mask, winAPI.hBitmap.res.ball_mask);
+
+	flag.isBackedUpHBitmapRes = TRUE;
 }
-void PaintManager::hBitmap_old_res_release()
+void PaintManager::hBitmap_old_res_rollback()
 {
+	if (!isBackedUpHBitmapRes()) return;
 
+	SelectObject(winAPI.hDC.mem.res.background, winAPI.hBitmap.old.res.background);
+	SelectObject(winAPI.hDC.mem.res.ball, winAPI.hBitmap.old.res.ball);
+	SelectObject(winAPI.hDC.mem.res.ball_mask, winAPI.hBitmap.old.res.ball_mask);
+	hBitmap_old_res_init();
+
+	flag.isBackedUpHBitmapRes = FALSE;
 }
 
 
@@ -344,15 +379,9 @@ void PaintManager::doubleBuffering_start()
 	memDC_windowBuffer_set();
 	memDC_res_set();
 
-	//생성한 memory DC들에 hBitmap을 선택시킴
-	winAPI.hBitmap.old.windowBuffer
-		= (HBITMAP)SelectObject(winAPI.hDC.mem.windowBuffer, winAPI.hBitmap.windowBuffer);
-	winAPI.hBitmap.old.res.background
-		= (HBITMAP)SelectObject(winAPI.hDC.mem.res.background, winAPI.hBitmap.res.background);
-	winAPI.hBitmap.old.res.ball
-		= (HBITMAP)SelectObject(winAPI.hDC.mem.res.ball, winAPI.hBitmap.res.ball);
-	winAPI.hBitmap.old.res.ball_mask
-		= (HBITMAP)SelectObject(winAPI.hDC.mem.res.ball_mask, winAPI.hBitmap.res.ball_mask);
+	//생성한 memory DC들에 hBitmap을 선택시키면서 hBitmap.old에 백업
+	hBitmap_old_windowBuffer_backup();
+	hBitmap_old_res_backup();
 
 	flag.isDoubleBufferingStart = TRUE;
 }
@@ -361,18 +390,13 @@ void PaintManager::doubleBuffering_stop()
 	if (!isDoubleBufferingStart()) return;
 
 	//holding에 저장된 각 memoryDC의 기본 hBitmap을 선택함
-	SelectObject(winAPI.hDC.mem.windowBuffer, winAPI.hBitmap.old.windowBuffer);
-	SelectObject(winAPI.hDC.mem.res.background, winAPI.hBitmap.old.res.background);
-	SelectObject(winAPI.hDC.mem.res.ball, winAPI.hBitmap.old.res.ball);
-	SelectObject(winAPI.hDC.mem.res.ball_mask, winAPI.hBitmap.old.res.ball_mask);
 
 	//memDC들을 release함
 	memDC_windowBuffer_release();
 	memDC_res_release();
 
-
+	//hBitmap.windowBuffer를 release함
 	hBitmap_windowBuffer_release();
-	hBitmap_windowBuffer_init();
 
 	flag.isDoubleBufferingStart = FALSE;
 }
