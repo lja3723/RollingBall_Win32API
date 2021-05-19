@@ -17,52 +17,57 @@ namespace RollingBall
 	class PaintManager
 	{
 	private:
-		static int object_count;
-		BitmapManager bitmapManager;
-
-		HINSTANCE hInstance;
-		HWND hwnd;
-		PAINTSTRUCT ps;
-		RECT windowRect;
-
 		struct {
-			HDC window;
-			//HDC current;
-			struct {
-				HDC windowBuffer;
-				HDC background;
-				HDC ball;
-				HDC ball_mask;
-			} memory;
-		} hDC;
+			HINSTANCE hInstance;
+			HWND hwnd;
+			PAINTSTRUCT ps;
+			RECT windowRect;
 
-		struct {
-			HBITMAP hDCwindowCompatible;
 			struct {
-				HBITMAP background;
-				HBITMAP ball;
-				HBITMAP ball_mask;
-			} resource;
+				HDC window;
+				//HDC current;
+				struct {
+					HDC windowBuffer;
+					struct {
+						HDC background;
+						HDC ball;
+						HDC ball_mask;
+					} res;
+				} mem;
+			} hDC;
+
 			struct {
 				HBITMAP windowBuffer;
-				HBITMAP background;
-				HBITMAP ball;
-				HBITMAP ball_mask;
-			} holdingOld;
-		} hBitmap;
+				struct {
+					HBITMAP background;
+					HBITMAP ball;
+					HBITMAP ball_mask;
+				} res;
+				struct {
+					HBITMAP windowBuffer;
+					struct {
+						HBITMAP background;
+						HBITMAP ball;
+						HBITMAP ball_mask;
+					} res;
+				} old;
+			} hBitmap;
+		} winAPI;
+		
+		struct {
+			BOOL isWindowDCmode_GetDC;
+			BOOL isSetWindowDC;
+			BOOL isSetMemoryDC;
+		} flag;
 
-		BOOL m_isWindowDCmode_GetDC;
-		BOOL m_isSetWindowDC;
-		BOOL m_isSetMemoryDC;
-
+		BitmapManager bitmapManager;
 		int BallSizeType;
-
 	
 	public:
 		~PaintManager();
 
 		//PrintManager 클래스 변수를 사용하기 전 반드시 수행해야 함
-		void initialize(HINSTANCE m_hInstance, HWND m_hwnd, int m_BallSizeType = BallSize_medium);
+		void initialize(HINSTANCE hInstance, HWND hwnd, int m_BallSizeType = BallSize_medium);
 
 		//페인트를 시작한다
 		void beginPaint();
