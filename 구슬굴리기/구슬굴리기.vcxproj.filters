@@ -66,31 +66,31 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\res_bmp\floor.bmp">
+    <Image Include="..\res\bmp\floor\wood1_256.bmp">
       <Filter>리소스 파일</Filter>
     </Image>
-    <Image Include="..\res_bmp\ball_032.bmp">
+    <Image Include="..\res\bmp\ball\iron1_032.bmp">
       <Filter>리소스 파일</Filter>
     </Image>
-    <Image Include="..\res_bmp\ball_032_mask.bmp">
+    <Image Include="..\res\bmp\ball\mask\iron1_032.bmp">
       <Filter>리소스 파일</Filter>
     </Image>
-    <Image Include="..\res_bmp\ball_064.bmp">
+    <Image Include="..\res\bmp\ball\iron1_064.bmp">
       <Filter>리소스 파일</Filter>
     </Image>
-    <Image Include="..\res_bmp\ball_064_mask.bmp">
+    <Image Include="..\res\bmp\ball\mask\iron1_064.bmp">
       <Filter>리소스 파일</Filter>
     </Image>
-    <Image Include="..\res_bmp\ball_128.bmp">
+    <Image Include="..\res\bmp\ball\iron1_128.bmp">
       <Filter>리소스 파일</Filter>
     </Image>
-    <Image Include="..\res_bmp\ball_128_mask.bmp">
+    <Image Include="..\res\bmp\ball\mask\iron1_128.bmp">
       <Filter>리소스 파일</Filter>
     </Image>
-    <Image Include="..\res_bmp\ball_256.bmp">
+    <Image Include="..\res\bmp\ball\iron1_256.bmp">
       <Filter>리소스 파일</Filter>
     </Image>
-    <Image Include="..\res_bmp\ball_256_mask.bmp">
+    <Image Include="..\res\bmp\ball\mask\iron1_256.bmp">
       <Filter>리소스 파일</Filter>
     </Image>
   </ItemGroup>
