@@ -6,7 +6,7 @@ void RollingBallClass::initialize(HINSTANCE m_hInstance, HWND m_hwnd)
 {
 	winAPI.hInstance = m_hInstance;
 	winAPI.hwnd = m_hwnd;
-	paintManager.initialize(winAPI.hInstance, winAPI.hwnd);
+	paintManager.init(winAPI.hInstance, winAPI.hwnd);
 }
 
 void RollingBallClass::update_window()

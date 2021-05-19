@@ -23,7 +23,7 @@ BitmapManager::~BitmapManager()
 	isLoadedBitmap = FALSE;
 }
 
-void BitmapManager::initialize(HINSTANCE m_hInstance, int m_BallSizeType)
+void BitmapManager::init(HINSTANCE m_hInstance, int m_BallSizeType)
 {
 	if (!isLoadedBitmap)
 	{

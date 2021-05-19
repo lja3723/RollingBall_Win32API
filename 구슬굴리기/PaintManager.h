@@ -17,52 +17,60 @@ namespace RollingBall
 	class PaintManager
 	{
 	private:
-		static int object_count;
-		BitmapManager bitmapManager;
-
-		HINSTANCE hInstance;
-		HWND hwnd;
-		PAINTSTRUCT ps;
-		RECT windowRect;
-
 		struct {
-			HDC window;
-			//HDC current;
-			struct {
-				HDC windowBuffer;
-				HDC background;
-				HDC ball;
-				HDC ball_mask;
-			} memory;
-		} hDC;
+			HINSTANCE hInstance;
+			HWND hwnd;
+			PAINTSTRUCT ps;
+			RECT windowRect;
 
-		struct {
-			HBITMAP hDCwindowCompatible;
 			struct {
-				HBITMAP background;
-				HBITMAP ball;
-				HBITMAP ball_mask;
-			} resource;
+				HDC window;
+				//HDC current;
+				struct {
+					HDC windowBuffer;
+					struct {
+						HDC background;
+						HDC ball;
+						HDC ball_mask;
+					} res;
+				} mem;
+			} hDC;
+
 			struct {
 				HBITMAP windowBuffer;
-				HBITMAP background;
-				HBITMAP ball;
-				HBITMAP ball_mask;
-			} holdingOld;
-		} hBitmap;
+				struct {
+					HBITMAP background;
+					HBITMAP ball;
+					HBITMAP ball_mask;
+				} res;
+				struct {
+					HBITMAP windowBuffer;
+					struct {
+						HBITMAP background;
+						HBITMAP ball;
+						HBITMAP ball_mask;
+					} res;
+				} old;
+			} hBitmap;
+		} winAPI;
+		
+		struct {
+			BOOL isHDCwindowMode_GetDC;
+			BOOL isSetHDCwindow;
+			BOOL isSetMemoryDC;
+			BOOL isInit;
+			BOOL isInitBitmapManager;
+		} flag;
 
-		BOOL m_isWindowDCmode_GetDC;
-		BOOL m_isSetWindowDC;
-		BOOL m_isSetMemoryDC;
-
+		BitmapManager bitmapManager;
 		int BallSizeType;
-
 	
 	public:
 		~PaintManager();
 
 		//PrintManager 클래스 변수를 사용하기 전 반드시 수행해야 함
-		void initialize(HINSTANCE m_hInstance, HWND m_hwnd, int m_BallSizeType = BallSize_medium);
+		void init(HINSTANCE hInstance, HWND hwnd, int m_BallSizeType = BallSize_medium);
+		void init_bitmapManager();
 
 		//페인트를 시작한다
 		void beginPaint();
@@ -75,33 +83,42 @@ namespace RollingBall
 	
 	
 	private:
+
+		void init_flags();
+
 		//BOOL 멤버 변수 값을 리턴한다
-		BOOL isWindowDCmode_GetDC();
-		BOOL isSetWindowDC();
+		BOOL isHDCwindowMode_GetDC();
+		BOOL isHDCwindowMode_BeginPaint();
+		BOOL isSetHDCwindow();
 		BOOL isSetMemoryDC();
-		BOOL isAbleToPrint();
+		BOOL isInit();
+		BOOL isInitBitmapManager();
+		BOOL isReadyToPaint();
 
 
 		//hDC.window를 BeginPaint로 얻고 반납하도록 설정한다
-		void set_windowDCmode_BeginPaint();
+		void hDCwindowMode_set_BeginPaint();
 		//hDC.window를 GetDC로 얻고 반납하도록 설정한다
-		void set_windowDCmode_GetDC();
+		void hDCwindowMode_set_GetDC();
 
 
 		//hDC.window를 설정한 모드에 따라 얻는다
-		void set_hDCwindow();
+		void hDCwindow_set();
 		//hDC.window를 설정한 모드에 따라 반납한다
-		void release_hDCwindow();
-
+		void hDCwindow_release();
+		//hDC.window를 초기화한다
+		void hDCwindow_init();
+		
 
 		//hDC.memory들을 얻고 설정한다.
-		void set_memoryDC();
+		void memoryDC_set();
 		//hDC.memory들을 삭제한다.
-		void release_memoryDC();
-
+		void memoryDC_release();
+		//hDC.memory들을 초기화한다.
+		void memoryDC_init();
 
 		//멤버 변수를 설정한다
-		void set_hBitmap(int BallSizeType);
+		void set_hBitmap_res(int BallSizeType);
 		void set_BallSizeType(int BallSize);
 
 

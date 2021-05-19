@@ -40,7 +40,7 @@ namespace RollingBall
 
 	public:
 		~BitmapManager();
-		void initialize(HINSTANCE m_hInstance, int m_BallSizeType = BallSize_medium);
+		void init(HINSTANCE m_hInstance, int m_BallSizeType = BallSize_medium);
 
 		void set_BallSizeType(int m_BallSizeType);
 
