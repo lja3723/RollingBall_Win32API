@@ -67,7 +67,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 	case WM_CREATE:
 		SetTimer(hwnd, 1, 5, NULL);
 		hInstance = ((LPCREATESTRUCT)lParam)->hInstance;
-		rollingBall.initialize(hInstance, hwnd);
+		rollingBall.init(hInstance, hwnd);
 		return 0;
 
 	case WM_TIMER:
