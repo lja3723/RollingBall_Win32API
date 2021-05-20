@@ -4,42 +4,18 @@ using namespace RollingBall;
 
 
 
-int RollingBall::BitmapIndexer::get(int object, int texture, int size, BOOL mask)
-{
-	int idx = 0;
-	return 0;
-}
 
-int RollingBall::BitmapIndexer::get(LPCTSTR object, LPCTSTR texture, int size, BOOL mask)
-{
-	return 0;
-}
-
-HBITMAP RollingBall::BitmapIndexer::get_current()
-{
-	return HBITMAP();
-}
-
-
-
-
-int BitmapManager::isLoadedBitmap = FALSE;
+int BitmapManager::isLoadedHBitmap = FALSE;
 HINSTANCE BitmapManager::hInstance = NULL;
+HBITMAP BitmapManager::bitmap[BITMAPMANAGER_BITMAP_FILE_COUNT] = { NULL, };
+
 HBITMAP BitmapManager::floor = NULL;
 HBITMAP BitmapManager::ball[BallSizeCount] = { NULL, };
 HBITMAP BitmapManager::ball_mask[BallSizeCount] = { NULL, };
-const UINT BitmapManager::BMPFILEMACRO[BITMAPMANAGER_BITMAP_FILE_COUNT]
-= {
-	IDB_BALL_IRON1_032, IDB_BALL_IRON1_064, IDB_BALL_IRON1_128, IDB_BALL_IRON1_256,
-	IDB_BALL_IRON1_032M, IDB_BALL_IRON1_064M, IDB_BALL_IRON1_128M, IDB_BALL_IRON1_256M,
-	IDB_FLOOR_WOOD1_256
-};
-
-
 
 BitmapManager::~BitmapManager()
 {
-	if (isLoadedBitmap)
+	if (isLoadedHBitmap)
 	{
 		hInstance = NULL;
 		DeleteObject(floor);
@@ -49,11 +25,11 @@ BitmapManager::~BitmapManager()
 			DeleteObject(ball_mask[size]);
 		}
 	}
-	isLoadedBitmap = FALSE;
+	isLoadedHBitmap = FALSE;
 }
 void BitmapManager::init(HINSTANCE m_hInstance, int m_BallSizeType)
 {
-	if (!isLoadedBitmap)
+	if (!isLoadedHBitmap)
 	{
 		//비트맵 로드
 		hInstance = m_hInstance;
@@ -66,7 +42,7 @@ void BitmapManager::init(HINSTANCE m_hInstance, int m_BallSizeType)
 	}
 	set_BallSizeType(m_BallSizeType);
 
-	isLoadedBitmap = TRUE;
+	isLoadedHBitmap = TRUE;
 }
 
 
@@ -93,10 +69,6 @@ HBITMAP BitmapManager::get_hBitmap_ball_mask()
 	return ball_mask[BallSize_toIdx(BallSizeType)];
 }
 
-BitmapIndexer BitmapManager::get_indexer()
-{
-	return index;
-}
 
 
 int BitmapManager::BallSize_toIdx(int BallSize)
