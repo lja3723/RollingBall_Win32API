@@ -14,7 +14,7 @@ BOOL CALLBACK ProgramInfoDialogProc(HWND hDlg, UINT iMsg, WPARAM wParam, LPARAM 
 static LPCTSTR WindowClassName = _T("Rolling Ball Class");
 static LPCTSTR WindowTitleName = PROGRAM_NAME;
 static const int WindowPosition[2] = { CW_USEDEFAULT, CW_USEDEFAULT };
-static const int WindowSize[2] = { 720, 480 };
+static const int WindowSize[2] = { CW_USEDEFAULT, CW_USEDEFAULT };
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLine, int nCmdShow)
 {
