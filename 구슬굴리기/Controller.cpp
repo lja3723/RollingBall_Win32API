@@ -53,11 +53,11 @@ void Controller::translate_windowEvent(UINT m_iMsg, WPARAM m_wParam, LPARAM m_lP
 
 void Controller::update_ballPos(HWND hwnd)
 {
+	double fraction = 0.005;
+
 	if (isPushed.key.space)
 	{
-		int xpos = x.Pos, ypos = y.Pos;
-		initialize_ball_data();
-		x.Pos = xpos, y.Pos = ypos;
+		fraction *= 25;
 	}
 	else if (isPushed.key.H)
 	{
@@ -86,7 +86,6 @@ void Controller::update_ballPos(HWND hwnd)
 	y.Pos += y.Speed;
 
 	RECT rt;
-
 	GetClientRect(hwnd, &rt);
 	if (32 > x.Pos || x.Pos > rt.right - 32)
 	{
@@ -105,7 +104,9 @@ void Controller::update_ballPos(HWND hwnd)
 			y.Pos = rt.bottom - 32;
 	}
 
-	double fraction = 0.005;
+	if (-1 < x.Speed && x.Speed < 1 &&
+		-1 < y.Speed && y.Speed < 1)
+		fraction *= 5;
 	x.Speed *= (1 - fraction);
 	y.Speed *= (1 - fraction);
 
@@ -144,7 +145,7 @@ void RollingBall::Controller::initialize_ball_data()
 {
 	x.Pos = y.Pos = 150;
 	x.Speed = y.Speed = 0;
-	x.Accel = y.Accel = 0.2;
+	x.Accel = y.Accel = 0.3;
 }
 
 RollingBall::Controller::Controller()
