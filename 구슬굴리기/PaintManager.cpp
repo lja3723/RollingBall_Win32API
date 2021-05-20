@@ -40,7 +40,6 @@ void PaintManager::init(HINSTANCE hInstance, HWND hwnd, int BallSizeType)
 
 	init_flags();
 	init_bitmapManager();
-	idx = bitmapManager.get_indexer();
 
 	set_BallSizeType(BallSizeType);
 	hBitmap_res_set();
@@ -93,7 +92,7 @@ void PaintManager::init_flags()
 }
 void PaintManager::init_bitmapManager()
 {
-	bitmapManager.init(winAPI.hInstance);
+	bmp.init(winAPI.hInstance);
 	flag.isInitBitmapManager = TRUE;
 }
 
@@ -318,9 +317,9 @@ void PaintManager::hBitmap_res_init()
 }
 void PaintManager::hBitmap_res_set()
 {
-	winAPI.hBitmap.res.background = bitmapManager.get_hBitmap_floor();
-	winAPI.hBitmap.res.ball = bitmapManager.get_hBitmap_ball();
-	winAPI.hBitmap.res.ball_mask = bitmapManager.get_hBitmap_ball_mask();
+	winAPI.hBitmap.res.background = bmp.get_hBitmap_floor();
+	winAPI.hBitmap.res.ball = bmp.get_hBitmap_ball();
+	winAPI.hBitmap.res.ball_mask = bmp.get_hBitmap_ball_mask();
 
 	flag.isSetHBitmapRes = TRUE;
 }
@@ -446,7 +445,7 @@ void PaintManager::doubleBuffering_halt()
 *********************************/
 void PaintManager::set_BallSizeType(int m_BallSizeType)
 {
-	bitmapManager.set_BallSizeType(m_BallSizeType);
+	bmp.set_BallSizeType(m_BallSizeType);
 }
 
 
@@ -476,7 +475,7 @@ void PaintManager::paint_background_ruller_tobuffer()
 void PaintManager::paint_ball_tobuffer(int x, int y)
 {
 	if (!isReadyToPaint()) return;
-	int ballType = bitmapManager.get_BallSizeType();
+	int ballType = bmp.get_BallSizeType();
 
 	BitBlt(
 		winAPI.hDC.mem.windowBuffer,

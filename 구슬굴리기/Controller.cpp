@@ -87,9 +87,10 @@ void Controller::update_ballPos(HWND hwnd)
 
 	RECT rt;
 	GetClientRect(hwnd, &rt);
+	double boundConstant = 0.7;
 	if (32 > x.Pos || x.Pos > rt.right - 32)
 	{
-		x.Speed = -0.7*x.Speed;
+		x.Speed = -boundConstant *x.Speed;
 		if (32 > x.Pos)
 			x.Pos = 32;
 		else
@@ -97,7 +98,7 @@ void Controller::update_ballPos(HWND hwnd)
 	}
 	if (32 > y.Pos || y.Pos > rt.bottom - 32)
 	{
-		y.Speed = -0.7*y.Speed;
+		y.Speed = -boundConstant *y.Speed;
 		if (32 > y.Pos)
 			y.Pos = 32;
 		else
