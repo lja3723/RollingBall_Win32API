@@ -9,11 +9,7 @@ BOOL RollingBallClass::init(HINSTANCE m_hInstance, HWND m_hwnd)
 
 	if (!paintManager.init(winAPI.hInstance, winAPI.hwnd)) return FALSE;
 
-	//memset(&paintManager, 0, sizeof(paintManager));
 	memset(&physics, 0, sizeof(physics));
-	//memset(&controller, 0, sizeof(controller));
-
-	//paintManager.init(winAPI.hInstance, winAPI.hwnd);
 	return TRUE;
 }
 
