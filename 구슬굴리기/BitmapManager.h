@@ -38,7 +38,12 @@
 
 #include <Windows.h>
 #include <tchar.h>
+#include <string>
+#include <vector>
 #include "resource.h"
+
+using std::vector;
+typedef std::basic_string<TCHAR> tstring;
 
 /*
 * 
@@ -52,6 +57,24 @@ namespace RollingBall
 	class BitmapManager
 	{
 	private:
+		static int _object_count;
+		struct BitmapManagerObject {
+			tstring name;
+			BOOL has_mask;
+			struct {
+				int count;
+				vector<tstring> name;
+				struct {
+					int count;
+					vector<int> val;
+				} size;
+			} texture;
+		};
+
+		//오브젝트에 대한 정보를 담은 벡터
+		vector<BitmapManagerObject> _object;
+
+
 		/******************************************************
 		*	private variables: const static(파일 개수 관련)
 		*******************************************************/
