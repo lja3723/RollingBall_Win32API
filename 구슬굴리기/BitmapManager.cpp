@@ -26,6 +26,25 @@ HBITMAP BitmapManager::oldvar_ball_mask[BallSizeCount] = { NULL, };
 *			private functions
 * 
 *****************************************/
+BOOL RollingBall::BitmapManager::init_object_info(HWND hwnd)
+{
+	LPCTSTR filename = _T("..\\res\\bmp\\object_info.txt");
+	HANDLE hFile = CreateFile(
+		filename,
+		GENERIC_READ,
+		FILE_SHARE_READ,
+		NULL, OPEN_EXISTING, 0, 0
+	);
+	if (hFile == INVALID_HANDLE_VALUE)
+	{
+		TCHAR errmsg[256];
+		_stprintf_s(errmsg, 256, _T("%s 파일을 열 수 없습니다."), filename);
+		MessageBox(hwnd, errmsg, _T("오류"), MB_OK);
+		return FALSE;
+	}
+
+	return TRUE;
+}
 void RollingBall::BitmapManager::init_bitmap_file_count()
 {
 	bitmap_file_count = 0;
@@ -78,14 +97,18 @@ void RollingBall::BitmapManager::delete_hBitmap()
 *			public functions
 *
 *****************************************/
-void BitmapManager::init(HINSTANCE m_hInstance, int m_BallSizeType)
+BOOL BitmapManager::init(HINSTANCE m_hInstance, HWND m_hwnd, int m_BallSizeType)
 {
-	if (isInit()) return;
+	if (isInit()) return TRUE;
+
+	if (!init_object_info(m_hwnd)) return FALSE;
 
 	hInstance = m_hInstance;
 	init_bitmap_file_count();
 	init_hBitmap();
 	set_BallSizeType(m_BallSizeType);
+
+	return TRUE;
 }
 BOOL RollingBall::BitmapManager::isInit()
 {

@@ -22,7 +22,9 @@ namespace RollingBall
 		Controller controller;
 
 	public:
-		void init(HINSTANCE m_hInstance, HWND m_hwnd);
+		//RollingBallClass 변수를 사용하기 전 반드시 수행해야 함
+		BOOL init(HINSTANCE m_hInstance, HWND m_hwnd);
+
 		void update_window();
 		void update_state();
 		void send_windowEvent(UINT m_iMsg, WPARAM m_wParam, LPARAM m_lParam);
