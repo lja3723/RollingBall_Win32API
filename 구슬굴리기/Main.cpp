@@ -15,6 +15,7 @@ static LPCTSTR WindowClassName = _T("Rolling Ball Class");
 static LPCTSTR WindowTitleName = PROGRAM_NAME;
 static const int WindowPosition[2] = { CW_USEDEFAULT, CW_USEDEFAULT };
 static const int WindowSize[2] = { CW_USEDEFAULT, CW_USEDEFAULT };
+static RollingBallClass rollingBall;
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLine, int nCmdShow)
 {
@@ -40,6 +41,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLi
 		NULL, NULL, hInstance, NULL
 	);
 
+	//RollingBallClass를 초기화한다
+	if (!rollingBall.init(hInstance, hwnd))
+	{
+		MessageBox(hwnd, _T("프로그램을 시작할 수 없습니다."), _T("오류"), MB_OK);
+		return 0;
+	}
+
 	ShowWindow(hwnd, nCmdShow);
 	UpdateWindow(hwnd);
 
@@ -58,7 +66,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLi
 LRESULT CALLBACK WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 {
 	static HINSTANCE hInstance;
-	static RollingBallClass rollingBall;
 	static HWND hDebugDlg = NULL;
 	static HWND hProgramInfoDlg = NULL;
 
@@ -67,7 +74,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 	case WM_CREATE:
 		SetTimer(hwnd, 1, 5, NULL);
 		hInstance = ((LPCREATESTRUCT)lParam)->hInstance;
-		rollingBall.init(hInstance, hwnd);
 		return 0;
 
 	case WM_TIMER:

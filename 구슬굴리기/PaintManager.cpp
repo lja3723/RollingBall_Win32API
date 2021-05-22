@@ -21,10 +21,13 @@ PaintManager::~PaintManager()
 {
 	doubleBuffering_halt();
 }
-void PaintManager::init(HINSTANCE hInstance, HWND hwnd, int BallSizeType)
+BOOL PaintManager::init(HINSTANCE m_hInstance, HWND m_hwnd, int BallSizeType)
 {
-	winAPI.hInstance = hInstance;
-	winAPI.hwnd = hwnd;
+	winAPI.hInstance = m_hInstance;
+	winAPI.hwnd = m_hwnd;
+	if (!bmp.init(winAPI.hInstance, winAPI.hwnd)) return FALSE;
+
+	init_flags();
 	memset(&winAPI.ps, 0, sizeof(winAPI.ps));
 	memset(&winAPI.windowRect, 0, sizeof(winAPI.windowRect));
 
@@ -38,13 +41,11 @@ void PaintManager::init(HINSTANCE hInstance, HWND hwnd, int BallSizeType)
 	hBitmap_old_windowBuffer_init();
 	hBitmap_old_res_init();
 
-	init_flags();
-	init_bitmapManager();
-
 	set_BallSizeType(BallSizeType);
 	hBitmap_res_set();
 
 	flag.isInit = TRUE;
+	return TRUE;
 }
 void PaintManager::beginPaint()
 {
@@ -87,13 +88,7 @@ void PaintManager::init_flags()
 
 	flag.isDoubleBufferingStart = FALSE;
 	flag.isInit = FALSE;
-	flag.isInitBitmapManager = FALSE; 
 	flag.isInitDoubleBuffering = FALSE;
-}
-void PaintManager::init_bitmapManager()
-{
-	bmp.init(winAPI.hInstance);
-	flag.isInitBitmapManager = TRUE;
 }
 
 
@@ -107,10 +102,6 @@ void PaintManager::init_bitmapManager()
 BOOL PaintManager::isInit()
 {
 	return flag.isInit;
-}
-BOOL PaintManager::isInitBitmapManager()
-{
-	return flag.isInitBitmapManager;
 }
 
 BOOL PaintManager::isHDCwindowMode_GetDC()

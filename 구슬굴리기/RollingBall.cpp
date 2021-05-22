@@ -2,16 +2,19 @@
 
 using namespace RollingBall;
 
-void RollingBallClass::init(HINSTANCE m_hInstance, HWND m_hwnd)
+BOOL RollingBallClass::init(HINSTANCE m_hInstance, HWND m_hwnd)
 {
 	winAPI.hInstance = m_hInstance;
 	winAPI.hwnd = m_hwnd;
 
-	memset(&paintManager, 0, sizeof(paintManager));
+	if (!paintManager.init(winAPI.hInstance, winAPI.hwnd)) return FALSE;
+
+	//memset(&paintManager, 0, sizeof(paintManager));
 	memset(&physics, 0, sizeof(physics));
 	//memset(&controller, 0, sizeof(controller));
 
-	paintManager.init(winAPI.hInstance, winAPI.hwnd);
+	//paintManager.init(winAPI.hInstance, winAPI.hwnd);
+	return TRUE;
 }
 
 void RollingBallClass::update_window()
