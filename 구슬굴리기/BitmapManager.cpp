@@ -17,9 +17,9 @@ vector<HBITMAP> BitmapManager::hBitmap = vector<HBITMAP>();
 
 
 //old variables below
-HBITMAP BitmapManager::oldvar_floor = NULL;
-HBITMAP BitmapManager::oldvar_ball[old_BallSizeCount] = { NULL, };
-HBITMAP BitmapManager::oldvar_ball_mask[old_BallSizeCount] = { NULL, };
+//HBITMAP BitmapManager::oldvar_floor = NULL;
+//HBITMAP BitmapManager::oldvar_ball[old_BallSizeCount] = { NULL, };
+//HBITMAP BitmapManager::oldvar_ball_mask[old_BallSizeCount] = { NULL, };
 
 
 
@@ -191,12 +191,14 @@ void RollingBall::BitmapManager::init_hBitmap()
 
 	//old code below
 	//비트맵 로드
+	/*
 	oldvar_floor = LoadBitmap(hInstance, MAKEINTRESOURCE(IDB_FLOOR_WOOD1_256));
 	for (int size = 0; size < old_BallSizeCount; size++)
 	{
 		oldvar_ball[size] = LoadBitmap(hInstance, MAKEINTRESOURCE(IDB_BALL_IRON1_032 + 2 * size));
 		oldvar_ball_mask[size] = LoadBitmap(hInstance, MAKEINTRESOURCE(IDB_BALL_IRON1_032M + 2 * size));
 	}
+	*/
 }
 void RollingBall::BitmapManager::delete_hBitmap()
 {
@@ -207,12 +209,14 @@ void RollingBall::BitmapManager::delete_hBitmap()
 	hBitmap.clear();
 
 	//old code below
+	/*
 	DeleteObject(oldvar_floor);
 	for (int size = 0; size < old_BallSizeCount; size++)
 	{
 		DeleteObject(oldvar_ball[size]);
 		DeleteObject(oldvar_ball_mask[size]);
 	}
+	*/
 }
 void RollingBall::BitmapManager::init_curr_sel_idx()
 {
@@ -247,7 +251,7 @@ BOOL RollingBall::BitmapManager::isInitHBitmap()
 *			public functions
 *
 *****************************************/
-BOOL BitmapManager::init(HINSTANCE m_hInstance, HWND m_hwnd, int m_BallSizeType)
+BOOL BitmapManager::init(HINSTANCE m_hInstance, HWND m_hwnd)
 {
 	if (isInit()) return TRUE;
 	if (!init_object_info(m_hwnd)) return FALSE;
@@ -293,7 +297,7 @@ BOOL BitmapManager::init(HINSTANCE m_hInstance, HWND m_hwnd, int m_BallSizeType)
 	init_bitmap_file_count();
 	init_hBitmap();
 	init_curr_sel_idx();
-	old_set_BallSizeType(m_BallSizeType);
+	//old_set_BallSizeType(m_BallSizeType);
 
 	return TRUE;
 }
@@ -369,6 +373,8 @@ int RollingBall::BitmapManager::index(int objidx, int textureidx, int sizeidx, B
 	//size에 따른 idx 탐색
 	idx += sizeidx;
 
+	if (!(0 <= idx && idx <= 9))
+		idx = 8;
 	return idx;
 }
 int RollingBall::BitmapManager::index(LPCTSTR m_obj, LPCTSTR m_texture, int m_size, BOOL m_mask)
@@ -425,6 +431,7 @@ HBITMAP RollingBall::BitmapManager::operator[](int index)
 
 
 //old functions below
+/*
 void BitmapManager::old_set_BallSizeType(int m_BallSizeType)
 {
 	old_BallSizeType = m_BallSizeType;
@@ -461,3 +468,4 @@ int BitmapManager::old_BallSize_toIdx(int BallSize)
 		return -1;
 	}
 }
+*/

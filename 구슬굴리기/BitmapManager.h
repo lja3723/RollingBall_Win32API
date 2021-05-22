@@ -3,38 +3,38 @@
 #define __BitmapManager_h__
 
 //오브젝트 개수(floor, ball, ...)
-#define old_BITMAPMANAGER_OBJECT_COUNT				2
+//#define old_BITMAPMANAGER_OBJECT_COUNT				2
 
 //공 텍스쳐 개수(iron1, iron2, ...)
-#define old_BITMAPMANAGER_BALL_TEXTURE_COUNT		1
+//#define old_BITMAPMANAGER_BALL_TEXTURE_COUNT		1
 
 //공 텍스쳐 사이즈 개수(032, 064, ...)
-#define old_BITMAPMANAGER_BALL_TEXTURE_SIZE_COUNT	4
+//#define old_BITMAPMANAGER_BALL_TEXTURE_SIZE_COUNT	4
 
 //바닥 텍스쳐 개수(wood1, ...)
-#define old_BITMAPMANAGER_FLOOR_TEXTURE_COUNT		1
+//#define old_BITMAPMANAGER_FLOOR_TEXTURE_COUNT		1
 
 //바닥 텍스쳐 사이즈 개수(032, 064, ...)
-#define old_BITMAPMANAGER_FLOOR_TEXTURE_SIZE_COUNT	1
+//#define old_BITMAPMANAGER_FLOOR_TEXTURE_SIZE_COUNT	1
 
 //bmp 파일 개수
-#define old_BITMAPMANAGER_BITMAP_FILE_COUNT			\
-	2 * old_BITMAPMANAGER_BALL_TEXTURE_COUNT		\
-	* old_BITMAPMANAGER_BALL_TEXTURE_SIZE_COUNT		\
-	+ old_BITMAPMANAGER_FLOOR_TEXTURE_COUNT			\
-	* old_BITMAPMANAGER_FLOOR_TEXTURE_SIZE_COUNT
+//#define old_BITMAPMANAGER_BITMAP_FILE_COUNT			\
+//	2 * old_BITMAPMANAGER_BALL_TEXTURE_COUNT		\
+//	* old_BITMAPMANAGER_BALL_TEXTURE_SIZE_COUNT		\
+//	+ old_BITMAPMANAGER_FLOOR_TEXTURE_COUNT			\
+//	* old_BITMAPMANAGER_FLOOR_TEXTURE_SIZE_COUNT
 
 //구슬 크기의 종류
-#define old_BallSizeCount 4
+//#define old_BallSizeCount 4
 
 //구슬 크기 종류의 각 크기
-#define old_BallSize_small 32
-#define old_BallSize_medium 64
-#define old_BallSize_large 128
-#define old_BallSize_extra 256
+//#define old_BallSize_small 32
+//#define old_BallSize_medium 64
+//#define old_BallSize_large 128
+//#define old_BallSize_extra 256
 
 //바닥 텍스쳐 크기
-#define old_FloorSize = 256
+//#define old_FloorSize = 256
 
 #include <Windows.h>
 #include <tchar.h>
@@ -100,10 +100,10 @@ namespace RollingBall
 
 		//old variables
 		//static BOOL isLoadedHBitmap;
-		static HBITMAP oldvar_floor;
-		static HBITMAP oldvar_ball[old_BallSizeCount];
-		static HBITMAP oldvar_ball_mask[old_BallSizeCount];
-		int old_BallSizeType;
+		//static HBITMAP oldvar_floor;
+		//static HBITMAP oldvar_ball[old_BallSizeCount];
+		//static HBITMAP oldvar_ball_mask[old_BallSizeCount];
+		//int old_BallSizeType;
 
 
 
@@ -138,7 +138,7 @@ namespace RollingBall
 	public:
 
 		//BitmapManager 클래스 변수를 사용하기 전 반드시 수행해야 한다
-		BOOL init(HINSTANCE m_hInstance, HWND m_hwnd, int m_BallSizeType = old_BallSize_medium);
+		BOOL init(HINSTANCE m_hInstance, HWND m_hwnd);
 		BOOL isInit();
 		~BitmapManager();
 
@@ -164,13 +164,13 @@ namespace RollingBall
 		HBITMAP operator[](int index);
 
 		//old functions
-		HBITMAP old_get_hBitmap_floor();
-		HBITMAP old_get_hBitmap_ball();
-		HBITMAP old_get_hBitmap_ball_mask();		
-		void old_set_BallSizeType(int m_BallSizeType);
-		int old_get_BallSizeType();
+		//HBITMAP old_get_hBitmap_floor();
+		//HBITMAP old_get_hBitmap_ball();
+		//HBITMAP old_get_hBitmap_ball_mask();		
+		//void old_set_BallSizeType(int m_BallSizeType);
+		//int old_get_BallSizeType();
 	private:
-		int old_BallSize_toIdx(int BallSize);
+		//int old_BallSize_toIdx(int BallSize);
 	};
 
 }

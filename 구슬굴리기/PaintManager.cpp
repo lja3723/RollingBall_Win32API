@@ -21,7 +21,7 @@ PaintManager::~PaintManager()
 {
 	doubleBuffering_halt();
 }
-BOOL PaintManager::init(HINSTANCE m_hInstance, HWND m_hwnd, int BallSizeType)
+BOOL PaintManager::init(HINSTANCE m_hInstance, HWND m_hwnd)
 {
 	winAPI.hInstance = m_hInstance;
 	winAPI.hwnd = m_hwnd;
@@ -41,7 +41,7 @@ BOOL PaintManager::init(HINSTANCE m_hInstance, HWND m_hwnd, int BallSizeType)
 	hBitmap_old_windowBuffer_init();
 	hBitmap_old_res_init();
 
-	set_BallSizeType(BallSizeType);
+	//set_BallSizeType(BallSizeType);
 	hBitmap_res_set();
 
 	flag.isInit = TRUE;
@@ -308,9 +308,12 @@ void PaintManager::hBitmap_res_init()
 }
 void PaintManager::hBitmap_res_set()
 {
-	winAPI.hBitmap.res.background = bmp.old_get_hBitmap_floor();
-	winAPI.hBitmap.res.ball = bmp.old_get_hBitmap_ball();
-	winAPI.hBitmap.res.ball_mask = bmp.old_get_hBitmap_ball_mask();
+	winAPI.hBitmap.res.background 
+		= bmp.get(bmp.index(_T("floor"), _T("wood1"), 256, FALSE));
+	winAPI.hBitmap.res.ball 
+		= bmp.get(bmp.index(_T("ball"), _T("iron1"), 128, FALSE));
+	winAPI.hBitmap.res.ball_mask 
+		= bmp.get(bmp.index(_T("ball"), _T("iron1"), 128, TRUE));
 
 	flag.isSetHBitmapRes = TRUE;
 }
@@ -434,11 +437,12 @@ void PaintManager::doubleBuffering_halt()
 *		- variable management
 *
 *********************************/
+/*
 void PaintManager::set_BallSizeType(int m_BallSizeType)
 {
 	bmp.old_set_BallSizeType(m_BallSizeType);
 }
-
+*/
 
 
 /********************************
@@ -466,7 +470,9 @@ void PaintManager::paint_background_ruller_tobuffer()
 void PaintManager::paint_ball_tobuffer(int x, int y)
 {
 	if (!isReadyToPaint()) return;
-	int ballType = bmp.old_get_BallSizeType();
+	//int ballType = bmp.old_get_BallSizeType();
+	bmp.index(_T("ball"), _T("iron1"), 128, FALSE);
+	int ballType = bmp.get_curr_texture_size();
 
 	BitBlt(
 		winAPI.hDC.mem.windowBuffer,
