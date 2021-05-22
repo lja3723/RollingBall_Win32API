@@ -9,10 +9,11 @@ using namespace RollingBall;
 *	static variables initialization
 * 
 *****************************************/
-UINT BitmapManager::bitmap_file_count = 0;
+int BitmapManager::bitmap_file_count = 0;
 HINSTANCE BitmapManager::hInstance = NULL;
-HBITMAP* BitmapManager::hBitmap = NULL;
-//int BitmapManager::_object_count = 0;
+vector<BitmapManager::BitmapManagerObject> BitmapManager::object_info 
+	= vector<BitmapManager::BitmapManagerObject>();
+vector<HBITMAP> BitmapManager::hBitmap = vector<HBITMAP>();
 
 
 //old variables below
@@ -27,7 +28,36 @@ HBITMAP BitmapManager::oldvar_ball_mask[old_BallSizeCount] = { NULL, };
 *			private functions
 * 
 *****************************************/
-BOOL RollingBall::BitmapManager::init_object_info(HWND hwnd)
+BOOL RollingBall::BitmapManager::ReadLine(HANDLE hFile, LPTSTR line, int sizeofLine)
+{
+	//파일의 끝에 다다르면 FALSE를 리턴한다.
+	DWORD readSize;
+	TCHAR reading[1];
+	static int i = -1;
+	int lineidx = 0;
+	memset(line, 0, sizeofLine);
+	while (TRUE)
+	{
+		memset(reading, 0, sizeof(reading));
+		ReadFile(hFile, reading, sizeof(reading), &readSize, NULL);
+		if (++i == 0) continue;
+
+		if (reading[0] == _T('\r'))
+		{
+			return TRUE;
+		}
+		if (reading[0] == _T('\n')) continue;
+		if (reading[0] == _T('\0'))
+		{
+			if (lineidx > 0)
+				return TRUE;
+			else return FALSE;
+		}
+
+		line[lineidx++] = reading[0];
+	}
+}
+BOOL RollingBall::BitmapManager::init_object_info(HWND m_hwnd)
 {
 	//파일을 연다.
 	LPCTSTR filename = _T("..\\res\\bmp\\object_info.txt");
@@ -42,7 +72,7 @@ BOOL RollingBall::BitmapManager::init_object_info(HWND hwnd)
 	{
 		TCHAR errmsg[256];
 		_stprintf_s(errmsg, 256, _T("%s 파일을 열 수 없습니다."), filename);
-		MessageBox(hwnd, errmsg, _T("오류"), MB_OK);
+		MessageBox(m_hwnd, errmsg, _T("오류"), MB_OK);
 		return FALSE;
 	}
 
@@ -141,54 +171,23 @@ BOOL RollingBall::BitmapManager::init_object_info(HWND hwnd)
 	CloseHandle(hFile);
 	return TRUE;
 }
-BOOL RollingBall::BitmapManager::ReadLine(HANDLE hFile, LPTSTR line, int sizeofLine)
-{
-	//파일의 끝에 다다르면 FALSE를 리턴한다.
-	DWORD readSize;
-	TCHAR reading[1];
-	static int i = -1;
-	int lineidx = 0;
-	memset(line, 0, sizeofLine);
-	while (TRUE)
-	{
-		memset(reading, 0, sizeof(reading));
-		ReadFile(hFile, reading, sizeof(reading), &readSize, NULL);
-		if (++i == 0) continue;
-
-		if (reading[0] == _T('\r'))
-		{
-			return TRUE;
-		}
-		if (reading[0] == _T('\n')) continue;
-		if (reading[0] == _T('\0'))
-		{
-			if (lineidx > 0)
-				return TRUE;
-			else return FALSE;
-		}
-
-		line[lineidx++] = reading[0];
-	}
-}
 void RollingBall::BitmapManager::init_bitmap_file_count()
 {
+	if (!isInitObjectInfo()) return;
+
 	bitmap_file_count = 0;
-	UINT object_files;
-	for (int object = 0; object < old_object_count; object++)
-	{
-		object_files =
-			old_count_table[object][old__texture] *
-			old_count_table[object][old__size] *
-			(old_count_table[object][old__mask] ? 2 : 1);
-		bitmap_file_count += object_files;
-	}
+	for (int obj = 0; obj < object_info.size(); obj++)
+		bitmap_file_count += get_file_count(obj);
+			
 }
 void RollingBall::BitmapManager::init_hBitmap()
 {
-	hBitmap = new HBITMAP[bitmap_file_count];
+	if (!isInitBitmapFileCount()) return;
+	if (isInitHBitmap())
+		delete_hBitmap();
 
-	for (UINT file_idx = 0; file_idx < bitmap_file_count; file_idx++)
-		hBitmap[file_idx] = LoadBitmap(hInstance, MAKEINTRESOURCE(BMPFILEMACRO[file_idx]));
+	for (int fileidx = 0; fileidx < bitmap_file_count; fileidx++)
+		hBitmap.push_back(LoadBitmap(hInstance, MAKEINTRESOURCE(BMPFILEMACRO[fileidx])));
 
 	//old code below
 	//비트맵 로드
@@ -201,10 +200,11 @@ void RollingBall::BitmapManager::init_hBitmap()
 }
 void RollingBall::BitmapManager::delete_hBitmap()
 {
-	for (UINT file_idx = 0; file_idx < bitmap_file_count; file_idx++)
-		DeleteObject(hBitmap[file_idx]);
-
-	delete[] hBitmap;
+	if (!isInitHBitmap()) return;
+	for (int fileidx = 0; fileidx < bitmap_file_count; fileidx++)
+		DeleteObject(hBitmap[fileidx]);
+	
+	hBitmap.clear();
 
 	//old code below
 	DeleteObject(oldvar_floor);
@@ -213,6 +213,31 @@ void RollingBall::BitmapManager::delete_hBitmap()
 		DeleteObject(oldvar_ball[size]);
 		DeleteObject(oldvar_ball_mask[size]);
 	}
+}
+void RollingBall::BitmapManager::init_curr_sel_idx()
+{
+	curr_sel_idx.object = 0;
+	curr_sel_idx.texture = 0;
+	curr_sel_idx.texture_size = 0;
+}
+int RollingBall::BitmapManager::get_file_count(int obj)
+{
+	return (int)object_info[obj].texture.name.size()
+		* (int)object_info[obj].texture.value.size()
+		* (object_info[obj].has_mask ? 2 : 1);
+}
+
+BOOL RollingBall::BitmapManager::isInitObjectInfo()
+{
+	return object_info.size() != 0;
+}
+BOOL RollingBall::BitmapManager::isInitBitmapFileCount()
+{
+	return bitmap_file_count != 0;
+}
+BOOL RollingBall::BitmapManager::isInitHBitmap()
+{
+	return hBitmap.size() != 0;
 }
 
 
@@ -231,9 +256,9 @@ BOOL BitmapManager::init(HINSTANCE m_hInstance, HWND m_hwnd, int m_BallSizeType)
 	/*
 	{
 		TCHAR tmp[512];
-		_stprintf_s(tmp, 512, _T("object count:%d"), _object.size());
+		_stprintf_s(tmp, 512, _T("object count:%d"), _object.texture_size());
 		MessageBox(m_hwnd, tmp, _T(""), MB_OK);
-		for (int i = 0; i < _object.size(); i++)
+		for (int i = 0; i < _object.texture_size(); i++)
 		{
 			MessageBox(m_hwnd, _T("OBJECT"), _T(""), MB_OK);
 			_stprintf_s(tmp, 512, _T("name:%s, has_mask:%d"),
@@ -241,21 +266,21 @@ BOOL BitmapManager::init(HINSTANCE m_hInstance, HWND m_hwnd, int m_BallSizeType)
 			MessageBox(m_hwnd, tmp, _T(""), MB_OK);
 
 			_stprintf_s(tmp, 512, _T("object texture count:%d"),
-				_object[i].texture.name.size());
+				_object[i].texture.name.texture_size());
 			MessageBox(m_hwnd, tmp, _T(""), MB_OK);
-			for (int j = 0; j < _object[i].texture.name.size(); j++)
+			for (int j = 0; j < _object[i].texture.name.texture_size(); j++)
 			{
 				_stprintf_s(tmp, 512, _T("texture name(%d):%s"),
 					j, _object[i].texture.name[j].c_str());
 				MessageBox(m_hwnd, tmp, _T(""), MB_OK);
 			}
 
-			_stprintf_s(tmp, 512, _T("object texture size count:%d"),
-				_object[i].texture.value.size());
+			_stprintf_s(tmp, 512, _T("object texture texture_size count:%d"),
+				_object[i].texture.value.texture_size());
 			MessageBox(m_hwnd, tmp, _T(""), MB_OK);
-			for (int j = 0; j < _object[i].texture.value.size(); j++)
+			for (int j = 0; j < _object[i].texture.value.texture_size(); j++)
 			{
-				_stprintf_s(tmp, 512, _T("texture size(%d):%d"),
+				_stprintf_s(tmp, 512, _T("texture texture_size(%d):%d"),
 					j, _object[i].texture.value[j]);
 				MessageBox(m_hwnd, tmp, _T(""), MB_OK);
 			}
@@ -264,8 +289,10 @@ BOOL BitmapManager::init(HINSTANCE m_hInstance, HWND m_hwnd, int m_BallSizeType)
 	*/
 
 	hInstance = m_hInstance;
+	hwnd = m_hwnd;
 	init_bitmap_file_count();
 	init_hBitmap();
+	init_curr_sel_idx();
 	old_set_BallSizeType(m_BallSizeType);
 
 	return TRUE;
@@ -285,64 +312,109 @@ BitmapManager::~BitmapManager()
 
 HBITMAP RollingBall::BitmapManager::get(int index)
 {
-	if (isInit()) return hBitmap[index];
+	if (isInitHBitmap()) return hBitmap[index];
 	else return NULL;
 }
-int RollingBall::BitmapManager::index(int object, int texture, int size, BOOL mask)
+int RollingBall::BitmapManager::get_curr_object_idx()
+{
+	return curr_sel_idx.object;
+}
+LPCTSTR RollingBall::BitmapManager::get_curr_object_name()
+{
+	return object_info[curr_sel_idx.object].name.c_str();
+}
+int RollingBall::BitmapManager::get_curr_texture_idx()
+{
+	return curr_sel_idx.texture;
+}
+LPCTSTR RollingBall::BitmapManager::get_curr_texture_name()
+{
+	return object_info[curr_sel_idx.object].texture.name[curr_sel_idx.texture].c_str();
+}
+int RollingBall::BitmapManager::get_curr_texture_size_idx()
+{
+	return curr_sel_idx.texture_size;
+}
+int RollingBall::BitmapManager::get_curr_texture_size()
+{
+	return object_info[curr_sel_idx.object].texture.value[curr_sel_idx.texture_size];
+}
+BOOL RollingBall::BitmapManager::get_curr_object_has_mask()
+{
+	return object_info[curr_sel_idx.object].has_mask;
+}
+
+
+
+
+int RollingBall::BitmapManager::index(int objidx, int textureidx, int sizeidx, BOOL m_mask)
 {
 	int idx = 0;
 
 	//object에 따른 idx 탐색
-	for (int cur_object = 0; cur_object < old_object_count; cur_object++)
+	for (int curobjidx = 0; curobjidx < object_info.size(); curobjidx++)
 	{
-		if (cur_object == object) break;
-		idx += 
-			old_count_table[cur_object][old__texture] 
-			* old_count_table[cur_object][old__size]
-			* (old_count_table[cur_object][old__mask] ? 2 : 1);
+		if (curobjidx == objidx) break;
+		idx += get_file_count(curobjidx);
 	}
 
 	//texture에 따른 idx 탐색
-	for (UINT cur_texture = 0; cur_texture < old_count_table[object][old__texture]; cur_texture++)
-	{
-		if (cur_texture == texture) break;
-		idx +=
-			old_count_table[object][old__size] *
-			(old_count_table[object][old__mask] ? 2 : 1);
-	}
+	idx += textureidx * 
+		get_file_count(objidx) / (int)object_info[objidx].texture.name.size();
 
 	//mask 유무에 따른 idx 탐색
-	if (mask == TRUE && old_count_table[object][old__mask] == TRUE)
-		idx += old_count_table[object][old__size];
+	if (m_mask == TRUE && object_info[objidx].has_mask == TRUE)
+		idx += (int)object_info[objidx].texture.value.size();
 
 	//size에 따른 idx 탐색
-	idx += size;
+	idx += sizeidx;
 
 	return idx;
 }
-int RollingBall::BitmapManager::object(LPCTSTR object)
+int RollingBall::BitmapManager::index(LPCTSTR m_obj, LPCTSTR m_texture, int m_size, BOOL m_mask)
 {
-	if (_tcscmp(object, _T("ball")) == 0)
-		return 0;
-	if (_tcscmp(object, _T("floor")) == 0)
-		return 1;
+	return index(object(m_obj), texture(m_texture), size(m_size), m_mask);
+}
+int RollingBall::BitmapManager::object(LPCTSTR m_obj)
+{
+	for (int i = 0; i < object_info.size(); i++) 
+		if (_tcscmp(m_obj, object_info[i].name.c_str()) == 0)
+			return curr_sel_idx.object = i;
 
 	return 0;
 }
-int RollingBall::BitmapManager::texture(LPCTSTR texture)
+LPCTSTR RollingBall::BitmapManager::object(int m_objidx)
 {
-	int result = 0;
-	if (_tcscmp(texture, _T("iron1")) == 0)
-		return 0;
-	if (_tcscmp(texture, _T("iron2")) == 0)
-		return 1;
-	if (_tcscmp(texture, _T("wood1")) == 0)
-		return 0;
+	return object_info[m_objidx].name.c_str();
+}
+int RollingBall::BitmapManager::texture(LPCTSTR m_texture)
+{
+	int cur_obj = curr_sel_idx.object;
+
+	for (int i = 0; 
+		i < object_info[cur_obj].texture.name.size(); i++)
+		if (_tcscmp(m_texture, object_info[cur_obj].texture.name[i].c_str()) == 0)
+			return curr_sel_idx.texture = i;
+
 	return 0;
 }
-int RollingBall::BitmapManager::size(int size)
+LPCTSTR RollingBall::BitmapManager::texture(int m_textureidx)
 {
+	return object_info[curr_sel_idx.object].texture.name[m_textureidx].c_str();
+}
+int RollingBall::BitmapManager::size(int m_size)
+{
+	int cur_obj = curr_sel_idx.object;
+
+	for (int i = 0; i < object_info[cur_obj].texture.value.size(); i++)
+		if (m_size == object_info[cur_obj].texture.value[i])
+			return curr_sel_idx.texture_size = i;
+
 	return 0;
+}
+int RollingBall::BitmapManager::idx_to_size(int m_sizeidx)
+{
+	return object_info[curr_sel_idx.object].texture.value[m_sizeidx];
 }
 HBITMAP RollingBall::BitmapManager::operator[](int index)
 {
@@ -355,11 +427,11 @@ HBITMAP RollingBall::BitmapManager::operator[](int index)
 //old functions below
 void BitmapManager::old_set_BallSizeType(int m_BallSizeType)
 {
-	BallSizeType = m_BallSizeType;
+	old_BallSizeType = m_BallSizeType;
 }
 int BitmapManager::old_get_BallSizeType()
 {
-	return BallSizeType;
+	return old_BallSizeType;
 }
 HBITMAP BitmapManager::old_get_hBitmap_floor()
 {
@@ -367,11 +439,11 @@ HBITMAP BitmapManager::old_get_hBitmap_floor()
 }
 HBITMAP BitmapManager::old_get_hBitmap_ball()
 {
-	return oldvar_ball[old_BallSize_toIdx(BallSizeType)];
+	return get(index(_T("ball"), _T("iron1"), 64, FALSE));
 }
 HBITMAP BitmapManager::old_get_hBitmap_ball_mask()
 {
-	return oldvar_ball_mask[old_BallSize_toIdx(BallSizeType)];
+	return get(index(_T("ball"), _T("iron1"), 64, TRUE));
 }
 int BitmapManager::old_BallSize_toIdx(int BallSize)
 {
