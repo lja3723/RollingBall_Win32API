@@ -73,7 +73,7 @@ namespace RollingBall
 		~PaintManager();
 
 		//PrantManager 클래스 변수를 사용하기 전 반드시 수행해야 한다
-		BOOL init(HINSTANCE m_hInstance, HWND m_hwnd, int BallSizeType = BallSize_medium);
+		BOOL init(HINSTANCE m_hInstance, HWND m_hwnd, int BallSizeType = old_BallSize_medium);
 
 		//페인트를 시작한다
 		void beginPaint();

@@ -308,9 +308,9 @@ void PaintManager::hBitmap_res_init()
 }
 void PaintManager::hBitmap_res_set()
 {
-	winAPI.hBitmap.res.background = bmp.get_hBitmap_floor();
-	winAPI.hBitmap.res.ball = bmp.get_hBitmap_ball();
-	winAPI.hBitmap.res.ball_mask = bmp.get_hBitmap_ball_mask();
+	winAPI.hBitmap.res.background = bmp.old_get_hBitmap_floor();
+	winAPI.hBitmap.res.ball = bmp.old_get_hBitmap_ball();
+	winAPI.hBitmap.res.ball_mask = bmp.old_get_hBitmap_ball_mask();
 
 	flag.isSetHBitmapRes = TRUE;
 }
@@ -436,7 +436,7 @@ void PaintManager::doubleBuffering_halt()
 *********************************/
 void PaintManager::set_BallSizeType(int m_BallSizeType)
 {
-	bmp.set_BallSizeType(m_BallSizeType);
+	bmp.old_set_BallSizeType(m_BallSizeType);
 }
 
 
@@ -466,7 +466,7 @@ void PaintManager::paint_background_ruller_tobuffer()
 void PaintManager::paint_ball_tobuffer(int x, int y)
 {
 	if (!isReadyToPaint()) return;
-	int ballType = bmp.get_BallSizeType();
+	int ballType = bmp.old_get_BallSizeType();
 
 	BitBlt(
 		winAPI.hDC.mem.windowBuffer,
