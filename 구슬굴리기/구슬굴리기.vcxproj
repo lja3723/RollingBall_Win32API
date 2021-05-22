@@ -140,6 +140,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BitmapManager.cpp" />
+    <ClCompile Include="Debugger.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="ObjectManager.cpp" />
     <ClCompile Include="Controller.cpp" />
@@ -149,6 +150,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BitmapManager.h" />
+    <ClInclude Include="Debugger.h" />
     <ClInclude Include="ObjectManager.h" />
     <ClInclude Include="Controller.h" />
     <ClInclude Include="Physics.h" />

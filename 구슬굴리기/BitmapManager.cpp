@@ -1,5 +1,5 @@
 ﻿#include "BitmapManager.h"
-
+#include "Debugger.h"
 using namespace RollingBall;
 
 
@@ -362,6 +362,7 @@ int RollingBall::BitmapManager::index(int objidx, int textureidx, int sizeidx, B
 		idx += get_file_count(curobjidx);
 	}
 
+
 	//texture에 따른 idx 탐색
 	idx += textureidx * 
 		get_file_count(objidx) / (int)object_info[objidx].texture.name.size();
@@ -373,7 +374,7 @@ int RollingBall::BitmapManager::index(int objidx, int textureidx, int sizeidx, B
 	//size에 따른 idx 탐색
 	idx += sizeidx;
 
-	if (!(0 <= idx && idx <= 9))
+	if (!(0 <= idx && idx <= 8))
 		idx = 8;
 	return idx;
 }
@@ -387,7 +388,7 @@ int RollingBall::BitmapManager::object(LPCTSTR m_obj)
 		if (_tcscmp(m_obj, object_info[i].name.c_str()) == 0)
 			return curr_sel_idx.object = i;
 
-	return 0;
+	return curr_sel_idx.object = 0;
 }
 LPCTSTR RollingBall::BitmapManager::object(int m_objidx)
 {
@@ -402,7 +403,7 @@ int RollingBall::BitmapManager::texture(LPCTSTR m_texture)
 		if (_tcscmp(m_texture, object_info[cur_obj].texture.name[i].c_str()) == 0)
 			return curr_sel_idx.texture = i;
 
-	return 0;
+	return curr_sel_idx.texture = 0;
 }
 LPCTSTR RollingBall::BitmapManager::texture(int m_textureidx)
 {
@@ -416,7 +417,7 @@ int RollingBall::BitmapManager::size(int m_size)
 		if (m_size == object_info[cur_obj].texture.value[i])
 			return curr_sel_idx.texture_size = i;
 
-	return 0;
+	return curr_sel_idx.texture_size = 0;
 }
 int RollingBall::BitmapManager::idx_to_size(int m_sizeidx)
 {

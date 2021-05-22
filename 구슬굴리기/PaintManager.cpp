@@ -1,4 +1,5 @@
 ﻿#include "PaintManager.h"
+#include "Debugger.h"
 using namespace RollingBall;
 
 
@@ -471,8 +472,7 @@ void PaintManager::paint_ball_tobuffer(int x, int y)
 {
 	if (!isReadyToPaint()) return;
 	//int ballType = bmp.old_get_BallSizeType();
-	bmp.index(_T("ball"), _T("iron1"), 128, FALSE);
-	int ballType = bmp.get_curr_texture_size();
+	int ballType = 64;
 
 	BitBlt(
 		winAPI.hDC.mem.windowBuffer,

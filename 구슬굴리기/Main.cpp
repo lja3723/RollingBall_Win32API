@@ -2,6 +2,7 @@
 #include <tchar.h>
 #include "resource.h"
 #include "RollingBall.h"
+#include "Debugger.h"
 #define PROGRAM_NAME _T("구슬 굴리기")
 #define PROGRAM_VER	_T("1.0")
 
@@ -74,6 +75,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 	case WM_CREATE:
 		SetTimer(hwnd, 1, 5, NULL);
 		hInstance = ((LPCREATESTRUCT)lParam)->hInstance;
+		debugger.init(hInstance, hwnd);
 		return 0;
 
 	case WM_TIMER:
@@ -103,6 +105,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 					hInstance, MAKEINTRESOURCE(IDD_DIALOG_DEBUGGING), 
 					hwnd, (DLGPROC)DebuggingDialogProc
 				);
+				debugger.set_hDebugDlg(hDebugDlg);
 				ShowWindow(hDebugDlg, SW_SHOW);
 			}
 			break;
@@ -143,6 +146,7 @@ BOOL CALLBACK DebuggingDialogProc(HWND hDlg, UINT iMsg, WPARAM wParam, LPARAM lP
 		case IDCANCEL:
 			DestroyWindow(hDlg);
 			hDlg = NULL;
+			debugger.release_hDebugDlg();
 			break;
 		}
 		return TRUE;

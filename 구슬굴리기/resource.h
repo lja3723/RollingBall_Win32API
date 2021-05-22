@@ -8,6 +8,12 @@
 #define IDD_DIALOG_PROGRAM_INFO         104
 #define IDC_TEXT_PROGRAM_NAME           1002
 #define IDC_TEXT_PROGRAM_VER            1003
+#define IDC_TEXT_DEBUG1                 1004
+#define IDC_TEXT_DEBUG2                 1005
+#define IDC_TEXT_DEBUG3                 1006
+#define IDC_TEXT_DEBUG4                 1007
+#define IDC_TEXT_DEBUG5                 1008
+#define IDC_TEXT_DEBUG6                 1009
 #define IDB_FLOOR_WOOD1_256             10001
 #define IDB_BALL_IRON1_032              10002
 #define IDB_BALL_IRON1_032M             10003
@@ -28,7 +34,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        106
 #define _APS_NEXT_COMMAND_VALUE         40005
-#define _APS_NEXT_CONTROL_VALUE         1004
+#define _APS_NEXT_CONTROL_VALUE         1005
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
