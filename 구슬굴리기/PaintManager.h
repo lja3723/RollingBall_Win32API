@@ -66,15 +66,14 @@ namespace RollingBall
 
 			BOOL isDoubleBufferingStart;
 			BOOL isInit;
-			BOOL isInitBitmapManager;
 			BOOL isInitDoubleBuffering;
 		} flag;
 	
 	public:
 		~PaintManager();
 
-		//PrintManager 클래스 변수를 사용하기 전 반드시 수행해야 한다
-		void init(HINSTANCE hInstance, HWND hwnd, int BallSizeType = BallSize_medium);
+		//PaintManager 클래스 변수를 사용하기 전 반드시 수행해야 한다
+		BOOL init(HINSTANCE m_hInstance, HWND m_hwnd, int BallSizeType = BallSize_medium);
 
 		//페인트를 시작한다
 		void beginPaint();
@@ -99,21 +98,11 @@ namespace RollingBall
 		//PaintManager::init()에서만 호출되어야 함
 		void init_flags();
 
-		//BitmapManager 변수를 초기화
-		//PaintManager::init()에서만 호출되어야 함
-		void init_bitmapManager();
-
-
-
 		/********************************
 		*
 		*	bool returns
 		*
 		*********************************/
-		//각종 초기화 여부를 알려줌
-		BOOL isInit();
-		BOOL isInitBitmapManager();
-
 		//hDC.window를 얻는 모드가 무엇인지 알려줌
 		BOOL isHDCwindowMode_GetDC();
 		BOOL isHDCwindowMode_BeginPaint();
@@ -128,6 +117,7 @@ namespace RollingBall
 		BOOL isBackedUpHBitmapRes();
 
 		//기타 정보를 알려줌
+		BOOL isInit();
 		BOOL isDoubleBufferingStart();
 		BOOL isReadyToPaint();
 		BOOL isInitDoubleBuffering();

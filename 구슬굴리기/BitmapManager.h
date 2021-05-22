@@ -57,7 +57,7 @@ namespace RollingBall
 	class BitmapManager
 	{
 	private:
-		static int _object_count;
+		
 		struct BitmapManagerObject {
 			tstring name;
 			BOOL has_mask;
@@ -70,7 +70,8 @@ namespace RollingBall
 				} size;
 			} texture;
 		};
-
+		//오브젝트 개수
+		static int _object_count;
 		//오브젝트에 대한 정보를 담은 벡터
 		vector<BitmapManagerObject> _object;
 
@@ -140,6 +141,8 @@ namespace RollingBall
 		/************************************
 		*	private functions
 		*************************************/
+		//object vector를 object_info.txt 기반으로 초기화하는 함수
+		BOOL init_object_info(HWND hwnd);
 		//bitmap_file_count를 초기화하는 함수
 		void init_bitmap_file_count();
 		//hBitmap 배열을 동적 생성하고 hBitmap을 로드하는 함수
@@ -163,7 +166,8 @@ namespace RollingBall
 			} object;
 		} count;
 
-		void init(HINSTANCE m_hInstance, int m_BallSizeType = BallSize_medium);
+		//BitmapManager 클래스 변수를 사용하기 전 반드시 수행해야 한다
+		BOOL init(HINSTANCE m_hInstance, HWND m_hwnd, int m_BallSizeType = BallSize_medium);
 		BOOL isInit();
 		~BitmapManager();
 
