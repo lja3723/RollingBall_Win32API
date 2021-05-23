@@ -1,6 +1,4 @@
 ﻿#include "BitmapManager.h"
-#include "FileManager.h"
-#include "Debugger.h"
 using namespace RollingBall;
 
 
@@ -13,6 +11,8 @@ using namespace RollingBall;
 int BitmapManager::bitmap_file_count = 0;
 HINSTANCE BitmapManager::hInstance = NULL;
 vector<HBITMAP> BitmapManager::hBitmap = vector<HBITMAP>();
+
+
 
 /*****************************************
 *

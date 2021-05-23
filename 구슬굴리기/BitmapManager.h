@@ -20,6 +20,7 @@ namespace RollingBall
 	{
 	private:
 		HWND hwnd;
+		ObjectManager om;
 
 		struct {
 			int object;
@@ -51,8 +52,6 @@ namespace RollingBall
 
 		//로드된 hBitmap들을 담을 벡터
 		static vector<HBITMAP> hBitmap;
-
-		ObjectManager om;
 		
 
 
@@ -71,6 +70,7 @@ namespace RollingBall
 		//curselidx 요소들을 초기화하는 함수
 		void init_curselidx();
 
+		////아래 함수도 ObjectManager에서 관리해야 할 것 같다
 		//obj의 총 파일 개수를 구하는 함수
 		int get_object_file_count(int objidx);
 
