@@ -46,23 +46,19 @@ namespace RollingBall
 			IDB_FLOOR_WOOD1_0256, IDB_FLOOR_WOOD1_0512, IDB_FLOOR_WOOD1_1024
 		};
 
-		//오브젝트 정보가 담긴 벡터; object_info.txt 파일으로 초기화됨
-		static vector<ObjectInfo> object_info;
-
 		//비트맵 파일 개수: init 함수 호출시 자동으로 초기화됨
 		static int bitmap_file_count;
 
 		//로드된 hBitmap들을 담을 벡터
 		static vector<HBITMAP> hBitmap;
+
+		ObjectManager om;
 		
 
 
 		/************************************
 		*	private functions
 		*************************************/
-		//object vector를 object_info.txt 기반으로 초기화하는 함수
-		BOOL init_object_info(HWND hwnd);
-
 		//bitmap_file_count를 초기화하는 함수
 		void init_bitmap_file_count();
 
@@ -84,7 +80,6 @@ namespace RollingBall
 		*	private functions
 		*   BOOL returns
 		*************************************/
-		BOOL isInitObjectInfo();
 		BOOL isInitBitmapFileCount();
 		BOOL isInitHBitmap();
 

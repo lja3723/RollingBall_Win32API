@@ -6,7 +6,7 @@ BOOL RollingBallClass::init(HINSTANCE m_hInstance, HWND m_hwnd)
 {
 	winAPI.hInstance = m_hInstance;
 	winAPI.hwnd = m_hwnd;
-
+	if (!objectManager.init(m_hwnd)) return FALSE;
 	if (!paintManager.init(winAPI.hInstance, winAPI.hwnd)) return FALSE;
 
 	memset(&physics, 0, sizeof(physics));

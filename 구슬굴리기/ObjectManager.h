@@ -33,6 +33,18 @@ namespace RollingBall
 
 	};
 
+	class ObjectManager 
+	{
+	private:
+		static BOOL flag_isObjectInfoInit;
+	public:
+		static vector<ObjectInfo> object_info;
+
+		BOOL init(HWND hwnd);
+		BOOL init_object_info(HWND hwnd);
+		BOOL isInitObjectInfo();
+
+	};
 }
 
 #endif

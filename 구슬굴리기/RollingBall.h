@@ -6,6 +6,7 @@
 #include "PaintManager.h"
 #include "Physics.h"
 #include "Controller.h"
+#include "ObjectManager.h"
 
 namespace RollingBall
 {
@@ -20,6 +21,7 @@ namespace RollingBall
 		PaintManager paintManager;
 		Physics physics;
 		Controller controller;
+		ObjectManager objectManager;
 
 	public:
 		//RollingBallClass 변수를 사용하기 전 반드시 수행해야 함
