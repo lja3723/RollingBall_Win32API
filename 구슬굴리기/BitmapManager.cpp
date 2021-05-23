@@ -22,7 +22,7 @@ vector<HBITMAP> BitmapManager::hBitmap = vector<HBITMAP>();
 *			private functions
 * 
 *****************************************/
-BOOL RollingBall::BitmapManager::ReadLine(HANDLE hFile, LPTSTR line, int sizeofLine)
+BOOL BitmapManager::ReadLine(HANDLE hFile, LPTSTR line, int sizeofLine)
 {
 	//파일의 끝에 다다르면 FALSE를 리턴한다.
 	DWORD readSize;
@@ -51,7 +51,7 @@ BOOL RollingBall::BitmapManager::ReadLine(HANDLE hFile, LPTSTR line, int sizeofL
 		line[lineidx++] = reading[0];
 	}
 }
-BOOL RollingBall::BitmapManager::init_object_info(HWND m_hwnd)
+BOOL BitmapManager::init_object_info(HWND m_hwnd)
 {
 	//파일을 연다.
 	LPCTSTR filename = _T("..\\res\\bmp\\object_info.txt");
@@ -62,6 +62,7 @@ BOOL RollingBall::BitmapManager::init_object_info(HWND m_hwnd)
 		NULL, OPEN_EXISTING, 
 		FILE_ATTRIBUTE_NORMAL, NULL
 	);
+
 	if (hFile == INVALID_HANDLE_VALUE)
 	{
 		TCHAR errmsg[256];
@@ -165,7 +166,7 @@ BOOL RollingBall::BitmapManager::init_object_info(HWND m_hwnd)
 	CloseHandle(hFile);
 	return TRUE;
 }
-void RollingBall::BitmapManager::init_bitmap_file_count()
+void BitmapManager::init_bitmap_file_count()
 {
 	if (!isInitObjectInfo()) return;
 
@@ -174,7 +175,7 @@ void RollingBall::BitmapManager::init_bitmap_file_count()
 		bitmap_file_count += get_file_count(obj);
 			
 }
-void RollingBall::BitmapManager::init_hBitmap()
+void BitmapManager::init_hBitmap()
 {
 	if (!isInitBitmapFileCount()) return;
 	if (isInitHBitmap())
@@ -194,7 +195,7 @@ void RollingBall::BitmapManager::init_hBitmap()
 	}
 	*/
 }
-void RollingBall::BitmapManager::delete_hBitmap()
+void BitmapManager::delete_hBitmap()
 {
 	if (!isInitHBitmap()) return;
 	for (int fileidx = 0; fileidx < bitmap_file_count; fileidx++)
@@ -212,11 +213,11 @@ void RollingBall::BitmapManager::delete_hBitmap()
 	}
 	*/
 }
-void RollingBall::BitmapManager::init_curselidx()
+void BitmapManager::init_curselidx()
 {
 	set_cur_sel();
 }
-int RollingBall::BitmapManager::get_file_count(int objidx)
+int BitmapManager::get_file_count(int objidx)
 {
 	if (!(0 <= objidx && objidx < object_info.size())) objidx = 0;
 	return (int)object_info[objidx].texture.name.size()
@@ -224,20 +225,20 @@ int RollingBall::BitmapManager::get_file_count(int objidx)
 		* (object_info[objidx].has_mask ? 2 : 1);
 }
 
-BOOL RollingBall::BitmapManager::isInitObjectInfo()
+BOOL BitmapManager::isInitObjectInfo()
 {
 	return object_info.size() != 0;
 }
-BOOL RollingBall::BitmapManager::isInitBitmapFileCount()
+BOOL BitmapManager::isInitBitmapFileCount()
 {
 	return bitmap_file_count != 0;
 }
-BOOL RollingBall::BitmapManager::isInitHBitmap()
+BOOL BitmapManager::isInitHBitmap()
 {
 	return hBitmap.size() != 0;
 }
 
-void RollingBall::BitmapManager::arrange_idx(int& objidx, int& textureidx, int& sizeidx, BOOL& mask)
+void BitmapManager::arrange_idx(int& objidx, int& textureidx, int& sizeidx, BOOL& mask)
 {
 	if (!(0 <= objidx && objidx < object_info.size())) objidx = 0;
 	if (!(0 <= textureidx && textureidx < object_info[objidx].texture.name.size())) textureidx = 0;
@@ -293,7 +294,7 @@ BOOL BitmapManager::init(HINSTANCE m_hInstance, HWND m_hwnd)
 
 	return TRUE;
 }
-BOOL RollingBall::BitmapManager::isInit()
+BOOL BitmapManager::isInit()
 {
 	return hInstance != NULL;
 }
@@ -306,59 +307,59 @@ BitmapManager::~BitmapManager()
 	}
 }
 
-HBITMAP RollingBall::BitmapManager::get(int index)
+HBITMAP BitmapManager::get(int index)
 {
 	if (isInitHBitmap()) return hBitmap[index];
 	else return NULL;
 }
-HBITMAP RollingBall::BitmapManager::create_hDC_compatible(HDC hdc, RECT& rt)
+HBITMAP BitmapManager::create_hDC_compatible(HDC hdc, RECT& rt)
 {
 	return CreateCompatibleBitmap(hdc, rt.right, rt.bottom);
 }
-void RollingBall::BitmapManager::delete_hDC_compatible(HBITMAP hDCcompatibleBitmap)
+void BitmapManager::delete_hDC_compatible(HBITMAP hDCcompatibleBitmap)
 {
 	DeleteObject(hDCcompatibleBitmap);
 }
-int RollingBall::BitmapManager::get_curr_sel_idx()
+int BitmapManager::get_curr_sel_idx()
 {
 	return index(
 		curselidx.object, curselidx.texture, 
 		curselidx.texture_size, curselidx.mask
 	);
 }
-int RollingBall::BitmapManager::get_curr_object_idx()
+int BitmapManager::get_curr_object_idx()
 {
 	return curselidx.object;
 }
-LPCTSTR RollingBall::BitmapManager::get_curr_object_name()
+LPCTSTR BitmapManager::get_curr_object_name()
 {
 	return object_info[curselidx.object].name.c_str();
 }
 
-int RollingBall::BitmapManager::get_curr_texture_idx()
+int BitmapManager::get_curr_texture_idx()
 {
 	return curselidx.texture;
 }
-LPCTSTR RollingBall::BitmapManager::get_curr_texture_name()
+LPCTSTR BitmapManager::get_curr_texture_name()
 {
 	return object_info[curselidx.object].texture.name[curselidx.texture].c_str();
 }
 
-int RollingBall::BitmapManager::get_curr_texture_size_idx()
+int BitmapManager::get_curr_texture_size_idx()
 {
 	return curselidx.texture_size;
 }
-int RollingBall::BitmapManager::get_curr_texture_size()
+int BitmapManager::get_curr_texture_size()
 {
 	return object_info[curselidx.object].texture.value[curselidx.texture_size];
 }
 
-BOOL RollingBall::BitmapManager::get_curr_object_has_mask()
+BOOL BitmapManager::get_curr_object_has_mask()
 {
 	return object_info[curselidx.object].has_mask;
 }
 
-int RollingBall::BitmapManager::get_bitmap_file_count()
+int BitmapManager::get_bitmap_file_count()
 {
 	return bitmap_file_count;
 }
@@ -366,7 +367,7 @@ int RollingBall::BitmapManager::get_bitmap_file_count()
 
 
 
-int RollingBall::BitmapManager::index(int objidx, int textureidx, int sizeidx, BOOL m_mask)
+int BitmapManager::index(int objidx, int textureidx, int sizeidx, BOOL m_mask)
 {
 	int idx = 0;
 
@@ -389,13 +390,13 @@ int RollingBall::BitmapManager::index(int objidx, int textureidx, int sizeidx, B
 
 	return idx;
 }
-int RollingBall::BitmapManager::index(LPCTSTR m_obj, LPCTSTR m_texture, int m_size, BOOL m_mask)
+int BitmapManager::index(LPCTSTR m_obj, LPCTSTR m_texture, int m_size, BOOL m_mask)
 {
 	set_cur_sel(m_obj, m_texture, m_size, m_mask);
 	return index(object(m_obj), texture(m_texture), size(m_size), m_mask);
 }
 
-int RollingBall::BitmapManager::object(LPCTSTR m_obj)
+int BitmapManager::object(LPCTSTR m_obj)
 {
 	for (int i = 0; i < object_info.size(); i++) 
 		if (_tcscmp(m_obj, object_info[i].name.c_str()) == 0)
@@ -403,12 +404,12 @@ int RollingBall::BitmapManager::object(LPCTSTR m_obj)
 
 	return 0;
 }
-LPCTSTR RollingBall::BitmapManager::object(int m_objidx)
+LPCTSTR BitmapManager::object(int m_objidx)
 {
 	return object_info[m_objidx].name.c_str();
 }
 
-int RollingBall::BitmapManager::texture(LPCTSTR m_texture)
+int BitmapManager::texture(LPCTSTR m_texture)
 {
 	for (int i = 0; i < object_info[curselidx.object].texture.name.size(); i++)
 		if (_tcscmp(m_texture, object_info[curselidx.object].texture.name[i].c_str()) == 0)
@@ -416,12 +417,12 @@ int RollingBall::BitmapManager::texture(LPCTSTR m_texture)
 
 	return 0;
 }
-LPCTSTR RollingBall::BitmapManager::texture(int m_textureidx)
+LPCTSTR BitmapManager::texture(int m_textureidx)
 {
 	return object_info[curselidx.object].texture.name[m_textureidx].c_str();
 }
 
-int RollingBall::BitmapManager::size(int m_size)
+int BitmapManager::size(int m_size)
 {
 	for (int i = 0; i < object_info[curselidx.object].texture.value.size(); i++)
 		if (m_size == object_info[curselidx.object].texture.value[i])
@@ -429,12 +430,12 @@ int RollingBall::BitmapManager::size(int m_size)
 
 	return 0;
 }
-int RollingBall::BitmapManager::idx_to_size(int sizeidx)
+int BitmapManager::idx_to_size(int sizeidx)
 {
 	return object_info[curselidx.object].texture.value[sizeidx];
 }
 
-void RollingBall::BitmapManager::set_cur_sel(int objidx, int textureidx, int sizeidx, BOOL m_mask)
+void BitmapManager::set_cur_sel(int objidx, int textureidx, int sizeidx, BOOL m_mask)
 {
 	curselidx.object = objidx;
 	curselidx.texture = textureidx;
@@ -442,7 +443,7 @@ void RollingBall::BitmapManager::set_cur_sel(int objidx, int textureidx, int siz
 	curselidx.mask = m_mask;
 	arrange_idx(curselidx.object, curselidx.texture, curselidx.texture_size, curselidx.mask);
 }
-void RollingBall::BitmapManager::set_cur_sel(LPCTSTR m_obj, LPCTSTR m_texture, int m_size, BOOL m_mask)
+void BitmapManager::set_cur_sel(LPCTSTR m_obj, LPCTSTR m_texture, int m_size, BOOL m_mask)
 {
 	int objidx = object(m_obj);
 	curselidx.object = objidx;
@@ -451,7 +452,7 @@ void RollingBall::BitmapManager::set_cur_sel(LPCTSTR m_obj, LPCTSTR m_texture, i
 	int sizeidx = size(m_size);
 	set_cur_sel(objidx, textureidx, sizeidx, m_mask);
 }
-HBITMAP RollingBall::BitmapManager::operator[](int index)
+HBITMAP BitmapManager::operator[](int index)
 {
 	return get(index);
 }
