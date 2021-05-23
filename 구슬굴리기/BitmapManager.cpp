@@ -244,8 +244,8 @@ BOOL BitmapManager::init(HINSTANCE m_hInstance, HWND m_hwnd)
 
 			"has mask: %s",
 			i, object_info[i].name.c_str(),
-			object_info[i].texture.name.size(), name.c_str(),
-			object_info[i].texture.value.size(), value.c_str(),
+			(int)object_info[i].texture.name.size(), name.c_str(),
+			(int)object_info[i].texture.value.size(), value.c_str(),
 			(object_info[i].has_mask ? _T("TRUE") : _T("FALSE"))
 		);
 	}

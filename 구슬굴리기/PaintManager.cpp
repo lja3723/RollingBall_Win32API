@@ -50,7 +50,7 @@ BOOL PaintManager::init(HINSTANCE m_hInstance, HWND m_hwnd)
 
 	return TRUE;
 }
-void RollingBall::PaintManager::translate_windowEvent(UINT m_iMsg, WPARAM m_wParam, LPARAM m_lParam)
+void PaintManager::translate_windowEvent(UINT m_iMsg, WPARAM m_wParam, LPARAM m_lParam)
 {
 	if (m_iMsg != WM_SIZE) return;
 
@@ -106,14 +106,14 @@ void PaintManager::init_flags()
 	flag.isInitDoubleBuffering = FALSE;
 	flag.isWindowSizeChanged = FALSE;
 }
-void RollingBall::PaintManager::init_res_count()
+void PaintManager::init_res_count()
 {
 	if (!bmp.isInit()) return;
 	res_count = bmp.get_bitmap_file_count();
 	init_res_vectors();
 }
 
-void RollingBall::PaintManager::init_res_vectors()
+void PaintManager::init_res_vectors()
 {
 	winAPI.hDC.mem.res.resize(res_count);
 	winAPI.hBitmap.res.resize(res_count);
@@ -183,7 +183,7 @@ BOOL PaintManager::isInitDoubleBuffering()
 {
 	return flag.isInitDoubleBuffering;
 }
-BOOL RollingBall::PaintManager::isWindowSizeChanged()
+BOOL PaintManager::isWindowSizeChanged()
 {
 	return flag.isWindowSizeChanged;
 }
@@ -289,12 +289,12 @@ void PaintManager::memDC_res_release()
 	flag.isSetMemDCres = FALSE;
 }
 
-void RollingBall::PaintManager::memDC_create()
+void PaintManager::memDC_create()
 {
 	memDC_windowBuffer_set();
 	memDC_res_set();
 }
-void RollingBall::PaintManager::memDC_delete()
+void PaintManager::memDC_delete()
 {
 	memDC_windowBuffer_release();
 	memDC_res_release();

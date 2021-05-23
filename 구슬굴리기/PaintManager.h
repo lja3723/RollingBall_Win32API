@@ -199,8 +199,7 @@ namespace RollingBall
 		*	variable management
 		*
 		*********************************/
-		//BallSizeType을 설정함
-		//void set_BallSizeType(int m_BallSizeType);
+
 
 
 

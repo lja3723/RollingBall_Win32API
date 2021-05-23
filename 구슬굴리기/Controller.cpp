@@ -118,39 +118,39 @@ void Controller::update_ballPos(HWND hwnd, int ballsize)
 		y.Speed = 0;
 }
 
-int RollingBall::Controller::get_xPos()
+int Controller::get_xPos()
 {
 	return (int)x.Pos;
 }
-int RollingBall::Controller::get_xSpeed()
+int Controller::get_xSpeed()
 {
 	return (int)x.Speed;
 }
-int RollingBall::Controller::get_xAccel()
+int Controller::get_xAccel()
 {
 	return (int)x.Accel;
 }
-int RollingBall::Controller::get_yPos()
+int Controller::get_yPos()
 {
 	return (int)y.Pos;
 }
-int RollingBall::Controller::get_ySpeed()
+int Controller::get_ySpeed()
 {
 	return (int)y.Speed;
 }
-int RollingBall::Controller::get_yAccel()
+int Controller::get_yAccel()
 {
 	return (int)y.Accel;
 }
 
-void RollingBall::Controller::initialize_ball_data()
+void Controller::initialize_ball_data()
 {
 	x.Pos = y.Pos = 150;
 	x.Speed = y.Speed = 0;
 	x.Accel = y.Accel = 0.3;
 }
 
-RollingBall::Controller::Controller()
+Controller::Controller()
 {
 	initialize_ball_data();
 }
