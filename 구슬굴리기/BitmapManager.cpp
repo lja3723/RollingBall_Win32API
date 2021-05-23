@@ -445,7 +445,9 @@ void RollingBall::BitmapManager::set_cur_sel(int objidx, int textureidx, int siz
 void RollingBall::BitmapManager::set_cur_sel(LPCTSTR m_obj, LPCTSTR m_texture, int m_size, BOOL m_mask)
 {
 	int objidx = object(m_obj);
+	curselidx.object = objidx;
 	int textureidx = texture(m_texture);
+	curselidx.texture = textureidx;
 	int sizeidx = size(m_size);
 	set_cur_sel(objidx, textureidx, sizeidx, m_mask);
 }

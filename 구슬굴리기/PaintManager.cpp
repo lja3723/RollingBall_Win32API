@@ -504,7 +504,7 @@ void PaintManager::paint_background_tobuffer()
 {
 	if (!isReadyToPaint()) return;
 
-	bmp.set_cur_sel(_T("floor"), _T("wood1"), 256, FALSE);
+	bmp.set_cur_sel(_T("floor"), _T("wood1"), 1024, FALSE);
 	int bksize = bmp.get_curr_texture_size();
 
 	GetClientRect(winAPI.hwnd, &winAPI.windowRect);
