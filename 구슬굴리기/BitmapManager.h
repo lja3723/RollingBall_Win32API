@@ -140,13 +140,14 @@ namespace RollingBall
 		void arrange_idx(int& objidx, int& textureidx, int& sizeidx, BOOL& mask);
 
 	public:
-
 		//BitmapManager 클래스 변수를 사용하기 전 반드시 수행해야 한다
 		BOOL init(HINSTANCE m_hInstance, HWND m_hwnd);
 		BOOL isInit();
 		~BitmapManager();
 
 		HBITMAP get(int index);
+		HBITMAP create_hDC_compatible(HDC hdc, RECT& rt);
+		void delete_hDC_compatible(HBITMAP hDCcompatibleBitmap);
 
 		int get_curr_object_idx();
 		LPCTSTR get_curr_object_name();

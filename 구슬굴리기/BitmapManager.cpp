@@ -318,6 +318,14 @@ HBITMAP RollingBall::BitmapManager::get(int index)
 	if (isInitHBitmap()) return hBitmap[index];
 	else return NULL;
 }
+HBITMAP RollingBall::BitmapManager::create_hDC_compatible(HDC hdc, RECT& rt)
+{
+	return CreateCompatibleBitmap(hdc, rt.right, rt.bottom);
+}
+void RollingBall::BitmapManager::delete_hDC_compatible(HBITMAP hDCcompatibleBitmap)
+{
+	DeleteObject(hDCcompatibleBitmap);
+}
 int RollingBall::BitmapManager::get_curr_object_idx()
 {
 	return curselidx.object;
