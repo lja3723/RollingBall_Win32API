@@ -4,13 +4,8 @@
 
 #include <Windows.h>
 #include <tchar.h>
-#include <string>
-#include <vector>
 #include "resource.h"
 #include "ObjectManager.h"
-
-using std::vector;
-typedef std::basic_string<TCHAR> tstring;
 
 /*
 * 
