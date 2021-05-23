@@ -50,6 +50,23 @@ BOOL PaintManager::init(HINSTANCE m_hInstance, HWND m_hwnd)
 
 	return TRUE;
 }
+void RollingBall::PaintManager::translate_windowEvent(UINT m_iMsg, WPARAM m_wParam, LPARAM m_lParam)
+{
+	if (m_iMsg != WM_SIZE) return;
+
+	switch (m_wParam)
+	{
+	case SIZE_RESTORED:
+		flag.isWindowSizeChanged = TRUE;
+		break;
+	case SIZE_MAXIMIZED:
+		flag.isWindowSizeChanged = TRUE;
+		break;
+	case SIZE_MAXSHOW:
+		flag.isWindowSizeChanged = TRUE;
+		break;
+	}
+}
 void PaintManager::beginPaint()
 {
 	hDCwindowMode_set_BeginPaint();
@@ -91,12 +108,12 @@ void PaintManager::init_flags()
 
 	flag.isDoubleBufferingStart = FALSE;
 	flag.isInitDoubleBuffering = FALSE;
+	flag.isWindowSizeChanged = FALSE;
 }
 void RollingBall::PaintManager::init_res_count()
 {
 	if (!bmp.isInit()) return;
 	res_count = bmp.get_bitmap_file_count();
-
 	init_res_vectors();
 }
 
@@ -169,6 +186,10 @@ BOOL PaintManager::isReadyToPaint()
 BOOL PaintManager::isInitDoubleBuffering()
 {
 	return flag.isInitDoubleBuffering;
+}
+BOOL RollingBall::PaintManager::isWindowSizeChanged()
+{
+	return flag.isWindowSizeChanged;
 }
 
 
@@ -408,6 +429,10 @@ void PaintManager::doubleBuffering_init()
 	memDC_create();
 	hBitmap_old_res_backup();
 
+	//hBitmap.windowBuffer를 생성한 뒤 그것을 hDC.mem.windowBuffer에 선택시킨다
+	hBitmap_windowBuffer_set();
+	hBitmap_old_windowBuffer_backup();
+
 	flag.isInitDoubleBuffering = TRUE;
 }
 void PaintManager::doubleBuffering_start()
@@ -419,19 +444,25 @@ void PaintManager::doubleBuffering_start()
 	if (!isInitDoubleBuffering())
 		doubleBuffering_init();
 
-	//hBitmap.windowBuffer를 생성한 뒤 그것을 hDC.mem.windowBuffer에 선택시킨다
-	hBitmap_windowBuffer_set();
-	hBitmap_old_windowBuffer_backup();
+	//윈도우 크기가 변경되었으면 변경된 크기에 맞는 hBitmap_windowBuffer를 등록한다
+	if (isWindowSizeChanged())
+	{
+		//hBitmap.windowBuffer를 hDC.mem.windowBuffer에서 롤백하고 release한다
+		hBitmap_old_windowBuffer_rollback();
+		hBitmap_windowBuffer_release();
+
+		//hBitmap.windowBuffer를 생성한 뒤 그것을 hDC.mem.windowBuffer에 선택시킨다
+		hBitmap_windowBuffer_set();
+		hBitmap_old_windowBuffer_backup();
+
+		flag.isWindowSizeChanged = FALSE;
+	}
 
 	flag.isDoubleBufferingStart = TRUE;
 }
 void PaintManager::doubleBuffering_stop()
 {
 	if (!isDoubleBufferingStart()) return;
-
-	//hBitmap.windowBuffer를 hDC.mem.windowBuffer에서 롤백하고 release한다
-	hBitmap_old_windowBuffer_rollback();
-	hBitmap_windowBuffer_release();
 
 	//아래는 프로그램이 종료될 때 수행되어야 한다
 	//doubleBuffering_halt();
@@ -440,6 +471,10 @@ void PaintManager::doubleBuffering_stop()
 }
 void PaintManager::doubleBuffering_halt()
 {
+	//hBitmap.windowBuffer를 hDC.mem.windowBuffer에서 롤백하고 release한다
+	hBitmap_old_windowBuffer_rollback();
+	hBitmap_windowBuffer_release();
+
 	//doublebuffering을 끝내고 프로그램을 종료할 때 마지막으로 아래 작업 수행
 	//hDC.mem.windowBuffer와 hDC.mem.res를 삭제함
 	hBitmap_old_res_rollback();
@@ -498,15 +533,38 @@ void PaintManager::paint_ball_tobuffer(int x, int y, int ballsize)
 			mask = TRUE, paintmode = SRCAND;
 		else if (i == 1)
 			mask = FALSE, paintmode = SRCPAINT; 
-		
-		int idx = bmp.index(_T("ball"), _T("iron1"), ballsize, mask);
 
+		int idx = bmp.index(_T("ball"), _T("iron1"), ballsize, mask);
+		
 		BitBlt(
 			winAPI.hDC.mem.windowBuffer,
 			x - ballsize / 2, y - ballsize / 2, ballsize, ballsize,
 			winAPI.hDC.mem.res[idx], 0, 0,
 			paintmode
 		);
+
+		/*
+		int texturesize;
+
+		int drawsize = (x + y) / 10;
+		if (drawsize > 256) drawsize = 256;
+
+		if (drawsize < 32) texturesize = 32;
+		else if (drawsize < 64) texturesize = 64;
+		else if (drawsize < 128) texturesize = 128;
+		else texturesize = 256;
+		int idx = bmp.index(_T("ball"), _T("iron1"), texturesize, mask);
+
+		//StretchBlt로 이미지 작게 표시할 때 깨짐현상을 방지한다
+		SetStretchBltMode(winAPI.hDC.mem.windowBuffer, HALFTONE);
+
+		StretchBlt(
+			winAPI.hDC.mem.windowBuffer,
+			x - drawsize / 2, y - drawsize / 2, drawsize, drawsize,
+			winAPI.hDC.mem.res[idx], 0, 0, texturesize, texturesize,
+			paintmode
+		);
+		*/
 	}
 }
 

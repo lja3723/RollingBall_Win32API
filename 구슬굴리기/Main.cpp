@@ -92,6 +92,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 	case WM_LBUTTONDOWN:
 	case WM_LBUTTONUP:
 	case WM_MOUSEMOVE:
+	case WM_SIZE:
 		rollingBall.send_windowEvent(iMsg, wParam, lParam);
 		return 0;
 

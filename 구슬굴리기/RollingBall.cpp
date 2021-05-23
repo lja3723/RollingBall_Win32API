@@ -34,4 +34,5 @@ void RollingBallClass::update_state()
 void RollingBallClass::send_windowEvent(UINT m_iMsg, WPARAM m_wParam, LPARAM m_lParam)
 {
 	controller.translate_windowEvent(m_iMsg, m_wParam, m_lParam);
+	paintManager.translate_windowEvent(m_iMsg, m_wParam, m_lParam);
 }
