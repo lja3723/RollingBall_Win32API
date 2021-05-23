@@ -24,7 +24,7 @@ namespace RollingBall
 	public:
 		//RollingBallClass 변수를 사용하기 전 반드시 수행해야 함
 		BOOL init(HINSTANCE m_hInstance, HWND m_hwnd);
-		const static int ballsize = 128;
+		const static int ballsize = 64;
 
 		void update_window();
 		void update_state();

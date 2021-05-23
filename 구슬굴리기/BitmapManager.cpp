@@ -16,12 +16,6 @@ vector<BitmapManager::BitmapManagerObject> BitmapManager::object_info
 vector<HBITMAP> BitmapManager::hBitmap = vector<HBITMAP>();
 
 
-//old variables below
-//HBITMAP BitmapManager::oldvar_floor = NULL;
-//HBITMAP BitmapManager::oldvar_ball[old_BallSizeCount] = { NULL, };
-//HBITMAP BitmapManager::oldvar_ball_mask[old_BallSizeCount] = { NULL, };
-
-
 
 /*****************************************
 *
@@ -296,7 +290,6 @@ BOOL BitmapManager::init(HINSTANCE m_hInstance, HWND m_hwnd)
 	init_bitmap_file_count();
 	init_hBitmap();
 	init_curselidx();
-	//old_set_BallSizeType(m_BallSizeType);
 
 	return TRUE;
 }
@@ -325,6 +318,13 @@ HBITMAP RollingBall::BitmapManager::create_hDC_compatible(HDC hdc, RECT& rt)
 void RollingBall::BitmapManager::delete_hDC_compatible(HBITMAP hDCcompatibleBitmap)
 {
 	DeleteObject(hDCcompatibleBitmap);
+}
+int RollingBall::BitmapManager::get_curr_sel_idx()
+{
+	return index(
+		curselidx.object, curselidx.texture, 
+		curselidx.texture_size, curselidx.mask
+	);
 }
 int RollingBall::BitmapManager::get_curr_object_idx()
 {
@@ -454,45 +454,3 @@ HBITMAP RollingBall::BitmapManager::operator[](int index)
 	return get(index);
 }
 
-
-
-
-//old functions below
-/*
-void BitmapManager::old_set_BallSizeType(int m_BallSizeType)
-{
-	old_BallSizeType = m_BallSizeType;
-}
-int BitmapManager::old_get_BallSizeType()
-{
-	return old_BallSizeType;
-}
-HBITMAP BitmapManager::old_get_hBitmap_floor()
-{
-	return oldvar_floor;
-}
-HBITMAP BitmapManager::old_get_hBitmap_ball()
-{
-	return get(index(_T("old_ball"), _T("iron1"), 64, FALSE));
-}
-HBITMAP BitmapManager::old_get_hBitmap_ball_mask()
-{
-	return get(index(_T("old_ball"), _T("iron1"), 64, TRUE));
-}
-int BitmapManager::old_BallSize_toIdx(int BallSize)
-{
-	switch (BallSize)
-	{
-	case old_BallSize_small:
-		return 0;
-	case old_BallSize_medium:
-		return 1;
-	case old_BallSize_large:
-		return 2;
-	case old_BallSize_extra:
-		return 3;
-	default:
-		return -1;
-	}
-}
-*/

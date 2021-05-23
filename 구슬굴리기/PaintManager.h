@@ -22,33 +22,34 @@ namespace RollingBall
 	private:
 		BitmapManager bmp;
 
+		static int res_count;
 		//Win32API에서 사용되는 변수들의 집합체
-		struct {
+		struct _winAPI{
 			HINSTANCE hInstance;
 			HWND hwnd;
 			PAINTSTRUCT ps;
 			RECT windowRect;
 
-			struct {
+			struct hDC {
 				HDC window;
-				struct {
+				struct _mem {
 					HDC windowBuffer;
-					vector<HDC> resource;
+					vector<HDC> res;
 				} mem;
 			} hDC;
 
-			struct {
+			struct _hBitmap{
 				HBITMAP windowBuffer;
-				vector<HBITMAP> resource;
-				struct {
+				vector<HBITMAP> res;
+				struct _old{
 					HBITMAP windowBuffer;
-					vector<HBITMAP> resource;
+					vector<HBITMAP> res;
 				} old;
 			} hBitmap;
 		} winAPI;
 		
 		//여러가지 플래그를 저장하는 변수
-		struct {
+		struct _flag{
 			BOOL isHDCwindowMode_GetDC;
 
 			BOOL isSetMemDCres;
@@ -56,7 +57,6 @@ namespace RollingBall
 			BOOL isBackedUpHBitmapRes;
 
 			BOOL isDoubleBufferingStart;
-			BOOL isInit;
 			BOOL isInitDoubleBuffering;
 		} flag;
 	
@@ -88,6 +88,8 @@ namespace RollingBall
 		//클래스의 각종 플래그변수를 초기화
 		//PaintManager::init()에서만 호출되어야 함
 		void init_flags();
+		void init_res_count();
+		void init_res_vectors();
 
 
 
