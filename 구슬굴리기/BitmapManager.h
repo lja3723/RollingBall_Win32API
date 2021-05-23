@@ -26,15 +26,6 @@ namespace RollingBall
 	private:
 		HWND hwnd;
 
-		struct old_BitmapManagerObject {
-			tstring old_name;
-			BOOL old_has_mask;
-			struct {
-				vector<tstring> old_name;
-				vector<int> old_value;
-			} old_texture;
-		};
-
 		struct {
 			int object;
 			int texture;
@@ -42,11 +33,11 @@ namespace RollingBall
 			BOOL mask;
 		} curselidx;
 
-
-
 		/*******************************
 		*	private variables: static
 		********************************/
+		static HINSTANCE hInstance;
+
 		//BMPFILEMACRO의 실질적 길이는 bitmap_file_count임
 		//새 비트맵 리소스를 추가시 수정
 		//수정 시 object_info.txt도 수정 필요
@@ -60,14 +51,14 @@ namespace RollingBall
 			IDB_FLOOR_WOOD1_0256, IDB_FLOOR_WOOD1_0512, IDB_FLOOR_WOOD1_1024
 		};
 
+		//오브젝트 정보가 담긴 벡터; object_info.txt 파일으로 초기화됨
+		static vector<ObjectInfo> object_info;
 
-		//오브젝트에 대한 정보를 담은 벡터
-		static vector<old_BitmapManagerObject> old_object_info;
 		//비트맵 파일 개수: init 함수 호출시 자동으로 초기화됨
 		static int bitmap_file_count;
+
 		//로드된 hBitmap들을 담을 벡터
 		static vector<HBITMAP> hBitmap;
-		static HINSTANCE hInstance;
 		
 
 
