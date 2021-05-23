@@ -4,7 +4,7 @@
 #include "RollingBall.h"
 #include "Debugger.h"
 #define PROGRAM_NAME _T("구슬 굴리기")
-#define PROGRAM_VER	_T("1.0")
+#define PROGRAM_VER	_T("1.1")
 
 using namespace RollingBall;
 
