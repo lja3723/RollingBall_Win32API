@@ -39,6 +39,9 @@
     <ClCompile Include="Debugger.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="FileManager.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -63,6 +66,9 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Debugger.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="FileManager.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
