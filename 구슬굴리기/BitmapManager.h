@@ -73,21 +73,23 @@ namespace RollingBall
 		/************************************
 		*	private functions
 		*************************************/
-		//파일에서 한 라인씩 읽어서 line에 저장해주는 함수
-		BOOL ReadLine(HANDLE hFile, LPTSTR line, int lineLength);
 		//object vector를 object_info.txt 기반으로 초기화하는 함수
 		BOOL init_object_info(HWND hwnd);
-		//bitmap_file_count를 초기화하는 함수
 
+		//bitmap_file_count를 초기화하는 함수
 		void init_bitmap_file_count();
+
 		//hBitmap 벡터에 hBitmap들을 로드하는 함수
 		void init_hBitmap();
+
 		//hBitmap 벡터에 저장된 hBitmap들을 삭제하는 함수
 		void delete_hBitmap();
+
 		//curselidx 요소들을 초기화하는 함수
 		void init_curselidx();
+
 		//obj의 총 파일 개수를 구하는 함수
-		int get_file_count(int objidx);
+		int get_object_file_count(int objidx);
 
 
 
@@ -98,7 +100,8 @@ namespace RollingBall
 		BOOL isInitObjectInfo();
 		BOOL isInitBitmapFileCount();
 		BOOL isInitHBitmap();
-		//idx의 범위가 정상적이도록 재배열한다
+
+		//idx의 범위가 정상적이도록 재배열함
 		void arrange_idx(int& objidx, int& textureidx, int& sizeidx, BOOL& mask);
 
 	public:
@@ -108,8 +111,6 @@ namespace RollingBall
 		~BitmapManager();
 
 		HBITMAP get(int index);
-		HBITMAP create_hDC_compatible(HDC hdc, RECT& rt);
-		void delete_hDC_compatible(HBITMAP hDCcompatibleBitmap);
 
 		
 		int get_curr_sel_idx();
@@ -144,6 +145,12 @@ namespace RollingBall
 
 		//get() 함수를 호출한다
 		HBITMAP operator[](int index);
+
+		//hDC와 호환되는 크기가 rt인 hBitmap을 생성한다
+		HBITMAP create_hDC_compatible(HDC hdc, RECT& rt);
+
+		//hDC 호환 hBitmap을 삭제한다
+		void delete_hDC_compatible(HBITMAP hDCcompatibleBitmap);
 	};
 
 }

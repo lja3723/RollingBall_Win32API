@@ -1,11 +1,13 @@
 ﻿#include "FileManager.h"
 
-BOOL RollingBall::FileManager::isOpen()
+using namespace RollingBall;
+
+BOOL FileManager::isOpen()
 {
 	return hFile != NULL;
 }
 
-BOOL RollingBall::FileManager::open(LPCTSTR filename, LPCTSTR mode)
+BOOL FileManager::open(LPCTSTR filename, LPCTSTR mode)
 {
 	BOOL GENERIC_FLAG, FILE_SHARE_FLAG;
 
@@ -48,13 +50,14 @@ BOOL RollingBall::FileManager::open(LPCTSTR filename, LPCTSTR mode)
 		return TRUE;
 }
 
-void RollingBall::FileManager::close()
+void FileManager::close()
 {
 	if (!isOpen()) return;
 	CloseHandle(hFile);
+	hFile = NULL;
 }
 
-BOOL RollingBall::FileManager::readLine(LPTSTR line, int sizeofLine)
+BOOL FileManager::readLine(LPTSTR line, int sizeofLine)
 {
 	if (!isOpen()) return FALSE;
 
@@ -86,4 +89,24 @@ BOOL RollingBall::FileManager::readLine(LPTSTR line, int sizeofLine)
 	}
 
 	return 0;
+}
+
+BOOL FileManager::readFile(
+	LPVOID lpBuffer, DWORD nNumberOfBytesToRead, 
+	LPDWORD lpNumberOfBytesRead, LPOVERLAPPED lpOvrelapped)
+{
+	return ReadFile(
+		hFile, lpBuffer, 
+		nNumberOfBytesToRead, lpNumberOfBytesRead, lpOvrelapped
+	);
+}
+
+BOOL FileManager::writeFile(
+	LPVOID lpBuffer, DWORD nNumberOfBytesToWrite, 
+	LPDWORD lpNumberOfBytesWritten, LPOVERLAPPED lpOvrelapped)
+{
+	return WriteFile(
+		hFile, lpBuffer,
+		nNumberOfBytesToWrite, lpNumberOfBytesWritten, lpOvrelapped
+	);
 }

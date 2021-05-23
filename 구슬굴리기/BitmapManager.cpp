@@ -1,5 +1,6 @@
 ﻿#include "BitmapManager.h"
-//#include "Debugger.h"
+#include "FileManager.h"
+#include "Debugger.h"
 using namespace RollingBall;
 
 
@@ -22,48 +23,12 @@ vector<HBITMAP> BitmapManager::hBitmap = vector<HBITMAP>();
 *			private functions
 * 
 *****************************************/
-BOOL BitmapManager::ReadLine(HANDLE hFile, LPTSTR line, int sizeofLine)
-{
-	//파일의 끝에 다다르면 FALSE를 리턴한다.
-	DWORD readSize;
-	TCHAR reading[1];
-	static int i = -1;
-	int lineidx = 0;
-	memset(line, 0, sizeofLine);
-	while (TRUE)
-	{
-		memset(reading, 0, sizeof(reading));
-		ReadFile(hFile, reading, sizeof(reading), &readSize, NULL);
-		if (++i == 0) continue;
-
-		if (reading[0] == _T('\r'))
-		{
-			return TRUE;
-		}
-		if (reading[0] == _T('\n')) continue;
-		if (reading[0] == _T('\0'))
-		{
-			if (lineidx > 0)
-				return TRUE;
-			else return FALSE;
-		}
-
-		line[lineidx++] = reading[0];
-	}
-}
 BOOL BitmapManager::init_object_info(HWND m_hwnd)
 {
-	//파일을 연다.
 	LPCTSTR filename = _T("..\\res\\bmp\\object_info.txt");
-	HANDLE hFile = CreateFile(
-		filename,
-		GENERIC_READ,
-		FILE_SHARE_READ,
-		NULL, OPEN_EXISTING, 
-		FILE_ATTRIBUTE_NORMAL, NULL
-	);
+	FileManager file;
 
-	if (hFile == INVALID_HANDLE_VALUE)
+	if (!file.open(filename, _T("r")))
 	{
 		TCHAR errmsg[256];
 		_stprintf_s(errmsg, 256, _T("%s 파일을 열 수 없습니다."), filename);
@@ -75,7 +40,7 @@ BOOL BitmapManager::init_object_info(HWND m_hwnd)
 	TCHAR line[128];
 	BOOL isObjectReading = FALSE;
 	int objidx = -1;
-	while (ReadLine(hFile, line, sizeof(line)))
+	while (file.readLine(line, sizeof(line)))
 	{
 		//공백 라인이거나 주석일 경우 패스
 		if (_tcslen(line) == 0) continue;
@@ -86,7 +51,7 @@ BOOL BitmapManager::init_object_info(HWND m_hwnd)
 
 			//오브젝트 개수를 설정함
 			if (_tcscmp(line, _T("object_count=")) == 0) {
-				ReadLine(hFile, line, sizeof(line));
+				file.readLine(line, sizeof(line));
 				object_info.resize(_ttoi(line));
 			}
 
@@ -103,14 +68,14 @@ BOOL BitmapManager::init_object_info(HWND m_hwnd)
 		{
 			//오브젝트의 이름을 저장
 			if (_tcscmp(line, _T("name=")) == 0) {
-				ReadLine(hFile, line, sizeof(line));
+				file.readLine(line, sizeof(line));
 				object_info[objidx].name = line;
 				continue;
 			}
 
 			//오브젝트 텍스쳐 개수 설정
 			if (_tcscmp(line, _T("texture_count=")) == 0) {
-				ReadLine(hFile, line, sizeof(line));
+				file.readLine(line, sizeof(line));
 				object_info[objidx].texture.name.resize(_ttoi(line));
 				continue;
 			}
@@ -118,7 +83,7 @@ BOOL BitmapManager::init_object_info(HWND m_hwnd)
 			//오브젝트 텍스쳐 이름 저장
 			if (_tcscmp(line, _T("texture_name=")) == 0) {
 				for (int i = 0; i < object_info[objidx].texture.name.size(); i++) {
-					ReadLine(hFile, line, sizeof(line));
+					file.readLine(line, sizeof(line));
 					object_info[objidx].texture.name[i] = line;
 				}
 				continue;
@@ -126,7 +91,7 @@ BOOL BitmapManager::init_object_info(HWND m_hwnd)
 
 			//오브젝트 텍스쳐 크기 값 개수 설정
 			if (_tcscmp(line, _T("texture_size_count=")) == 0) {
-				ReadLine(hFile, line, sizeof(line));
+				file.readLine(line, sizeof(line));
 				object_info[objidx].texture.value.resize(_ttoi(line));
 				continue;
 			}
@@ -134,7 +99,7 @@ BOOL BitmapManager::init_object_info(HWND m_hwnd)
 			//오브젝트 텍스쳐 크기 값 저장
 			if (_tcscmp(line, _T("texture_size_value=")) == 0) {
 				for (int i = 0; i < object_info[objidx].texture.value.size(); i++) {
-					ReadLine(hFile, line, sizeof(line));
+					file.readLine(line, sizeof(line));
 					object_info[objidx].texture.value[i] = _ttoi(line);
 				}
 				continue;
@@ -142,7 +107,7 @@ BOOL BitmapManager::init_object_info(HWND m_hwnd)
 
 			//오브젝트의 마스크 여부 저장
 			if (_tcscmp(line, _T("has_mask=")) == 0) {
-				ReadLine(hFile, line, sizeof(line));
+				file.readLine(line, sizeof(line));
 				if (_tcscmp(line, _T("TRUE")) == 0)
 					object_info[objidx].has_mask = TRUE;
 				if (_tcscmp(line, _T("FALSE")) == 0)
@@ -163,7 +128,7 @@ BOOL BitmapManager::init_object_info(HWND m_hwnd)
 	}
 
 	//파일을 닫는다.
-	CloseHandle(hFile);
+	file.close();
 	return TRUE;
 }
 void BitmapManager::init_bitmap_file_count()
@@ -172,7 +137,7 @@ void BitmapManager::init_bitmap_file_count()
 
 	bitmap_file_count = 0;
 	for (int obj = 0; obj < object_info.size(); obj++)
-		bitmap_file_count += get_file_count(obj);
+		bitmap_file_count += get_object_file_count(obj);
 			
 }
 void BitmapManager::init_hBitmap()
@@ -217,7 +182,7 @@ void BitmapManager::init_curselidx()
 {
 	set_cur_sel();
 }
-int BitmapManager::get_file_count(int objidx)
+int BitmapManager::get_object_file_count(int objidx)
 {
 	if (!(0 <= objidx && objidx < object_info.size())) objidx = 0;
 	return (int)object_info[objidx].texture.name.size()
@@ -374,10 +339,10 @@ int BitmapManager::index(int objidx, int textureidx, int sizeidx, BOOL m_mask)
 	arrange_idx(objidx, textureidx, sizeidx, m_mask);
 
 	//object에 따른 idx 탐색
-	for (int curobjidx = 0; curobjidx < objidx; curobjidx++) idx += get_file_count(curobjidx);
+	for (int curobjidx = 0; curobjidx < objidx; curobjidx++) idx += get_object_file_count(curobjidx);
 
 	//texture에 따른 idx 탐색
-	idx += (get_file_count(objidx) / (int)object_info[objidx].texture.name.size()) * textureidx;
+	idx += (get_object_file_count(objidx) / (int)object_info[objidx].texture.name.size()) * textureidx;
 
 	//mask 유무에 따른 idx 탐색
 	if (m_mask == TRUE) idx += (int)object_info[objidx].texture.value.size();
