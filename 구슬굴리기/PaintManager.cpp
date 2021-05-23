@@ -42,7 +42,6 @@ BOOL PaintManager::init(HINSTANCE m_hInstance, HWND m_hwnd)
 	hBitmap_old_windowBuffer_init();
 	hBitmap_old_res_init();
 
-	//set_BallSizeType(BallSizeType);
 	hBitmap_res_set();
 
 	flag.isInit = TRUE;
@@ -65,9 +64,9 @@ void PaintManager::paint_background()
 	paint_background_tobuffer();
 	paint_background_ruller_tobuffer();
 }
-void PaintManager::paint_ball(int posX, int posY)
+void PaintManager::paint_ball(int posX, int posY, int ballsize)
 {
-	paint_ball_tobuffer(posX, posY);
+	paint_ball_tobuffer(posX, posY, ballsize);
 }
 
 
@@ -231,9 +230,10 @@ void PaintManager::memDC_windowBuffer_release()
 
 void PaintManager::memDC_res_init()
 {
-	winAPI.hDC.mem.old_res.old_background = NULL;
-	winAPI.hDC.mem.old_res.old_ball = NULL;
-	winAPI.hDC.mem.old_res.old_ball_mask = NULL;
+	int files = bmp.get_bitmap_file_count();
+	winAPI.hDC.mem.resource.resize(files);
+	for (int i = 0; i < winAPI.hDC.mem.resource.size(); i++)
+		winAPI.hDC.mem.resource[i] = NULL;
 }
 void PaintManager::memDC_res_set()
 {
@@ -241,9 +241,8 @@ void PaintManager::memDC_res_set()
 		memDC_res_release();
 
 	//화면 DC화 호환되는 memDC와 호환되는 memory DC 생성
-	winAPI.hDC.mem.old_res.old_background = CreateCompatibleDC(winAPI.hDC.mem.windowBuffer);
-	winAPI.hDC.mem.old_res.old_ball = CreateCompatibleDC(winAPI.hDC.mem.windowBuffer);
-	winAPI.hDC.mem.old_res.old_ball_mask = CreateCompatibleDC(winAPI.hDC.mem.windowBuffer);
+	for (int i = 0; i < winAPI.hDC.mem.resource.size(); i++)
+		winAPI.hDC.mem.resource[i] = CreateCompatibleDC(winAPI.hDC.mem.windowBuffer);
 
 	flag.isSetMemDCres = TRUE;
 }
@@ -251,9 +250,9 @@ void PaintManager::memDC_res_release()
 {
 	if (!isSetMemDCres()) return;
 
-	DeleteDC(winAPI.hDC.mem.old_res.old_background);
-	DeleteDC(winAPI.hDC.mem.old_res.old_ball);
-	DeleteDC(winAPI.hDC.mem.old_res.old_ball_mask);
+	for (int i = 0; i < winAPI.hDC.mem.resource.size(); i++)
+		DeleteDC(winAPI.hDC.mem.resource[i]);
+
 	memDC_res_init();
 
 	flag.isSetMemDCres = FALSE;
@@ -300,20 +299,20 @@ void PaintManager::hBitmap_windowBuffer_release()
 }
 void PaintManager::hBitmap_res_init()
 {
-	winAPI.hBitmap.old_res.old_background = NULL;
-	winAPI.hBitmap.old_res.old_ball = NULL;
-	winAPI.hBitmap.old_res.old_ball_mask = NULL;
+	int files = bmp.get_bitmap_file_count();
+	winAPI.hBitmap.resource.resize(files);
 
+	for (int i = 0; i < files; i++)
+		winAPI.hBitmap.resource[i] = NULL;
+
+	//아래 플래그 변수는 삭제할 수 있을 것 같다 
+	//(winAPI.hBitmap.resource.size() != 0)
 	flag.isSetHBitmapRes = FALSE;
 }
 void PaintManager::hBitmap_res_set()
 {
-	winAPI.hBitmap.old_res.old_background 
-		= bmp.get(bmp.index(_T("floor"), _T("wood1"), 256, FALSE));
-	winAPI.hBitmap.old_res.old_ball 
-		= bmp.get(bmp.index(_T("ball"), _T("iron1"), 128, FALSE));
-	winAPI.hBitmap.old_res.old_ball_mask 
-		= bmp.get(bmp.index(_T("ball"), _T("iron1"), 128, TRUE));
+	for (int i = 0; i < winAPI.hBitmap.resource.size(); i++)
+		winAPI.hBitmap.resource[i] = bmp[i];
 
 	flag.isSetHBitmapRes = TRUE;
 }
@@ -339,9 +338,11 @@ void PaintManager::hBitmap_old_windowBuffer_rollback()
 }
 void PaintManager::hBitmap_old_res_init()
 {
-	winAPI.hBitmap.old.old_res.old_background = NULL;
-	winAPI.hBitmap.old.old_res.old_ball = NULL;
-	winAPI.hBitmap.old.old_res.old_ball_mask = NULL;
+	int files = bmp.get_bitmap_file_count();
+	winAPI.hBitmap.old.resource.resize(files);
+
+	for (int i = 0; i < files; i++)
+		winAPI.hBitmap.old.resource[i] = NULL;
 }
 void PaintManager::hBitmap_old_res_backup()
 {
@@ -349,12 +350,9 @@ void PaintManager::hBitmap_old_res_backup()
 	if (!isBackedUpHBitmapRes())
 		hBitmap_old_res_rollback();
 
-	winAPI.hBitmap.old.old_res.old_background
-		= (HBITMAP)SelectObject(winAPI.hDC.mem.old_res.old_background, winAPI.hBitmap.old_res.old_background);
-	winAPI.hBitmap.old.old_res.old_ball
-		= (HBITMAP)SelectObject(winAPI.hDC.mem.old_res.old_ball, winAPI.hBitmap.old_res.old_ball);
-	winAPI.hBitmap.old.old_res.old_ball_mask
-		= (HBITMAP)SelectObject(winAPI.hDC.mem.old_res.old_ball_mask, winAPI.hBitmap.old_res.old_ball_mask);
+	for (int i = 0; i < winAPI.hBitmap.old.resource.size(); i++)
+		winAPI.hBitmap.old.resource[i]
+		= (HBITMAP)SelectObject(winAPI.hDC.mem.resource[i], winAPI.hBitmap.resource[i]);
 
 	flag.isBackedUpHBitmapRes = TRUE;
 }
@@ -362,9 +360,9 @@ void PaintManager::hBitmap_old_res_rollback()
 {
 	if (!isBackedUpHBitmapRes()) return;
 
-	SelectObject(winAPI.hDC.mem.old_res.old_background, winAPI.hBitmap.old.old_res.old_background);
-	SelectObject(winAPI.hDC.mem.old_res.old_ball, winAPI.hBitmap.old.old_res.old_ball);
-	SelectObject(winAPI.hDC.mem.old_res.old_ball_mask, winAPI.hBitmap.old.old_res.old_ball_mask);
+	for (int i = 0; i < winAPI.hBitmap.old.resource.size(); i++)
+		SelectObject(winAPI.hDC.mem.resource[i], winAPI.hBitmap.old.resource[i]);
+
 	hBitmap_old_res_init();
 
 	flag.isBackedUpHBitmapRes = FALSE;
@@ -437,12 +435,8 @@ void PaintManager::doubleBuffering_halt()
 *		- variable management
 *
 *********************************/
-/*
-void PaintManager::set_BallSizeType(int m_BallSizeType)
-{
-	bmp.old_set_BallSizeType(m_BallSizeType);
-}
-*/
+
+
 
 
 /********************************
@@ -458,8 +452,8 @@ void PaintManager::paint_background_tobuffer()
 	for (int i = 0; i < 8; i++)
 		for (int j = 0; j < 4; j++)
 			BitBlt(
-				winAPI.hDC.mem.windowBuffer, i * 256, j * 256, 256, 256, 
-				winAPI.hDC.mem.old_res.old_background, 0, 0,
+				winAPI.hDC.mem.windowBuffer, i * 256, j * 256, 256, 256,
+				winAPI.hDC.mem.resource[bmp.index(_T("floor"), _T("wood1"), 256, FALSE)], 0, 0,
 				SRCCOPY
 			);
 }
@@ -467,25 +461,28 @@ void PaintManager::paint_background_ruller_tobuffer()
 {
 
 }
-void PaintManager::paint_ball_tobuffer(int x, int y)
+void PaintManager::paint_ball_tobuffer(int x, int y, int ballsize)
 {
 	if (!isReadyToPaint()) return;
-	//int ballType = bmp.old_get_BallSizeType();
-	int ballType = 64;
 
-	BitBlt(
-		winAPI.hDC.mem.windowBuffer,
-		x - ballType / 2, y - ballType / 2, ballType, ballType,
-		winAPI.hDC.mem.old_res.old_ball_mask, 0, 0,
-		SRCAND
-	);
+	for (int i = 0; i < 2; i++)
+	{
+		BOOL mask;
+		DWORD paintmode;
+		if (i == 0)		
+			mask = TRUE, paintmode = SRCAND;
+		else if (i == 1)
+			mask = FALSE, paintmode = SRCPAINT; 
+		
+		int idx = bmp.index(_T("ball"), _T("iron1"), ballsize, mask);
 
-	BitBlt(
-		winAPI.hDC.mem.windowBuffer,
-		x - ballType / 2, y - ballType / 2, ballType, ballType,
-		winAPI.hDC.mem.old_res.old_ball, 0, 0,
-		SRCPAINT
-	);
+		BitBlt(
+			winAPI.hDC.mem.windowBuffer,
+			x - ballsize / 2, y - ballsize / 2, ballsize, ballsize,
+			winAPI.hDC.mem.resource[idx], 0, 0,
+			paintmode
+		);
+	}
 }
 
 void PaintManager::flush_buffer()

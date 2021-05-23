@@ -334,6 +334,7 @@ LPCTSTR RollingBall::BitmapManager::get_curr_object_name()
 {
 	return object_info[curselidx.object].name.c_str();
 }
+
 int RollingBall::BitmapManager::get_curr_texture_idx()
 {
 	return curselidx.texture;
@@ -342,6 +343,7 @@ LPCTSTR RollingBall::BitmapManager::get_curr_texture_name()
 {
 	return object_info[curselidx.object].texture.name[curselidx.texture].c_str();
 }
+
 int RollingBall::BitmapManager::get_curr_texture_size_idx()
 {
 	return curselidx.texture_size;
@@ -350,9 +352,15 @@ int RollingBall::BitmapManager::get_curr_texture_size()
 {
 	return object_info[curselidx.object].texture.value[curselidx.texture_size];
 }
+
 BOOL RollingBall::BitmapManager::get_curr_object_has_mask()
 {
 	return object_info[curselidx.object].has_mask;
+}
+
+int RollingBall::BitmapManager::get_bitmap_file_count()
+{
+	return bitmap_file_count;
 }
 
 

@@ -3,7 +3,10 @@
 #define __PaintManager_h__
 
 #include <Windows.h>
+#include <vector>
 #include "BitmapManager.h"
+
+using std::vector;
 
 /*
 *
@@ -30,28 +33,16 @@ namespace RollingBall
 				HDC window;
 				struct {
 					HDC windowBuffer;
-					struct {
-						HDC old_background;
-						HDC old_ball;
-						HDC old_ball_mask;
-					} old_res;
+					vector<HDC> resource;
 				} mem;
 			} hDC;
 
 			struct {
 				HBITMAP windowBuffer;
-				struct {
-					HBITMAP old_background;
-					HBITMAP old_ball;
-					HBITMAP old_ball_mask;
-				} old_res;
+				vector<HBITMAP> resource;
 				struct {
 					HBITMAP windowBuffer;
-					struct {
-						HBITMAP old_background;
-						HBITMAP old_ball;
-						HBITMAP old_ball_mask;
-					} old_res;
+					vector<HBITMAP> resource;
 				} old;
 			} hBitmap;
 		} winAPI;
@@ -85,7 +76,7 @@ namespace RollingBall
 		void paint_background();
 
 		//공을 페인트한다
-		void paint_ball(int posX, int posY);
+		void paint_ball(int posX, int posY, int ballsize = 64);
 	
 	
 	private:
@@ -217,7 +208,7 @@ namespace RollingBall
 		//오브젝트를 버퍼에 그림
 		void paint_background_tobuffer();
 		void paint_background_ruller_tobuffer();
-		void paint_ball_tobuffer(int x, int y);
+		void paint_ball_tobuffer(int x, int y, int ballsize = 64);
 
 		//버퍼에 그려진 그림을 윈도우로 출력
 		void flush_buffer();

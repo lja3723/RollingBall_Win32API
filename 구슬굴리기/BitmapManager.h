@@ -160,6 +160,9 @@ namespace RollingBall
 
 		BOOL get_curr_object_has_mask();
 
+		int get_bitmap_file_count();
+
+
 		int index(int objidx = 0, int textureidx = 0, int sizeidx = 0, BOOL m_mask = FALSE);
 		int index(LPCTSTR m_obj, LPCTSTR m_texture, int m_size, BOOL m_mask);
 
