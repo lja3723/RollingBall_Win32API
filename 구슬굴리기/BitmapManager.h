@@ -72,7 +72,8 @@ namespace RollingBall
 			int object;
 			int texture;
 			int texture_size;
-		} curr_sel_idx;
+			BOOL mask;
+		} curselidx;
 
 
 
@@ -115,15 +116,16 @@ namespace RollingBall
 		//object vector를 object_info.txt 기반으로 초기화하는 함수
 		BOOL init_object_info(HWND hwnd);
 		//bitmap_file_count를 초기화하는 함수
+
 		void init_bitmap_file_count();
 		//hBitmap 벡터에 hBitmap들을 로드하는 함수
 		void init_hBitmap();
 		//hBitmap 벡터에 저장된 hBitmap들을 삭제하는 함수
 		void delete_hBitmap();
-		//curr_sel_idx 요소들을 초기화하는 함수
-		void init_curr_sel_idx();
+		//curselidx 요소들을 초기화하는 함수
+		void init_curselidx();
 		//obj의 총 파일 개수를 구하는 함수
-		int get_file_count(int obj);
+		int get_file_count(int objidx);
 
 
 
@@ -134,6 +136,8 @@ namespace RollingBall
 		BOOL isInitObjectInfo();
 		BOOL isInitBitmapFileCount();
 		BOOL isInitHBitmap();
+		//idx의 범위가 정상적이도록 재배열한다
+		void arrange_idx(int& objidx, int& textureidx, int& sizeidx, BOOL& mask);
 
 	public:
 
@@ -143,22 +147,32 @@ namespace RollingBall
 		~BitmapManager();
 
 		HBITMAP get(int index);
+
 		int get_curr_object_idx();
 		LPCTSTR get_curr_object_name();
+
 		int get_curr_texture_idx();
 		LPCTSTR get_curr_texture_name();
+
 		int get_curr_texture_size_idx();
 		int get_curr_texture_size();
+
 		BOOL get_curr_object_has_mask();
 
-		int index(int m_obj = 0, int m_texture = 0, int m_size = 32, BOOL m_mask = FALSE);
+		int index(int objidx = 0, int textureidx = 0, int sizeidx = 0, BOOL m_mask = FALSE);
 		int index(LPCTSTR m_obj, LPCTSTR m_texture, int m_size, BOOL m_mask);
+
 		int object(LPCTSTR m_obj);
 		LPCTSTR object(int m_objidx);
+
 		int texture(LPCTSTR m_texture);
 		LPCTSTR texture(int m_textureidx);
+
 		int size(int m_size);
-		int idx_to_size(int m_sizeidx);
+		int idx_to_size(int sizeidx);
+
+		void set_cur_sel(int objidx = 0, int textureidx = 0, int sizeidx = 0, BOOL m_mask = FALSE);
+		void set_cur_sel(LPCTSTR m_obj, LPCTSTR m_texture, int m_size, BOOL m_mask);
 
 		//get() 함수를 호출한다
 		HBITMAP operator[](int index);
