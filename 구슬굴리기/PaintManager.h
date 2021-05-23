@@ -31,27 +31,27 @@ namespace RollingBall
 				struct {
 					HDC windowBuffer;
 					struct {
-						HDC background;
-						HDC ball;
-						HDC ball_mask;
-					} res;
+						HDC old_background;
+						HDC old_ball;
+						HDC old_ball_mask;
+					} old_res;
 				} mem;
 			} hDC;
 
 			struct {
 				HBITMAP windowBuffer;
 				struct {
-					HBITMAP background;
-					HBITMAP ball;
-					HBITMAP ball_mask;
-				} res;
+					HBITMAP old_background;
+					HBITMAP old_ball;
+					HBITMAP old_ball_mask;
+				} old_res;
 				struct {
 					HBITMAP windowBuffer;
 					struct {
-						HBITMAP background;
-						HBITMAP ball;
-						HBITMAP ball_mask;
-					} res;
+						HBITMAP old_background;
+						HBITMAP old_ball;
+						HBITMAP old_ball_mask;
+					} old_res;
 				} old;
 			} hBitmap;
 		} winAPI;

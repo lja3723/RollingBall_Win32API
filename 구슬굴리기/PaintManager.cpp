@@ -231,9 +231,9 @@ void PaintManager::memDC_windowBuffer_release()
 
 void PaintManager::memDC_res_init()
 {
-	winAPI.hDC.mem.res.background = NULL;
-	winAPI.hDC.mem.res.ball = NULL;
-	winAPI.hDC.mem.res.ball_mask = NULL;
+	winAPI.hDC.mem.old_res.old_background = NULL;
+	winAPI.hDC.mem.old_res.old_ball = NULL;
+	winAPI.hDC.mem.old_res.old_ball_mask = NULL;
 }
 void PaintManager::memDC_res_set()
 {
@@ -241,9 +241,9 @@ void PaintManager::memDC_res_set()
 		memDC_res_release();
 
 	//화면 DC화 호환되는 memDC와 호환되는 memory DC 생성
-	winAPI.hDC.mem.res.background = CreateCompatibleDC(winAPI.hDC.mem.windowBuffer);
-	winAPI.hDC.mem.res.ball = CreateCompatibleDC(winAPI.hDC.mem.windowBuffer);
-	winAPI.hDC.mem.res.ball_mask = CreateCompatibleDC(winAPI.hDC.mem.windowBuffer);
+	winAPI.hDC.mem.old_res.old_background = CreateCompatibleDC(winAPI.hDC.mem.windowBuffer);
+	winAPI.hDC.mem.old_res.old_ball = CreateCompatibleDC(winAPI.hDC.mem.windowBuffer);
+	winAPI.hDC.mem.old_res.old_ball_mask = CreateCompatibleDC(winAPI.hDC.mem.windowBuffer);
 
 	flag.isSetMemDCres = TRUE;
 }
@@ -251,9 +251,9 @@ void PaintManager::memDC_res_release()
 {
 	if (!isSetMemDCres()) return;
 
-	DeleteDC(winAPI.hDC.mem.res.background);
-	DeleteDC(winAPI.hDC.mem.res.ball);
-	DeleteDC(winAPI.hDC.mem.res.ball_mask);
+	DeleteDC(winAPI.hDC.mem.old_res.old_background);
+	DeleteDC(winAPI.hDC.mem.old_res.old_ball);
+	DeleteDC(winAPI.hDC.mem.old_res.old_ball_mask);
 	memDC_res_init();
 
 	flag.isSetMemDCres = FALSE;
@@ -300,19 +300,19 @@ void PaintManager::hBitmap_windowBuffer_release()
 }
 void PaintManager::hBitmap_res_init()
 {
-	winAPI.hBitmap.res.background = NULL;
-	winAPI.hBitmap.res.ball = NULL;
-	winAPI.hBitmap.res.ball_mask = NULL;
+	winAPI.hBitmap.old_res.old_background = NULL;
+	winAPI.hBitmap.old_res.old_ball = NULL;
+	winAPI.hBitmap.old_res.old_ball_mask = NULL;
 
 	flag.isSetHBitmapRes = FALSE;
 }
 void PaintManager::hBitmap_res_set()
 {
-	winAPI.hBitmap.res.background 
+	winAPI.hBitmap.old_res.old_background 
 		= bmp.get(bmp.index(_T("floor"), _T("wood1"), 256, FALSE));
-	winAPI.hBitmap.res.ball 
+	winAPI.hBitmap.old_res.old_ball 
 		= bmp.get(bmp.index(_T("ball"), _T("iron1"), 128, FALSE));
-	winAPI.hBitmap.res.ball_mask 
+	winAPI.hBitmap.old_res.old_ball_mask 
 		= bmp.get(bmp.index(_T("ball"), _T("iron1"), 128, TRUE));
 
 	flag.isSetHBitmapRes = TRUE;
@@ -339,9 +339,9 @@ void PaintManager::hBitmap_old_windowBuffer_rollback()
 }
 void PaintManager::hBitmap_old_res_init()
 {
-	winAPI.hBitmap.old.res.background = NULL;
-	winAPI.hBitmap.old.res.ball = NULL;
-	winAPI.hBitmap.old.res.ball_mask = NULL;
+	winAPI.hBitmap.old.old_res.old_background = NULL;
+	winAPI.hBitmap.old.old_res.old_ball = NULL;
+	winAPI.hBitmap.old.old_res.old_ball_mask = NULL;
 }
 void PaintManager::hBitmap_old_res_backup()
 {
@@ -349,12 +349,12 @@ void PaintManager::hBitmap_old_res_backup()
 	if (!isBackedUpHBitmapRes())
 		hBitmap_old_res_rollback();
 
-	winAPI.hBitmap.old.res.background
-		= (HBITMAP)SelectObject(winAPI.hDC.mem.res.background, winAPI.hBitmap.res.background);
-	winAPI.hBitmap.old.res.ball
-		= (HBITMAP)SelectObject(winAPI.hDC.mem.res.ball, winAPI.hBitmap.res.ball);
-	winAPI.hBitmap.old.res.ball_mask
-		= (HBITMAP)SelectObject(winAPI.hDC.mem.res.ball_mask, winAPI.hBitmap.res.ball_mask);
+	winAPI.hBitmap.old.old_res.old_background
+		= (HBITMAP)SelectObject(winAPI.hDC.mem.old_res.old_background, winAPI.hBitmap.old_res.old_background);
+	winAPI.hBitmap.old.old_res.old_ball
+		= (HBITMAP)SelectObject(winAPI.hDC.mem.old_res.old_ball, winAPI.hBitmap.old_res.old_ball);
+	winAPI.hBitmap.old.old_res.old_ball_mask
+		= (HBITMAP)SelectObject(winAPI.hDC.mem.old_res.old_ball_mask, winAPI.hBitmap.old_res.old_ball_mask);
 
 	flag.isBackedUpHBitmapRes = TRUE;
 }
@@ -362,9 +362,9 @@ void PaintManager::hBitmap_old_res_rollback()
 {
 	if (!isBackedUpHBitmapRes()) return;
 
-	SelectObject(winAPI.hDC.mem.res.background, winAPI.hBitmap.old.res.background);
-	SelectObject(winAPI.hDC.mem.res.ball, winAPI.hBitmap.old.res.ball);
-	SelectObject(winAPI.hDC.mem.res.ball_mask, winAPI.hBitmap.old.res.ball_mask);
+	SelectObject(winAPI.hDC.mem.old_res.old_background, winAPI.hBitmap.old.old_res.old_background);
+	SelectObject(winAPI.hDC.mem.old_res.old_ball, winAPI.hBitmap.old.old_res.old_ball);
+	SelectObject(winAPI.hDC.mem.old_res.old_ball_mask, winAPI.hBitmap.old.old_res.old_ball_mask);
 	hBitmap_old_res_init();
 
 	flag.isBackedUpHBitmapRes = FALSE;
@@ -459,7 +459,7 @@ void PaintManager::paint_background_tobuffer()
 		for (int j = 0; j < 4; j++)
 			BitBlt(
 				winAPI.hDC.mem.windowBuffer, i * 256, j * 256, 256, 256, 
-				winAPI.hDC.mem.res.background, 0, 0,
+				winAPI.hDC.mem.old_res.old_background, 0, 0,
 				SRCCOPY
 			);
 }
@@ -476,14 +476,14 @@ void PaintManager::paint_ball_tobuffer(int x, int y)
 	BitBlt(
 		winAPI.hDC.mem.windowBuffer,
 		x - ballType / 2, y - ballType / 2, ballType, ballType,
-		winAPI.hDC.mem.res.ball_mask, 0, 0,
+		winAPI.hDC.mem.old_res.old_ball_mask, 0, 0,
 		SRCAND
 	);
 
 	BitBlt(
 		winAPI.hDC.mem.windowBuffer,
 		x - ballType / 2, y - ballType / 2, ballType, ballType,
-		winAPI.hDC.mem.res.ball, 0, 0,
+		winAPI.hDC.mem.old_res.old_ball, 0, 0,
 		SRCPAINT
 	);
 }

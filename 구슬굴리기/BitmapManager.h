@@ -2,7 +2,7 @@
 #ifndef __BitmapManager_h__
 #define __BitmapManager_h__
 
-//오브젝트 개수(floor, ball, ...)
+//오브젝트 개수(floor, old_ball, ...)
 //#define old_BITMAPMANAGER_OBJECT_COUNT				2
 
 //공 텍스쳐 개수(iron1, iron2, ...)

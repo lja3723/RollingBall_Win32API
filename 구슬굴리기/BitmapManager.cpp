@@ -465,11 +465,11 @@ HBITMAP BitmapManager::old_get_hBitmap_floor()
 }
 HBITMAP BitmapManager::old_get_hBitmap_ball()
 {
-	return get(index(_T("ball"), _T("iron1"), 64, FALSE));
+	return get(index(_T("old_ball"), _T("iron1"), 64, FALSE));
 }
 HBITMAP BitmapManager::old_get_hBitmap_ball_mask()
 {
-	return get(index(_T("ball"), _T("iron1"), 64, TRUE));
+	return get(index(_T("old_ball"), _T("iron1"), 64, TRUE));
 }
 int BitmapManager::old_BallSize_toIdx(int BallSize)
 {
