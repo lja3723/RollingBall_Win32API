@@ -21,14 +21,14 @@ void RollingBallClass::update_window()
 	paintManager.beginPaint();
 
 	paintManager.paint_background();
-	paintManager.paint_ball(x, y);
+	paintManager.paint_ball(x, y, ballsize);
 
 	paintManager.endPaint();
 }
 
 void RollingBallClass::update_state()
 {
-	controller.update_ballPos(winAPI.hwnd);
+	controller.update_ballPos(winAPI.hwnd, ballsize);
 }
 
 void RollingBallClass::send_windowEvent(UINT m_iMsg, WPARAM m_wParam, LPARAM m_lParam)

@@ -45,7 +45,7 @@ namespace RollingBall
 
 	public:
 		void translate_windowEvent(UINT m_iMsg, WPARAM m_wParam, LPARAM m_lParam);
-		void update_ballPos(HWND hwnd);
+		void update_ballPos(HWND hwnd, int ballsize = 64);
 
 		int get_xPos();
 		int get_xSpeed();

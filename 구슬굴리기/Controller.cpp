@@ -51,7 +51,7 @@ void Controller::translate_windowEvent(UINT m_iMsg, WPARAM m_wParam, LPARAM m_lP
 	detect_keyPushed();
 }
 
-void Controller::update_ballPos(HWND hwnd)
+void Controller::update_ballPos(HWND hwnd, int ballsize)
 {
 	double fraction = 0.005;
 
@@ -88,21 +88,22 @@ void Controller::update_ballPos(HWND hwnd)
 	RECT rt;
 	GetClientRect(hwnd, &rt);
 	double boundConstant = 0.7;
-	if (32 > x.Pos || x.Pos > rt.right - 32)
+	int mid_ball = ballsize / 2;
+	if (mid_ball > x.Pos || x.Pos > (int)rt.right - mid_ball)
 	{
 		x.Speed = -boundConstant *x.Speed;
-		if (32 > x.Pos)
-			x.Pos = 32;
+		if (mid_ball > x.Pos)
+			x.Pos = mid_ball;
 		else
-			x.Pos = rt.right - 32;
+			x.Pos = (int)rt.right - mid_ball;
 	}
-	if (32 > y.Pos || y.Pos > rt.bottom - 32)
+	if (mid_ball > y.Pos || y.Pos > (int)rt.bottom - mid_ball)
 	{
 		y.Speed = -boundConstant *y.Speed;
-		if (32 > y.Pos)
-			y.Pos = 32;
+		if (mid_ball > y.Pos)
+			y.Pos = mid_ball;
 		else
-			y.Pos = rt.bottom - 32;
+			y.Pos = rt.bottom - mid_ball;
 	}
 
 	if (-1 < x.Speed && x.Speed < 1 &&
@@ -119,27 +120,27 @@ void Controller::update_ballPos(HWND hwnd)
 
 int RollingBall::Controller::get_xPos()
 {
-	return x.Pos;
+	return (int)x.Pos;
 }
 int RollingBall::Controller::get_xSpeed()
 {
-	return x.Speed;
+	return (int)x.Speed;
 }
 int RollingBall::Controller::get_xAccel()
 {
-	return x.Accel;
+	return (int)x.Accel;
 }
 int RollingBall::Controller::get_yPos()
 {
-	return y.Pos;
+	return (int)y.Pos;
 }
 int RollingBall::Controller::get_ySpeed()
 {
-	return y.Speed;
+	return (int)y.Speed;
 }
 int RollingBall::Controller::get_yAccel()
 {
-	return y.Accel;
+	return (int)y.Accel;
 }
 
 void RollingBall::Controller::initialize_ball_data()
