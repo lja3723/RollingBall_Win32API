@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 #include "resource.h"
+#include "ObjectManager.h"
 
 using std::vector;
 typedef std::basic_string<TCHAR> tstring;
@@ -25,13 +26,13 @@ namespace RollingBall
 	private:
 		HWND hwnd;
 
-		struct BitmapManagerObject {
-			tstring name;
-			BOOL has_mask;
+		struct old_BitmapManagerObject {
+			tstring old_name;
+			BOOL old_has_mask;
 			struct {
-				vector<tstring> name;
-				vector<int> value;
-			} texture;
+				vector<tstring> old_name;
+				vector<int> old_value;
+			} old_texture;
 		};
 
 		struct {
@@ -61,7 +62,7 @@ namespace RollingBall
 
 
 		//오브젝트에 대한 정보를 담은 벡터
-		static vector<BitmapManagerObject> object_info;
+		static vector<old_BitmapManagerObject> old_object_info;
 		//비트맵 파일 개수: init 함수 호출시 자동으로 초기화됨
 		static int bitmap_file_count;
 		//로드된 hBitmap들을 담을 벡터

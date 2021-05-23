@@ -12,8 +12,8 @@ using namespace RollingBall;
 *****************************************/
 int BitmapManager::bitmap_file_count = 0;
 HINSTANCE BitmapManager::hInstance = NULL;
-vector<BitmapManager::BitmapManagerObject> BitmapManager::object_info 
-	= vector<BitmapManager::BitmapManagerObject>();
+vector<BitmapManager::old_BitmapManagerObject> BitmapManager::old_object_info 
+	= vector<BitmapManager::old_BitmapManagerObject>();
 vector<HBITMAP> BitmapManager::hBitmap = vector<HBITMAP>();
 
 
@@ -52,7 +52,7 @@ BOOL BitmapManager::init_object_info(HWND m_hwnd)
 			//오브젝트 개수를 설정함
 			if (_tcscmp(line, _T("object_count=")) == 0) {
 				file.readLine(line, sizeof(line));
-				object_info.resize(_ttoi(line));
+				old_object_info.resize(_ttoi(line));
 			}
 
 			//오브젝트 정보를 읽기 시작함
@@ -69,22 +69,22 @@ BOOL BitmapManager::init_object_info(HWND m_hwnd)
 			//오브젝트의 이름을 저장
 			if (_tcscmp(line, _T("name=")) == 0) {
 				file.readLine(line, sizeof(line));
-				object_info[objidx].name = line;
+				old_object_info[objidx].old_name = line;
 				continue;
 			}
 
 			//오브젝트 텍스쳐 개수 설정
 			if (_tcscmp(line, _T("texture_count=")) == 0) {
 				file.readLine(line, sizeof(line));
-				object_info[objidx].texture.name.resize(_ttoi(line));
+				old_object_info[objidx].old_texture.old_name.resize(_ttoi(line));
 				continue;
 			}
 
 			//오브젝트 텍스쳐 이름 저장
 			if (_tcscmp(line, _T("texture_name=")) == 0) {
-				for (int i = 0; i < object_info[objidx].texture.name.size(); i++) {
+				for (int i = 0; i < old_object_info[objidx].old_texture.old_name.size(); i++) {
 					file.readLine(line, sizeof(line));
-					object_info[objidx].texture.name[i] = line;
+					old_object_info[objidx].old_texture.old_name[i] = line;
 				}
 				continue;
 			}
@@ -92,15 +92,15 @@ BOOL BitmapManager::init_object_info(HWND m_hwnd)
 			//오브젝트 텍스쳐 크기 값 개수 설정
 			if (_tcscmp(line, _T("texture_size_count=")) == 0) {
 				file.readLine(line, sizeof(line));
-				object_info[objidx].texture.value.resize(_ttoi(line));
+				old_object_info[objidx].old_texture.old_value.resize(_ttoi(line));
 				continue;
 			}
 
 			//오브젝트 텍스쳐 크기 값 저장
 			if (_tcscmp(line, _T("texture_size_value=")) == 0) {
-				for (int i = 0; i < object_info[objidx].texture.value.size(); i++) {
+				for (int i = 0; i < old_object_info[objidx].old_texture.old_value.size(); i++) {
 					file.readLine(line, sizeof(line));
-					object_info[objidx].texture.value[i] = _ttoi(line);
+					old_object_info[objidx].old_texture.old_value[i] = _ttoi(line);
 				}
 				continue;
 			}
@@ -109,9 +109,9 @@ BOOL BitmapManager::init_object_info(HWND m_hwnd)
 			if (_tcscmp(line, _T("has_mask=")) == 0) {
 				file.readLine(line, sizeof(line));
 				if (_tcscmp(line, _T("TRUE")) == 0)
-					object_info[objidx].has_mask = TRUE;
+					old_object_info[objidx].old_has_mask = TRUE;
 				if (_tcscmp(line, _T("FALSE")) == 0)
-					object_info[objidx].has_mask = FALSE;
+					old_object_info[objidx].old_has_mask = FALSE;
 				continue;
 			}
 		}
@@ -136,7 +136,7 @@ void BitmapManager::init_bitmap_file_count()
 	if (!isInitObjectInfo()) return;
 
 	bitmap_file_count = 0;
-	for (int obj = 0; obj < object_info.size(); obj++)
+	for (int obj = 0; obj < old_object_info.size(); obj++)
 		bitmap_file_count += get_object_file_count(obj);
 			
 }
@@ -184,15 +184,15 @@ void BitmapManager::init_curselidx()
 }
 int BitmapManager::get_object_file_count(int objidx)
 {
-	if (!(0 <= objidx && objidx < object_info.size())) objidx = 0;
-	return (int)object_info[objidx].texture.name.size()
-		* (int)object_info[objidx].texture.value.size()
-		* (object_info[objidx].has_mask ? 2 : 1);
+	if (!(0 <= objidx && objidx < old_object_info.size())) objidx = 0;
+	return (int)old_object_info[objidx].old_texture.old_name.size()
+		* (int)old_object_info[objidx].old_texture.old_value.size()
+		* (old_object_info[objidx].old_has_mask ? 2 : 1);
 }
 
 BOOL BitmapManager::isInitObjectInfo()
 {
-	return object_info.size() != 0;
+	return old_object_info.size() != 0;
 }
 BOOL BitmapManager::isInitBitmapFileCount()
 {
@@ -205,10 +205,10 @@ BOOL BitmapManager::isInitHBitmap()
 
 void BitmapManager::arrange_idx(int& objidx, int& textureidx, int& sizeidx, BOOL& mask)
 {
-	if (!(0 <= objidx && objidx < object_info.size())) objidx = 0;
-	if (!(0 <= textureidx && textureidx < object_info[objidx].texture.name.size())) textureidx = 0;
-	if (!(0 <= sizeidx && sizeidx < object_info[objidx].texture.value.size())) sizeidx = 0;
-	if (object_info[objidx].has_mask == FALSE && mask == TRUE) mask = FALSE;
+	if (!(0 <= objidx && objidx < old_object_info.size())) objidx = 0;
+	if (!(0 <= textureidx && textureidx < old_object_info[objidx].old_texture.old_name.size())) textureidx = 0;
+	if (!(0 <= sizeidx && sizeidx < old_object_info[objidx].old_texture.old_value.size())) sizeidx = 0;
+	if (old_object_info[objidx].old_has_mask == FALSE && mask == TRUE) mask = FALSE;
 } 
 
 
@@ -224,13 +224,13 @@ BOOL BitmapManager::init(HINSTANCE m_hInstance, HWND m_hwnd)
 	if (!init_object_info(m_hwnd)) return FALSE;
 
 #ifdef __Debugger_h__
-	for (int i = 0; i < object_info.size(); i++)
+	for (int i = 0; i < old_object_info.size(); i++)
 	{
 		tstring name, value;
-		for (int j = 0; j < object_info[i].texture.name.size(); j++)
-			name += object_info[i].texture.name[j], name += _T(" ");
-		for (int j = 0; j < object_info[i].texture.value.size(); j++)
-			value += std::to_wstring(object_info[i].texture.value[j]), value += _T(" ");
+		for (int j = 0; j < old_object_info[i].old_texture.old_name.size(); j++)
+			name += old_object_info[i].old_texture.old_name[j], name += _T(" ");
+		for (int j = 0; j < old_object_info[i].old_texture.old_value.size(); j++)
+			value += std::to_wstring(old_object_info[i].old_texture.old_value[j]), value += _T(" ");
 
 		debuggerMessage(
 			"object index: %d\n"
@@ -243,10 +243,10 @@ BOOL BitmapManager::init(HINSTANCE m_hInstance, HWND m_hwnd)
 			"values: %s\n\n"
 
 			"has mask: %s",
-			i, object_info[i].name.c_str(),
-			(int)object_info[i].texture.name.size(), name.c_str(),
-			(int)object_info[i].texture.value.size(), value.c_str(),
-			(object_info[i].has_mask ? _T("TRUE") : _T("FALSE"))
+			i, old_object_info[i].old_name.c_str(),
+			(int)old_object_info[i].old_texture.old_name.size(), name.c_str(),
+			(int)old_object_info[i].old_texture.old_value.size(), value.c_str(),
+			(old_object_info[i].old_has_mask ? _T("TRUE") : _T("FALSE"))
 		);
 	}
 #endif
@@ -298,7 +298,7 @@ int BitmapManager::get_curr_object_idx()
 }
 LPCTSTR BitmapManager::get_curr_object_name()
 {
-	return object_info[curselidx.object].name.c_str();
+	return old_object_info[curselidx.object].old_name.c_str();
 }
 
 int BitmapManager::get_curr_texture_idx()
@@ -307,7 +307,7 @@ int BitmapManager::get_curr_texture_idx()
 }
 LPCTSTR BitmapManager::get_curr_texture_name()
 {
-	return object_info[curselidx.object].texture.name[curselidx.texture].c_str();
+	return old_object_info[curselidx.object].old_texture.old_name[curselidx.texture].c_str();
 }
 
 int BitmapManager::get_curr_texture_size_idx()
@@ -316,12 +316,12 @@ int BitmapManager::get_curr_texture_size_idx()
 }
 int BitmapManager::get_curr_texture_size()
 {
-	return object_info[curselidx.object].texture.value[curselidx.texture_size];
+	return old_object_info[curselidx.object].old_texture.old_value[curselidx.texture_size];
 }
 
 BOOL BitmapManager::get_curr_object_has_mask()
 {
-	return object_info[curselidx.object].has_mask;
+	return old_object_info[curselidx.object].old_has_mask;
 }
 
 int BitmapManager::get_bitmap_file_count()
@@ -342,10 +342,10 @@ int BitmapManager::index(int objidx, int textureidx, int sizeidx, BOOL m_mask)
 	for (int curobjidx = 0; curobjidx < objidx; curobjidx++) idx += get_object_file_count(curobjidx);
 
 	//texture에 따른 idx 탐색
-	idx += (get_object_file_count(objidx) / (int)object_info[objidx].texture.name.size()) * textureidx;
+	idx += (get_object_file_count(objidx) / (int)old_object_info[objidx].old_texture.old_name.size()) * textureidx;
 
 	//mask 유무에 따른 idx 탐색
-	if (m_mask == TRUE) idx += (int)object_info[objidx].texture.value.size();
+	if (m_mask == TRUE) idx += (int)old_object_info[objidx].old_texture.old_value.size();
 
 	//size에 따른 idx 탐색
 	idx += sizeidx;
@@ -363,41 +363,41 @@ int BitmapManager::index(LPCTSTR m_obj, LPCTSTR m_texture, int m_size, BOOL m_ma
 
 int BitmapManager::object(LPCTSTR m_obj)
 {
-	for (int i = 0; i < object_info.size(); i++) 
-		if (_tcscmp(m_obj, object_info[i].name.c_str()) == 0)
+	for (int i = 0; i < old_object_info.size(); i++) 
+		if (_tcscmp(m_obj, old_object_info[i].old_name.c_str()) == 0)
 			return i;
 
 	return 0;
 }
 LPCTSTR BitmapManager::object(int m_objidx)
 {
-	return object_info[m_objidx].name.c_str();
+	return old_object_info[m_objidx].old_name.c_str();
 }
 
 int BitmapManager::texture(LPCTSTR m_texture)
 {
-	for (int i = 0; i < object_info[curselidx.object].texture.name.size(); i++)
-		if (_tcscmp(m_texture, object_info[curselidx.object].texture.name[i].c_str()) == 0)
+	for (int i = 0; i < old_object_info[curselidx.object].old_texture.old_name.size(); i++)
+		if (_tcscmp(m_texture, old_object_info[curselidx.object].old_texture.old_name[i].c_str()) == 0)
 			return i;
 
 	return 0;
 }
 LPCTSTR BitmapManager::texture(int m_textureidx)
 {
-	return object_info[curselidx.object].texture.name[m_textureidx].c_str();
+	return old_object_info[curselidx.object].old_texture.old_name[m_textureidx].c_str();
 }
 
 int BitmapManager::size(int m_size)
 {
-	for (int i = 0; i < object_info[curselidx.object].texture.value.size(); i++)
-		if (m_size == object_info[curselidx.object].texture.value[i])
+	for (int i = 0; i < old_object_info[curselidx.object].old_texture.old_value.size(); i++)
+		if (m_size == old_object_info[curselidx.object].old_texture.old_value[i])
 			return i;
 
 	return 0;
 }
 int BitmapManager::idx_to_size(int sizeidx)
 {
-	return object_info[curselidx.object].texture.value[sizeidx];
+	return old_object_info[curselidx.object].old_texture.old_value[sizeidx];
 }
 
 void BitmapManager::set_cur_sel(int objidx, int textureidx, int sizeidx, BOOL m_mask)
