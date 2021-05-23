@@ -57,11 +57,7 @@ void RollingBall::PaintManager::translate_windowEvent(UINT m_iMsg, WPARAM m_wPar
 	switch (m_wParam)
 	{
 	case SIZE_RESTORED:
-		flag.isWindowSizeChanged = TRUE;
-		break;
 	case SIZE_MAXIMIZED:
-		flag.isWindowSizeChanged = TRUE;
-		break;
 	case SIZE_MAXSHOW:
 		flag.isWindowSizeChanged = TRUE;
 		break;

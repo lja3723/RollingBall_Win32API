@@ -4,12 +4,11 @@
 
 #include <Windows.h>
 #include <tchar.h>
-#include <string>
-#include <vector>
 #include "resource.h"
-
+#include "ObjectManager.h"
+#include <vector>
 using std::vector;
-typedef std::basic_string<TCHAR> tstring;
+
 
 /*
 * 
@@ -25,23 +24,12 @@ namespace RollingBall
 	private:
 		HWND hwnd;
 
-		struct BitmapManagerObject {
-			tstring name;
-			BOOL has_mask;
-			struct {
-				vector<tstring> name;
-				vector<int> value;
-			} texture;
-		};
-
 		struct {
 			int object;
 			int texture;
 			int texture_size;
 			BOOL mask;
 		} curselidx;
-
-
 
 		/*******************************
 		*	private variables: static
@@ -61,7 +49,7 @@ namespace RollingBall
 
 
 		//오브젝트에 대한 정보를 담은 벡터
-		static vector<BitmapManagerObject> object_info;
+		static vector<ObjectInfo> object_info;
 		//비트맵 파일 개수: init 함수 호출시 자동으로 초기화됨
 		static int bitmap_file_count;
 		//로드된 hBitmap들을 담을 벡터
@@ -74,11 +62,10 @@ namespace RollingBall
 		*	private functions
 		*************************************/
 		//파일에서 한 라인씩 읽어서 line에 저장해주는 함수
-		BOOL ReadLine(HANDLE hFile, LPTSTR line, int lineLength);
-		//object vector를 object_info.txt 기반으로 초기화하는 함수
-		BOOL init_object_info(HWND hwnd);
+		BOOL ReadLine(HANDLE hFile, LPTSTR line, int sizeofLine);
+		//object info vector를 object_info.txt 기반으로 초기화하는 함수
+		BOOL init_object_info(HWND m_hwnd);
 		//bitmap_file_count를 초기화하는 함수
-
 		void init_bitmap_file_count();
 		//hBitmap 벡터에 hBitmap들을 로드하는 함수
 		void init_hBitmap();
@@ -95,7 +82,10 @@ namespace RollingBall
 		*	private functions
 		*   BOOL returns
 		*************************************/
+		//moving code
 		BOOL isInitObjectInfo();
+		//moving code end
+
 		BOOL isInitBitmapFileCount();
 		BOOL isInitHBitmap();
 		//idx의 범위가 정상적이도록 재배열한다
