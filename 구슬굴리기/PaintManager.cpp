@@ -289,14 +289,13 @@ void PaintManager::hBitmap_windowBuffer_set()
 
 	//화면 DC와 호환되는 hBitmap을 로드한다
 	GetClientRect(winAPI.hwnd, &winAPI.windowRect);
-	winAPI.hBitmap.windowBuffer
-		= CreateCompatibleBitmap(winAPI.hDC.window, winAPI.windowRect.right, winAPI.windowRect.bottom);
+	winAPI.hBitmap.windowBuffer = bmp.create_hDC_compatible(winAPI.hDC.window, winAPI.windowRect);
 }
 void PaintManager::hBitmap_windowBuffer_release()
 {
 	if (!isSetHBitmapWindowBuffer()) return;
 	//hBitmap을 삭제함
-	DeleteObject(winAPI.hBitmap.windowBuffer);
+	bmp.delete_hDC_compatible(winAPI.hBitmap.windowBuffer);
 	hBitmap_windowBuffer_init();
 }
 void PaintManager::hBitmap_res_init()
