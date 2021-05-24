@@ -32,10 +32,12 @@ namespace RollingBall
 		LPCTSTR texture_name(int idx);
 		void texture_name_resize(int size);
 		void texture_name_set(int idx, tstring name);
+		void texture_name_push_back(tstring name);
 
 		int texture_size(int idx);
 		void texture_size_resize(int size);
 		void texture_size_set(int idx, int size);
+		void texture_size_push_back(int size);
 
 		//텍스쳐 개수를 반환
 		int count_texture();
@@ -54,9 +56,11 @@ namespace RollingBall
 	{
 	private:
 		static BOOL flag_isObjectInfoInit;
+		static vector<ObjectInfo> _object_info;
 	public:
-		static vector<ObjectInfo> object_info;
 
+		ObjectInfo& object_info(int idx);
+		int object_count();
 		BOOL init(HWND hwnd);
 		BOOL init_object_info(HWND hwnd);
 		BOOL isInitObjectInfo();

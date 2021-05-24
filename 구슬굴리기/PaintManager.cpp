@@ -28,7 +28,7 @@ BOOL PaintManager::init(HINSTANCE m_hInstance, HWND m_hwnd)
 
 	winAPI.hInstance = m_hInstance;
 	winAPI.hwnd = m_hwnd;
-	if (!bmp.init(winAPI.hInstance, winAPI.hwnd)) return FALSE;
+	if (!bmp.init(winAPI.hInstance)) return FALSE;
 
 	init_flags();
 	init_res_count();

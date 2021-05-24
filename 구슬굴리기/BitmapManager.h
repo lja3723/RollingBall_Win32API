@@ -19,7 +19,7 @@ namespace RollingBall
 	class BitmapManager
 	{
 	private:
-		HWND hwnd;
+		//HWND hwnd;
 		ObjectManager om;
 
 		struct {
@@ -90,7 +90,7 @@ namespace RollingBall
 
 	public:
 		//BitmapManager 클래스 변수를 사용하기 전 반드시 수행해야 한다
-		BOOL init(HINSTANCE m_hInstance, HWND m_hwnd);
+		BOOL init(HINSTANCE m_hInstance);
 		BOOL isInit();
 		~BitmapManager();
 

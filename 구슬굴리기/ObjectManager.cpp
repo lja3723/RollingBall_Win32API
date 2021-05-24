@@ -3,7 +3,7 @@
 
 using namespace RollingBall;
 
-vector<ObjectInfo> ObjectManager::object_info = vector<ObjectInfo>();
+vector<ObjectInfo> ObjectManager::_object_info = vector<ObjectInfo>();
 BOOL ObjectManager::flag_isObjectInfoInit = FALSE;
 
 
@@ -32,7 +32,7 @@ void RollingBall::ObjectInfo::has_mask_set(BOOL has_mask)
 
 LPCTSTR RollingBall::ObjectInfo::texture_name(int idx)
 {
-	if (!isIdxInRange(idx, _texture._name.size())) return _T("idx error");
+	if (!isIdxInRange(idx, (int)_texture._name.size())) return _T("idx error");
 	return _texture._name[idx].c_str();
 }
 void RollingBall::ObjectInfo::texture_name_resize(int size)
@@ -42,13 +42,18 @@ void RollingBall::ObjectInfo::texture_name_resize(int size)
 }
 void RollingBall::ObjectInfo::texture_name_set(int idx, tstring name)
 {
-	if (!isIdxInRange(idx, _texture._name.size())) return;
+	if (!isIdxInRange(idx, (int)_texture._name.size())) return;
 	_texture._name[idx] = name;
+}
+
+void RollingBall::ObjectInfo::texture_name_push_back(tstring name)
+{
+	_texture._name.push_back(name);
 }
 
 int RollingBall::ObjectInfo::texture_size(int idx)
 {
-	if (!isIdxInRange(idx, _texture._size.size())) return 0;
+	if (!isIdxInRange(idx, (int)_texture._size.size())) return 0;
 	return _texture._size[idx];
 }
 void RollingBall::ObjectInfo::texture_size_resize(int size)
@@ -58,22 +63,38 @@ void RollingBall::ObjectInfo::texture_size_resize(int size)
 }
 void RollingBall::ObjectInfo::texture_size_set(int idx, int size)
 {
-	if (!isIdxInRange(idx, _texture._size.size())) return;
+	if (!isIdxInRange(idx, (int)_texture._size.size())) return;
 	_texture._size[idx] = size;
+}
+
+void RollingBall::ObjectInfo::texture_size_push_back(int size)
+{
+	_texture._size.push_back(size);
 }
 
 
 int ObjectInfo::count_texture()
 {
-	return _texture._name.size();
+	return (int)_texture._name.size();
 }
 int ObjectInfo::count_texture_size()
 {
-	return _texture._size.size();
+	return (int)_texture._size.size();
 }
 
 
 
+ObjectInfo& RollingBall::ObjectManager::object_info(int idx)
+{
+	if (!(0 <= idx && idx < object_count())) 
+		idx = object_count(); //idx를 더미 데이터로 설정한다
+	return _object_info[idx];
+}
+int RollingBall::ObjectManager::object_count()
+{
+	//_object_info의 마지막 원소는 더미 데이터다
+	return _object_info.size() - 1;
+}
 BOOL RollingBall::ObjectManager::init(HWND hwnd)
 {
 	if (isInitObjectInfo()) return TRUE;
@@ -113,7 +134,7 @@ BOOL RollingBall::ObjectManager::init_object_info(HWND hwnd)
 			//오브젝트 개수를 설정함
 			if (_tcscmp(line, _T("object_count=")) == 0) {
 				file.readLine(line, sizeof(line));
-				object_info.resize(_ttoi(line));
+				_object_info.resize(_ttoi(line));
 			}
 
 			//오브젝트 정보를 읽기 시작함
@@ -130,50 +151,39 @@ BOOL RollingBall::ObjectManager::init_object_info(HWND hwnd)
 			//오브젝트의 이름을 저장
 			if (_tcscmp(line, _T("name=")) == 0) {
 				file.readLine(line, sizeof(line));
-				object_info[objidx].name_set(line);
-				continue;
-			}
-
-			//오브젝트 텍스쳐 개수 설정
-			if (_tcscmp(line, _T("texture_count=")) == 0) {
-				file.readLine(line, sizeof(line));
-				object_info[objidx].texture_name_resize(_ttoi(line));
-				continue;
-			}
-
-			//오브젝트 텍스쳐 이름 저장
-			if (_tcscmp(line, _T("texture_name=")) == 0) {
-				for (int i = 0; i < object_info[objidx].count_texture(); i++)
-				{
-					file.readLine(line, sizeof(line));
-					object_info[objidx].texture_name_set(i, line);
-				}
-				continue;
-			}
-
-			//오브젝트 텍스쳐 크기 값 개수 설정
-			if (_tcscmp(line, _T("texture_size_count=")) == 0) {
-				file.readLine(line, sizeof(line));
-				object_info[objidx].texture_size_resize(_ttoi(line));
-				continue;
-			}
-
-			//오브젝트 텍스쳐 크기 값 저장
-			if (_tcscmp(line, _T("texture_size_value=")) == 0) {
-				for (int i = 0; i < object_info[objidx].count_texture_size(); i++) {
-					file.readLine(line, sizeof(line));
-					object_info[objidx].texture_size_set(i, _ttoi(line));
-				}
+				_object_info[objidx].name_set(line);
 				continue;
 			}
 
 			//오브젝트의 마스크 여부 저장
 			if (_tcscmp(line, _T("has_mask=")) == 0) {
 				file.readLine(line, sizeof(line));
-				BOOL flag;
+				BOOL flag = FALSE;
 				if (_tcscmp(line, _T("TRUE")) == 0) flag = TRUE;
 				if (_tcscmp(line, _T("FALSE")) == 0) flag = FALSE;
-				object_info[objidx].has_mask_set(flag);
+				_object_info[objidx].has_mask_set(flag);
+				continue;
+			}
+
+			//오브젝트 텍스쳐 이름 저장
+			if (_tcscmp(line, _T("<texture_name>")) == 0) {
+				while (TRUE)
+				{
+					file.readLine(line, sizeof(line));
+					if (_tcscmp(line, _T("</texture_name>")) == 0) break;
+					_object_info[objidx].texture_name_push_back(line);
+				}
+				continue;
+			}
+
+			//오브젝트 텍스쳐 크기 값 저장
+			if (_tcscmp(line, _T("<texture_size_value>")) == 0) {
+				while (TRUE)
+				{
+					file.readLine(line, sizeof(line));
+					if (_tcscmp(line, _T("</texture_size_value>")) == 0) break;
+					_object_info[objidx].texture_size_push_back(_ttoi(line));
+				}
 				continue;
 			}
 		}
@@ -185,8 +195,17 @@ BOOL RollingBall::ObjectManager::init_object_info(HWND hwnd)
 		}
 
 		//파일이 종료됨
+		//마지막 인덱스에 더미 데이터 저장
 		if (_tcscmp(line, _T("</object_info.txt>")) == 0)
+		{
+			ObjectInfo oi;
+			oi.name_set(_T("NULL"));
+			oi.has_mask_set(FALSE);
+			oi.texture_name_push_back(_T("NULL"));
+			oi.texture_size_push_back(0);
+			_object_info.push_back(oi);
 			break;
+		}
 	}
 
 	//파일을 닫는다.
