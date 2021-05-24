@@ -43,6 +43,8 @@ namespace RollingBall
 		int count_texture();
 		//텍스쳐 사이즈 개수를 반환
 		int count_texture_size();
+		//모든 정보를 초기화
+		void clear();
 	};
 
 	class Object {
