@@ -66,7 +66,7 @@ namespace RollingBall
 
 	class Object {
 	public:
-		ObjectInfo info;
+		static ObjectInfo info;
 	private:
 
 	};

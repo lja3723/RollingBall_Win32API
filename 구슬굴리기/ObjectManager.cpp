@@ -3,9 +3,13 @@
 
 using namespace RollingBall;
 
-vector<ObjectInfo> ObjectManager::_object_info = vector<ObjectInfo>();
-BOOL ObjectManager::flag_isObjectInfoInit = FALSE;
-
+/*********************************************** 
+************************************************ 
+*** 
+***		ObjectInfo class
+***
+************************************************  
+************************************************/
 
 BOOL ObjectInfo::isIdxInRange(int idx, int rangeMax)
 {
@@ -91,6 +95,21 @@ void ObjectInfo::clear()
 }
 
 
+
+
+
+
+
+/***********************************************
+************************************************
+***
+***		ObjectManager class
+***
+************************************************
+************************************************/
+
+vector<ObjectInfo> ObjectManager::_object_info = vector<ObjectInfo>();
+BOOL ObjectManager::flag_isObjectInfoInit = FALSE;
 
 ObjectInfo& ObjectManager::object_info(int idx)
 {
