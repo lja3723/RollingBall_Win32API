@@ -5,6 +5,7 @@
 #include <Windows.h>
 #include <vector>
 #include "BitmapManager.h"
+#include "ObjectManager.h"
 
 using std::vector;
 
@@ -21,8 +22,11 @@ namespace RollingBall
 	{
 	private:
 		BitmapManager bmp;
+		ObjectManager om;
 
+		//리소스 개수를 저장함
 		static int res_count;
+
 		//Win32API에서 사용되는 변수들의 집합체
 		struct _winAPI{
 			HINSTANCE hInstance;

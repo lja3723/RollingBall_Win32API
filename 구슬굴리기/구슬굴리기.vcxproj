@@ -148,6 +148,7 @@
     <ClCompile Include="Physics.cpp" />
     <ClCompile Include="PaintManager.cpp" />
     <ClCompile Include="RollingBall.cpp" />
+    <ClCompile Include="Scaler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BitmapManager.h" />
@@ -159,6 +160,7 @@
     <ClInclude Include="PaintManager.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="RollingBall.h" />
+    <ClInclude Include="Scaler.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="구슬굴리기.rc" />
