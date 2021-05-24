@@ -82,6 +82,14 @@ int ObjectInfo::count_texture_size()
 	return (int)_texture._size.size();
 }
 
+void RollingBall::ObjectInfo::clear()
+{
+	_name = _T("");
+	_has_mask = FALSE;
+	_texture._name.clear();
+	_texture._size.clear();
+}
+
 
 
 ObjectInfo& RollingBall::ObjectManager::object_info(int idx)
@@ -93,7 +101,7 @@ ObjectInfo& RollingBall::ObjectManager::object_info(int idx)
 int RollingBall::ObjectManager::object_count()
 {
 	//_object_info의 마지막 원소는 더미 데이터다
-	return _object_info.size() - 1;
+	return (int)_object_info.size() - 1;
 }
 BOOL RollingBall::ObjectManager::init(HWND hwnd)
 {
@@ -117,41 +125,55 @@ BOOL RollingBall::ObjectManager::init_object_info(HWND hwnd)
 		return FALSE;
 	}
 
+
 	//파일을 한 줄씩 읽어 object에 저장한다.
 	TCHAR line[128];
-	tstring ttmp;
+	ObjectInfo oi;
 	BOOL isObjectReading = FALSE;
-	int objidx = -1;
+	//int objidx = -1;
 	while (file.readLine(line, sizeof(line)))
 	{
+
 		//공백 라인이거나 주석일 경우 패스
 		if (_tcslen(line) == 0) continue;
 		if (line[0] == _T('#')) continue;
 
+
 		//오브젝트 정보를 읽는 중이 아닐 때...
 		if (!isObjectReading) {
-
-			//오브젝트 개수를 설정함
-			if (_tcscmp(line, _T("object_count=")) == 0) {
-				file.readLine(line, sizeof(line));
-				_object_info.resize(_ttoi(line));
+			//파일이 시작됨
+			if (_tcscmp(line, _T("<object_info.txt>")) == 0)
+			{
+				oi.clear();
+				_object_info.clear();
+				continue;
 			}
 
 			//오브젝트 정보를 읽기 시작함
 			if (_tcscmp(line, _T("<object>")) == 0) {
-				objidx++;
 				isObjectReading = TRUE;
 				continue;
 			}
-		}
 
+			//파일이 종료됨
+			//마지막 인덱스에 더미 데이터 저장
+			if (_tcscmp(line, _T("</object_info.txt>")) == 0)
+			{
+				oi.name_set(_T("NULL"));
+				oi.has_mask_set(FALSE);
+				oi.texture_name_push_back(_T("NULL"));
+				oi.texture_size_push_back(0);
+				_object_info.push_back(oi);
+				break;
+			}
+		}
 		//오브젝트 정보를 읽는 중일 때..
-		if (isObjectReading)
+		else
 		{
 			//오브젝트의 이름을 저장
 			if (_tcscmp(line, _T("name=")) == 0) {
 				file.readLine(line, sizeof(line));
-				_object_info[objidx].name_set(line);
+				oi.name_set(line);
 				continue;
 			}
 
@@ -161,7 +183,7 @@ BOOL RollingBall::ObjectManager::init_object_info(HWND hwnd)
 				BOOL flag = FALSE;
 				if (_tcscmp(line, _T("TRUE")) == 0) flag = TRUE;
 				if (_tcscmp(line, _T("FALSE")) == 0) flag = FALSE;
-				_object_info[objidx].has_mask_set(flag);
+				oi.has_mask_set(flag);
 				continue;
 			}
 
@@ -171,7 +193,7 @@ BOOL RollingBall::ObjectManager::init_object_info(HWND hwnd)
 				{
 					file.readLine(line, sizeof(line));
 					if (_tcscmp(line, _T("</texture_name>")) == 0) break;
-					_object_info[objidx].texture_name_push_back(line);
+					oi.texture_name_push_back(line);
 				}
 				continue;
 			}
@@ -182,29 +204,18 @@ BOOL RollingBall::ObjectManager::init_object_info(HWND hwnd)
 				{
 					file.readLine(line, sizeof(line));
 					if (_tcscmp(line, _T("</texture_size_value>")) == 0) break;
-					_object_info[objidx].texture_size_push_back(_ttoi(line));
+					oi.texture_size_push_back(_ttoi(line));
 				}
 				continue;
 			}
-		}
 
-		//오브젝트 정보를 모두 읽었음
-		if (_tcscmp(line, _T("</object>")) == 0) {
-			isObjectReading = FALSE;
-			continue;
-		}
-
-		//파일이 종료됨
-		//마지막 인덱스에 더미 데이터 저장
-		if (_tcscmp(line, _T("</object_info.txt>")) == 0)
-		{
-			ObjectInfo oi;
-			oi.name_set(_T("NULL"));
-			oi.has_mask_set(FALSE);
-			oi.texture_name_push_back(_T("NULL"));
-			oi.texture_size_push_back(0);
-			_object_info.push_back(oi);
-			break;
+			//오브젝트 정보를 모두 읽었음
+			if (_tcscmp(line, _T("</object>")) == 0) {
+				_object_info.push_back(oi);
+				oi.clear();
+				isObjectReading = FALSE;
+				continue;
+			}
 		}
 	}
 
