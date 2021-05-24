@@ -1,4 +1,5 @@
 ﻿#include "BitmapManager.h"
+#include "Debugger.h"
 using namespace RollingBall;
 
 
@@ -54,7 +55,7 @@ int BitmapManager::get_object_file_count(int objidx)
 	if (!(0 <= objidx && objidx < om.object_info.size())) objidx = 0;
 	return (int)om.object_info[objidx].count_texture()
 		* (int)om.object_info[objidx].count_texture_size()
-		* (om.object_info[objidx].has_mask ? 2 : 1);
+		* (om.object_info[objidx].has_mask() ? 2 : 1);
 }
 
 BOOL BitmapManager::isInitBitmapFileCount()
@@ -71,7 +72,7 @@ void BitmapManager::arrange_idx(int& objidx, int& textureidx, int& sizeidx, BOOL
 	if (!(0 <= objidx && objidx < om.object_info.size())) objidx = 0;
 	if (!(0 <= textureidx && textureidx < om.object_info[objidx].count_texture())) textureidx = 0;
 	if (!(0 <= sizeidx && sizeidx < om.object_info[objidx].count_texture_size())) sizeidx = 0;
-	if (om.object_info[objidx].has_mask == FALSE && mask == TRUE) mask = FALSE;
+	if (om.object_info[objidx].has_mask() == FALSE && mask == TRUE) mask = FALSE;
 } 
 
 
@@ -91,9 +92,9 @@ BOOL BitmapManager::init(HINSTANCE m_hInstance, HWND m_hwnd)
 	{
 		tstring name, value;
 		for (int j = 0; j < om.object_info[i].count_texture(); j++)
-			name += om.object_info[i].texture.name[j], name += _T(" ");
+			name += om.object_info[i].texture_name(j), name += _T(" ");
 		for (int j = 0; j < om.object_info[i].count_texture_size(); j++)
-			value += std::to_wstring(om.object_info[i].texture.size[j]), value += _T(" ");
+			value += std::to_wstring(om.object_info[i].texture_size(j)), value += _T(" ");
 
 		debuggerMessage(
 			"object index: %d\n"
@@ -106,10 +107,10 @@ BOOL BitmapManager::init(HINSTANCE m_hInstance, HWND m_hwnd)
 			"values: %s\n\n"
 
 			"has mask: %s",
-			i, om.object_info[i].name.c_str(),
+			i, om.object_info[i].name(),
 			(int)om.object_info[i].count_texture(), name.c_str(),
 			(int)om.object_info[i].count_texture_size(), value.c_str(),
-			(om.object_info[i].has_mask ? _T("TRUE") : _T("FALSE"))
+			(om.object_info[i].has_mask() ? _T("TRUE") : _T("FALSE"))
 		);
 	}
 #endif
@@ -161,7 +162,7 @@ int BitmapManager::get_curr_object_idx()
 }
 LPCTSTR BitmapManager::get_curr_object_name()
 {
-	return om.object_info[curselidx.object].name.c_str();
+	return om.object_info[curselidx.object].name();
 }
 
 int BitmapManager::get_curr_texture_idx()
@@ -170,7 +171,7 @@ int BitmapManager::get_curr_texture_idx()
 }
 LPCTSTR BitmapManager::get_curr_texture_name()
 {
-	return om.object_info[curselidx.object].texture.name[curselidx.texture].c_str();
+	return om.object_info[curselidx.object].texture_name(curselidx.texture);
 }
 
 int BitmapManager::get_curr_texture_size_idx()
@@ -179,12 +180,12 @@ int BitmapManager::get_curr_texture_size_idx()
 }
 int BitmapManager::get_curr_texture_size()
 {
-	return om.object_info[curselidx.object].texture.size[curselidx.texture_size];
+	return om.object_info[curselidx.object].texture_size(curselidx.texture_size);
 }
 
 BOOL BitmapManager::get_curr_object_has_mask()
 {
-	return om.object_info[curselidx.object].has_mask;
+	return om.object_info[curselidx.object].has_mask();
 }
 
 int BitmapManager::get_bitmap_file_count()
@@ -227,40 +228,40 @@ int BitmapManager::index(LPCTSTR m_obj, LPCTSTR m_texture, int m_size, BOOL m_ma
 int BitmapManager::object(LPCTSTR m_obj)
 {
 	for (int i = 0; i < om.object_info.size(); i++) 
-		if (_tcscmp(m_obj, om.object_info[i].name.c_str()) == 0)
+		if (_tcscmp(m_obj, om.object_info[i].name()) == 0)
 			return i;
 
 	return 0;
 }
 LPCTSTR BitmapManager::object(int m_objidx)
 {
-	return om.object_info[m_objidx].name.c_str();
+	return om.object_info[m_objidx].name();
 }
 
 int BitmapManager::texture(LPCTSTR m_texture)
 {
 	for (int i = 0; i < om.object_info[curselidx.object].count_texture(); i++)
-		if (_tcscmp(m_texture, om.object_info[curselidx.object].texture.name[i].c_str()) == 0)
+		if (_tcscmp(m_texture, om.object_info[curselidx.object].texture_name(i)) == 0)
 			return i;
 
 	return 0;
 }
 LPCTSTR BitmapManager::texture(int m_textureidx)
 {
-	return om.object_info[curselidx.object].texture.name[m_textureidx].c_str();
+	return om.object_info[curselidx.object].texture_name(m_textureidx);
 }
 
 int BitmapManager::size(int m_size)
 {
 	for (int i = 0; i < om.object_info[curselidx.object].count_texture_size(); i++)
-		if (m_size == om.object_info[curselidx.object].texture.size[i])
+		if (m_size == om.object_info[curselidx.object].texture_size(i))
 			return i;
 
 	return 0;
 }
 int BitmapManager::idx_to_size(int sizeidx)
 {
-	return om.object_info[curselidx.object].texture.size[sizeidx];
+	return om.object_info[curselidx.object].texture_size(sizeidx);
 }
 
 void BitmapManager::set_cur_sel(int objidx, int textureidx, int sizeidx, BOOL m_mask)

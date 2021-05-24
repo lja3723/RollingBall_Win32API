@@ -12,13 +12,30 @@ typedef std::basic_string<TCHAR> tstring;
 namespace RollingBall
 {
 	class ObjectInfo {
+	private:
+		tstring _name;
+		BOOL _has_mask;
+		struct __texture {
+			vector<tstring> _name;
+			vector<int> _size;
+		} _texture;
+
+		BOOL isIdxInRange(int idx, int rangeMax);
+
 	public:
-		tstring name;
-		BOOL has_mask;
-		struct _texture {
-			vector<tstring> name;
-			vector<int> size;
-		} texture;
+		LPCTSTR name();
+		void name_set(tstring name);
+
+		BOOL has_mask();
+		void has_mask_set(BOOL has_mask);
+
+		LPCTSTR texture_name(int idx);
+		void texture_name_resize(int size);
+		void texture_name_set(int idx, tstring name);
+
+		int texture_size(int idx);
+		void texture_size_resize(int size);
+		void texture_size_set(int idx, int size);
 
 		//텍스쳐 개수를 반환
 		int count_texture();

@@ -6,13 +6,70 @@ using namespace RollingBall;
 vector<ObjectInfo> ObjectManager::object_info = vector<ObjectInfo>();
 BOOL ObjectManager::flag_isObjectInfoInit = FALSE;
 
+
+BOOL RollingBall::ObjectInfo::isIdxInRange(int idx, int rangeMax)
+{
+	return 0 <= idx && idx < rangeMax;
+}
+
+LPCTSTR RollingBall::ObjectInfo::name()
+{
+	return _name.c_str();
+}
+void RollingBall::ObjectInfo::name_set(tstring name)
+{
+	_name = name;
+}
+
+BOOL RollingBall::ObjectInfo::has_mask()
+{
+	return _has_mask;
+}
+void RollingBall::ObjectInfo::has_mask_set(BOOL has_mask)
+{
+	_has_mask = has_mask;
+}
+
+LPCTSTR RollingBall::ObjectInfo::texture_name(int idx)
+{
+	if (!isIdxInRange(idx, _texture._name.size())) return _T("idx error");
+	return _texture._name[idx].c_str();
+}
+void RollingBall::ObjectInfo::texture_name_resize(int size)
+{
+	if (size < 0) size = 0;
+	_texture._name.resize(size);
+}
+void RollingBall::ObjectInfo::texture_name_set(int idx, tstring name)
+{
+	if (!isIdxInRange(idx, _texture._name.size())) return;
+	_texture._name[idx] = name;
+}
+
+int RollingBall::ObjectInfo::texture_size(int idx)
+{
+	if (!isIdxInRange(idx, _texture._size.size())) return 0;
+	return _texture._size[idx];
+}
+void RollingBall::ObjectInfo::texture_size_resize(int size)
+{
+	if (size < 0) size = 0;
+	_texture._size.resize(size);
+}
+void RollingBall::ObjectInfo::texture_size_set(int idx, int size)
+{
+	if (!isIdxInRange(idx, _texture._size.size())) return;
+	_texture._size[idx] = size;
+}
+
+
 int ObjectInfo::count_texture()
 {
-	return texture.name.size();
+	return _texture._name.size();
 }
 int ObjectInfo::count_texture_size()
 {
-	return texture.size.size();
+	return _texture._size.size();
 }
 
 
@@ -41,6 +98,7 @@ BOOL RollingBall::ObjectManager::init_object_info(HWND hwnd)
 
 	//파일을 한 줄씩 읽어 object에 저장한다.
 	TCHAR line[128];
+	tstring ttmp;
 	BOOL isObjectReading = FALSE;
 	int objidx = -1;
 	while (file.readLine(line, sizeof(line)))
@@ -72,14 +130,14 @@ BOOL RollingBall::ObjectManager::init_object_info(HWND hwnd)
 			//오브젝트의 이름을 저장
 			if (_tcscmp(line, _T("name=")) == 0) {
 				file.readLine(line, sizeof(line));
-				object_info[objidx].name = line;
+				object_info[objidx].name_set(line);
 				continue;
 			}
 
 			//오브젝트 텍스쳐 개수 설정
 			if (_tcscmp(line, _T("texture_count=")) == 0) {
 				file.readLine(line, sizeof(line));
-				object_info[objidx].texture.name.resize(_ttoi(line));
+				object_info[objidx].texture_name_resize(_ttoi(line));
 				continue;
 			}
 
@@ -88,7 +146,7 @@ BOOL RollingBall::ObjectManager::init_object_info(HWND hwnd)
 				for (int i = 0; i < object_info[objidx].count_texture(); i++)
 				{
 					file.readLine(line, sizeof(line));
-					object_info[objidx].texture.name[i] = line;
+					object_info[objidx].texture_name_set(i, line);
 				}
 				continue;
 			}
@@ -96,7 +154,7 @@ BOOL RollingBall::ObjectManager::init_object_info(HWND hwnd)
 			//오브젝트 텍스쳐 크기 값 개수 설정
 			if (_tcscmp(line, _T("texture_size_count=")) == 0) {
 				file.readLine(line, sizeof(line));
-				object_info[objidx].texture.size.resize(_ttoi(line));
+				object_info[objidx].texture_size_resize(_ttoi(line));
 				continue;
 			}
 
@@ -104,7 +162,7 @@ BOOL RollingBall::ObjectManager::init_object_info(HWND hwnd)
 			if (_tcscmp(line, _T("texture_size_value=")) == 0) {
 				for (int i = 0; i < object_info[objidx].count_texture_size(); i++) {
 					file.readLine(line, sizeof(line));
-					object_info[objidx].texture.size[i] = _ttoi(line);
+					object_info[objidx].texture_size_set(i, _ttoi(line));
 				}
 				continue;
 			}
@@ -112,10 +170,10 @@ BOOL RollingBall::ObjectManager::init_object_info(HWND hwnd)
 			//오브젝트의 마스크 여부 저장
 			if (_tcscmp(line, _T("has_mask=")) == 0) {
 				file.readLine(line, sizeof(line));
-				if (_tcscmp(line, _T("TRUE")) == 0)
-					object_info[objidx].has_mask = TRUE;
-				if (_tcscmp(line, _T("FALSE")) == 0)
-					object_info[objidx].has_mask = FALSE;
+				BOOL flag;
+				if (_tcscmp(line, _T("TRUE")) == 0) flag = TRUE;
+				if (_tcscmp(line, _T("FALSE")) == 0) flag = FALSE;
+				object_info[objidx].has_mask_set(flag);
 				continue;
 			}
 		}
