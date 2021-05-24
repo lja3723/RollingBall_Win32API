@@ -63,26 +63,30 @@ void Paint::translate_windowEvent(UINT m_iMsg, WPARAM m_wParam, LPARAM m_lParam)
 		break;
 	}
 }
-void Paint::beginPaint()
+void Paint::begin()
 {
 	hDCwindowMode_set_BeginPaint();
 	hDCwindow_set();
 	doubleBuffering_start();
 }
-void Paint::endPaint()
+void Paint::end()
 {
 	flush_buffer();
 	hDCwindow_release();
 	doubleBuffering_stop();
 }
-void Paint::paint_background()
+void Paint::background()
 {
 	paint_background_tobuffer();
 	paint_background_ruller_tobuffer();
 }
-void Paint::paint_ball(int posX, int posY, int ballsize)
+void Paint::ball(int posX, int posY, int ballsize)
 {
 	paint_ball_tobuffer(posX, posY, ballsize);
+}
+
+void RollingBall::Paint::operator()(Object obj)
+{
 }
 
 

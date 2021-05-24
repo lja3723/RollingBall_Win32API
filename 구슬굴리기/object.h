@@ -66,9 +66,23 @@ namespace RollingBall
 
 
 	class Object {
+	private:
+
 	public:
 		static ObjectInfo info;
+	};
+
+	class Ball : Object 
+	{
 	private:
+	public:
+
+	};
+
+	class Floor : Object 
+	{
+	private:
+	public:
 
 	};
 }

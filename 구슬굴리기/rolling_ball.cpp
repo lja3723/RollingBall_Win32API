@@ -18,12 +18,12 @@ void RollingBallClass::update_window()
 	int x = controller.get_xPos();
 	int y = controller.get_yPos();
 
-	paint.beginPaint();
+	paint.begin();
 
-	paint.paint_background();
-	paint.paint_ball(x, y, ballsize);
+	paint.background();
+	paint.ball(x, y, ballsize);
 
-	paint.endPaint();
+	paint.end();
 }
 
 void RollingBallClass::update_state()

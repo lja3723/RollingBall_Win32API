@@ -75,16 +75,18 @@ namespace RollingBall
 		void translate_windowEvent(UINT m_iMsg, WPARAM m_wParam, LPARAM m_lParam);
 
 		//페인트를 시작한다
-		void beginPaint();
+		void begin();
 
 		//페인트를 마친다
-		void endPaint();
+		void end();
 
 		//배경을 페인트한다
-		void paint_background();
+		void background();
 
 		//공을 페인트한다
-		void paint_ball(int posX, int posY, int ballsize = 64);
+		void ball(int posX, int posY, int ballsize = 64);
+
+		void operator()(Object obj);
 	
 	
 	private:
