@@ -6,6 +6,7 @@
 #include <vector>
 #include "BitmapManager.h"
 #include "ObjectManager.h"
+#include "Scaler.h"
 
 using std::vector;
 
@@ -23,6 +24,7 @@ namespace RollingBall
 	private:
 		BitmapManager bmp;
 		ObjectManager om;
+		Scaler scale;
 
 		//리소스 개수를 저장함
 		static int res_count;
@@ -198,14 +200,6 @@ namespace RollingBall
 
 
 
-		/********************************
-		*
-		*	variable management
-		*
-		*********************************/
-
-
-
 
 		/********************************
 		*
@@ -219,6 +213,19 @@ namespace RollingBall
 
 		//버퍼에 그려진 그림을 윈도우로 출력
 		void flush_buffer();
+
+
+
+
+		/********************************
+		*
+		*	etc
+		*
+		*********************************/
+		//object 크기에 따라 알맞은 텍스쳐를 선택하는 함수
+		//아직 구현 불가능
+		//Object class를 먼저 구현한 뒤 구현 시도할 것
+		int choose_texture_size(LPCTSTR obj, LPCTSTR texture, BOOL mask, int px);
 	};
 }
 

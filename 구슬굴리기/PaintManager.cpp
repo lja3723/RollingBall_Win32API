@@ -528,7 +528,7 @@ void PaintManager::paint_ball_tobuffer(int x, int y, int ballsize)
 		if (i == 0)		
 			mask = TRUE, paintmode = SRCAND;
 		else if (i == 1)
-			mask = FALSE, paintmode = SRCPAINT; 
+			mask = FALSE, paintmode = SRCPAINT;
 
 		int idx = bmp.index(_T("ball"), _T("iron1"), ballsize, mask);
 		
@@ -574,6 +574,13 @@ void PaintManager::flush_buffer()
 		winAPI.hDC.mem.windowBuffer, 0, 0,
 		SRCCOPY
 	);
+}
+
+int PaintManager::choose_texture_size(LPCTSTR obj, LPCTSTR texture, BOOL mask, int px)
+{
+	bmp.set_cur_sel(obj, texture, 0, mask);
+	
+	return 0;
 }
 
 
