@@ -19,7 +19,6 @@ namespace RollingBall
 	class BitmapManager
 	{
 	private:
-		//HWND hwnd;
 		ObjectManager om;
 
 		struct {
@@ -60,21 +59,27 @@ namespace RollingBall
 		/************************************
 		*	private functions
 		*************************************/
-		//bitmap_file_count를 초기화하는 함수
+		//bitmap_file_count를 초기화하는 함수(init시 수행)
 		void init_bitmap_file_count();
 
-		//hBitmap 벡터에 hBitmap들을 로드하는 함수
+		//hBitmap 벡터에 hBitmap들을 로드하는 함수(init시 수행)
 		void init_hBitmap();
 
-		//hBitmap 벡터에 저장된 hBitmap들을 삭제하는 함수
+		//hBitmap 벡터에 저장된 hBitmap들을 삭제하는 함수(소멸자 호출시 수행)
 		void delete_hBitmap();
 
-		//curselidx 요소들을 초기화하는 함수
+		//curselidx 요소들을 초기화하는 함수(init시 수행)
 		void init_curselidx();
 
 		////아래 함수도 ObjectManager에서 관리해야 할 것 같다
 		//obj의 총 파일 개수를 구하는 함수
 		int get_object_file_count(int objidx);
+		
+		//idx가 범위 안에 있는지 판단
+		BOOL isIdxInRange(int idx, int rangeMax)
+		{
+			return 0 <= idx && idx < rangeMax;
+		}
 
 
 

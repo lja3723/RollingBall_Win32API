@@ -47,12 +47,6 @@ namespace RollingBall
 		void clear();
 	};
 
-	class Object {
-	public:
-		ObjectInfo info;
-	private:
-
-	};
 
 	class ObjectManager 
 	{
@@ -66,6 +60,14 @@ namespace RollingBall
 		BOOL init(HWND hwnd);
 		BOOL init_object_info(HWND hwnd);
 		BOOL isInitObjectInfo();
+	};
+
+
+
+	class Object {
+	public:
+		ObjectInfo info;
+	private:
 
 	};
 }

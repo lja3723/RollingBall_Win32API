@@ -1,5 +1,5 @@
 ﻿#include "BitmapManager.h"
-#include "Debugger.h"
+//#include "Debugger.h"
 using namespace RollingBall;
 
 
@@ -51,8 +51,6 @@ void BitmapManager::init_curselidx()
 	set_cur_sel();
 }
 
-
-//need_move
 int BitmapManager::get_object_file_count(int objidx)
 {
 	if (!(0 <= objidx && objidx < om.object_count())) objidx = 0;
@@ -70,13 +68,11 @@ BOOL BitmapManager::isInitHBitmap()
 	return hBitmap.size() != 0;
 }
 
-
-//need_move
 void BitmapManager::arrange_idx(int& objidx, int& textureidx, int& sizeidx, BOOL& mask)
 {
-	if (!(0 <= objidx && objidx < om.object_count())) objidx = 0;
-	if (!(0 <= textureidx && textureidx < om.object_info(objidx).count_texture())) textureidx = 0;
-	if (!(0 <= sizeidx && sizeidx < om.object_info(objidx).count_texture_size())) sizeidx = 0;
+	if (!isIdxInRange(objidx, om.object_count())) objidx = 0;
+	if (!isIdxInRange(textureidx, om.object_info(objidx).count_texture())) textureidx = 0;
+	if (!isIdxInRange(sizeidx, om.object_info(objidx).count_texture_size())) sizeidx = 0;
 	if (om.object_info(objidx).has_mask() == FALSE && mask == TRUE) mask = FALSE;
 } 
 
