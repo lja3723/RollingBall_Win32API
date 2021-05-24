@@ -1,13 +1,13 @@
-﻿#include "FileManager.h"
+﻿#include "file.h"
 
 using namespace RollingBall;
 
-BOOL FileManager::isOpen()
+BOOL File::isOpen()
 {
 	return hFile != NULL;
 }
 
-BOOL FileManager::open(LPCTSTR filename, LPCTSTR mode)
+BOOL File::open(LPCTSTR filename, LPCTSTR mode)
 {
 	BOOL GENERIC_FLAG, FILE_SHARE_FLAG;
 
@@ -50,14 +50,14 @@ BOOL FileManager::open(LPCTSTR filename, LPCTSTR mode)
 		return TRUE;
 }
 
-void FileManager::close()
+void File::close()
 {
 	if (!isOpen()) return;
 	CloseHandle(hFile);
 	hFile = NULL;
 }
 
-BOOL FileManager::readLine(LPTSTR line, int sizeofLine)
+BOOL File::readLine(LPTSTR line, int sizeofLine)
 {
 	if (!isOpen()) return FALSE;
 
@@ -91,7 +91,7 @@ BOOL FileManager::readLine(LPTSTR line, int sizeofLine)
 	return 0;
 }
 
-BOOL FileManager::readFile(
+BOOL File::readFile(
 	LPVOID lpBuffer, DWORD nNumberOfBytesToRead, 
 	LPDWORD lpNumberOfBytesRead, LPOVERLAPPED lpOvrelapped)
 {
@@ -101,7 +101,7 @@ BOOL FileManager::readFile(
 	);
 }
 
-BOOL FileManager::writeFile(
+BOOL File::writeFile(
 	LPVOID lpBuffer, DWORD nNumberOfBytesToWrite, 
 	LPDWORD lpNumberOfBytesWritten, LPOVERLAPPED lpOvrelapped)
 {

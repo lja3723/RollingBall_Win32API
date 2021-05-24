@@ -1,8 +1,8 @@
 ﻿#include <Windows.h>
 #include <tchar.h>
 #include "resource.h"
-#include "RollingBall.h"
-#include "Debugger.h"
+#include "rolling_ball.h"
+#include "debugger.h"
 #define PROGRAM_NAME _T("구슬 굴리기")
 #define PROGRAM_VER	_T("1.1")
 

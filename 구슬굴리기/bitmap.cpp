@@ -1,5 +1,5 @@
-﻿#include "BitmapManager.h"
-//#include "Debugger.h"
+﻿#include "bitmap.h"
+//#include "debugger.h"
 using namespace RollingBall;
 
 
@@ -9,9 +9,9 @@ using namespace RollingBall;
 *	static variables initialization
 * 
 *****************************************/
-int BitmapManager::bitmap_file_count = 0;
-HINSTANCE BitmapManager::hInstance = NULL;
-vector<HBITMAP> BitmapManager::hBitmap = vector<HBITMAP>();
+int Bitmap::bitmap_file_count = 0;
+HINSTANCE Bitmap::hInstance = NULL;
+vector<HBITMAP> Bitmap::hBitmap = vector<HBITMAP>();
 
 
 
@@ -20,7 +20,7 @@ vector<HBITMAP> BitmapManager::hBitmap = vector<HBITMAP>();
 *			private functions
 * 
 *****************************************/
-void BitmapManager::init_bitmap_file_count()
+void Bitmap::init_bitmap_file_count()
 {
 	if (!om.isInitObjectInfo()) return;
 
@@ -29,7 +29,7 @@ void BitmapManager::init_bitmap_file_count()
 		bitmap_file_count += get_object_file_count(obj);
 			
 }
-void BitmapManager::init_hBitmap()
+void Bitmap::init_hBitmap()
 {
 	if (!isInitBitmapFileCount()) return;
 	if (isInitHBitmap())
@@ -38,7 +38,7 @@ void BitmapManager::init_hBitmap()
 	for (int fileidx = 0; fileidx < bitmap_file_count; fileidx++)
 		hBitmap.push_back(LoadBitmap(hInstance, MAKEINTRESOURCE(BMPFILEMACRO[fileidx])));
 }
-void BitmapManager::delete_hBitmap()
+void Bitmap::delete_hBitmap()
 {
 	if (!isInitHBitmap()) return;
 	for (int fileidx = 0; fileidx < bitmap_file_count; fileidx++)
@@ -46,12 +46,12 @@ void BitmapManager::delete_hBitmap()
 	
 	hBitmap.clear();
 }
-void BitmapManager::init_curselidx()
+void Bitmap::init_curselidx()
 {
 	set_cur_sel();
 }
 
-int BitmapManager::get_object_file_count(int objidx)
+int Bitmap::get_object_file_count(int objidx)
 {
 	if (!(0 <= objidx && objidx < om.object_count())) objidx = 0;
 	return (int)om.object_info(objidx).count_texture()
@@ -59,16 +59,16 @@ int BitmapManager::get_object_file_count(int objidx)
 		* (om.object_info(objidx).has_mask() ? 2 : 1);
 }
 
-BOOL BitmapManager::isInitBitmapFileCount()
+BOOL Bitmap::isInitBitmapFileCount()
 {
 	return bitmap_file_count != 0;
 }
-BOOL BitmapManager::isInitHBitmap()
+BOOL Bitmap::isInitHBitmap()
 {
 	return hBitmap.size() != 0;
 }
 
-void BitmapManager::arrange_idx(int& objidx, int& textureidx, int& sizeidx, BOOL& mask)
+void Bitmap::arrange_idx(int& objidx, int& textureidx, int& sizeidx, BOOL& mask)
 {
 	if (!isIdxInRange(objidx, om.object_count())) objidx = 0;
 	if (!isIdxInRange(textureidx, om.object_info(objidx).count_texture())) textureidx = 0;
@@ -83,7 +83,7 @@ void BitmapManager::arrange_idx(int& objidx, int& textureidx, int& sizeidx, BOOL
 *			public functions
 *
 *****************************************/
-BOOL BitmapManager::init(HINSTANCE m_hInstance)
+BOOL Bitmap::init(HINSTANCE m_hInstance)
 {
 	if (isInit()) return TRUE;
 	if (!om.isInitObjectInfo()) return FALSE;
@@ -123,11 +123,11 @@ BOOL BitmapManager::init(HINSTANCE m_hInstance)
 
 	return TRUE;
 }
-BOOL BitmapManager::isInit()
+BOOL Bitmap::isInit()
 {
 	return hInstance != NULL;
 }
-BitmapManager::~BitmapManager()
+Bitmap::~Bitmap()
 {
 	if (isInit())
 	{
@@ -136,59 +136,59 @@ BitmapManager::~BitmapManager()
 	}
 }
 
-HBITMAP BitmapManager::get(int index)
+HBITMAP Bitmap::get(int index)
 {
 	if (isInitHBitmap()) return hBitmap[index];
 	else return NULL;
 }
-HBITMAP BitmapManager::create_hDC_compatible(HDC hdc, RECT& rt)
+HBITMAP Bitmap::create_hDC_compatible(HDC hdc, RECT& rt)
 {
 	return CreateCompatibleBitmap(hdc, rt.right, rt.bottom);
 }
-void BitmapManager::delete_hDC_compatible(HBITMAP hDCcompatibleBitmap)
+void Bitmap::delete_hDC_compatible(HBITMAP hDCcompatibleBitmap)
 {
 	DeleteObject(hDCcompatibleBitmap);
 }
-int BitmapManager::get_curr_sel_idx()
+int Bitmap::get_curr_sel_idx()
 {
 	return index(
 		curselidx.object, curselidx.texture, 
 		curselidx.texture_size, curselidx.mask
 	);
 }
-int BitmapManager::get_curr_object_idx()
+int Bitmap::get_curr_object_idx()
 {
 	return curselidx.object;
 }
-LPCTSTR BitmapManager::get_curr_object_name()
+LPCTSTR Bitmap::get_curr_object_name()
 {
 	return om.object_info(curselidx.object).name();
 }
 
-int BitmapManager::get_curr_texture_idx()
+int Bitmap::get_curr_texture_idx()
 {
 	return curselidx.texture;
 }
-LPCTSTR BitmapManager::get_curr_texture_name()
+LPCTSTR Bitmap::get_curr_texture_name()
 {
 	return om.object_info(curselidx.object).texture_name(curselidx.texture);
 }
 
-int BitmapManager::get_curr_texture_size_idx()
+int Bitmap::get_curr_texture_size_idx()
 {
 	return curselidx.texture_size;
 }
-int BitmapManager::get_curr_texture_size()
+int Bitmap::get_curr_texture_size()
 {
 	return om.object_info(curselidx.object).texture_size(curselidx.texture_size);
 }
 
-BOOL BitmapManager::get_curr_object_has_mask()
+BOOL Bitmap::get_curr_object_has_mask()
 {
 	return om.object_info(curselidx.object).has_mask();
 }
 
-int BitmapManager::get_bitmap_file_count()
+int Bitmap::get_bitmap_file_count()
 {
 	return bitmap_file_count;
 }
@@ -196,7 +196,7 @@ int BitmapManager::get_bitmap_file_count()
 
 
 
-int BitmapManager::index(int objidx, int textureidx, int sizeidx, BOOL m_mask)
+int Bitmap::index(int objidx, int textureidx, int sizeidx, BOOL m_mask)
 {
 	int idx = 0;
 
@@ -219,13 +219,13 @@ int BitmapManager::index(int objidx, int textureidx, int sizeidx, BOOL m_mask)
 
 	return idx;
 }
-int BitmapManager::index(LPCTSTR m_obj, LPCTSTR m_texture, int m_size, BOOL m_mask)
+int Bitmap::index(LPCTSTR m_obj, LPCTSTR m_texture, int m_size, BOOL m_mask)
 {
 	set_cur_sel(m_obj, m_texture, m_size, m_mask);
 	return index(object(m_obj), texture(m_texture), size(m_size), m_mask);
 }
 
-int BitmapManager::object(LPCTSTR m_obj)
+int Bitmap::object(LPCTSTR m_obj)
 {
 	for (int i = 0; i < om.object_count(); i++) 
 		if (_tcscmp(m_obj, om.object_info(i).name()) == 0)
@@ -233,12 +233,12 @@ int BitmapManager::object(LPCTSTR m_obj)
 
 	return 0;
 }
-LPCTSTR BitmapManager::object(int m_objidx)
+LPCTSTR Bitmap::object(int m_objidx)
 {
 	return om.object_info(m_objidx).name();
 }
 
-int BitmapManager::texture(LPCTSTR m_texture)
+int Bitmap::texture(LPCTSTR m_texture)
 {
 	for (int i = 0; i < om.object_info(curselidx.object).count_texture(); i++)
 		if (_tcscmp(m_texture, om.object_info(curselidx.object).texture_name(i)) == 0)
@@ -246,12 +246,12 @@ int BitmapManager::texture(LPCTSTR m_texture)
 
 	return 0;
 }
-LPCTSTR BitmapManager::texture(int m_textureidx)
+LPCTSTR Bitmap::texture(int m_textureidx)
 {
 	return om.object_info(curselidx.object).texture_name(m_textureidx);
 }
 
-int BitmapManager::size(int m_size)
+int Bitmap::size(int m_size)
 {
 	for (int i = 0; i < om.object_info(curselidx.object).count_texture_size(); i++)
 		if (m_size == om.object_info(curselidx.object).texture_size(i))
@@ -259,12 +259,12 @@ int BitmapManager::size(int m_size)
 
 	return 0;
 }
-int BitmapManager::idx_to_size(int sizeidx)
+int Bitmap::idx_to_size(int sizeidx)
 {
 	return om.object_info(curselidx.object).texture_size(sizeidx);
 }
 
-void BitmapManager::set_cur_sel(int objidx, int textureidx, int sizeidx, BOOL m_mask)
+void Bitmap::set_cur_sel(int objidx, int textureidx, int sizeidx, BOOL m_mask)
 {
 	curselidx.object = objidx;
 	curselidx.texture = textureidx;
@@ -272,7 +272,7 @@ void BitmapManager::set_cur_sel(int objidx, int textureidx, int sizeidx, BOOL m_
 	curselidx.mask = m_mask;
 	arrange_idx(curselidx.object, curselidx.texture, curselidx.texture_size, curselidx.mask);
 }
-void BitmapManager::set_cur_sel(LPCTSTR m_obj, LPCTSTR m_texture, int m_size, BOOL m_mask)
+void Bitmap::set_cur_sel(LPCTSTR m_obj, LPCTSTR m_texture, int m_size, BOOL m_mask)
 {
 	int objidx = object(m_obj);
 	curselidx.object = objidx;
@@ -281,7 +281,7 @@ void BitmapManager::set_cur_sel(LPCTSTR m_obj, LPCTSTR m_texture, int m_size, BO
 	int sizeidx = size(m_size);
 	set_cur_sel(objidx, textureidx, sizeidx, m_mask);
 }
-HBITMAP BitmapManager::operator[](int index)
+HBITMAP Bitmap::operator[](int index)
 {
 	return get(index);
 }

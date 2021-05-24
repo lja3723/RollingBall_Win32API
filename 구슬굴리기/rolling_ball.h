@@ -1,12 +1,12 @@
 ﻿#pragma once
-#ifndef __RollingBall_h__
-#define __RollingBall_h__
+#ifndef __rolling_ball_h__
+#define __rolling_ball_h__
 
 #include <Windows.h>
-#include "PaintManager.h"
-#include "Physics.h"
-#include "Controller.h"
-#include "ObjectManager.h"
+#include "paint.h"
+#include "physics.h"
+#include "controller.h"
+#include "object.h"
 
 namespace RollingBall
 {
@@ -18,7 +18,7 @@ namespace RollingBall
 			HWND hwnd;
 		} winAPI;
 
-		PaintManager paintManager;
+		Paint paint;
 		Physics physics;
 		Controller controller;
 		ObjectManager objectManager;

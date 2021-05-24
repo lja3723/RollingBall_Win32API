@@ -1,19 +1,19 @@
 ﻿#pragma once
-#ifndef __FileManager_h__
-#define __FileManager_h__
+#ifndef __file_h__
+#define __file_h__
 
 #include <Windows.h>
 #include <tchar.h>
 
 namespace RollingBall 
 {
-	class FileManager
+	class File
 	{
 	private:
 		HANDLE hFile;
 
 	public:
-		FileManager() { hFile = NULL; };
+		File() { hFile = NULL; };
 
 		//파일이 열렸는지 검사하는 함수
 		BOOL isOpen();

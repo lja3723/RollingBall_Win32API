@@ -1,6 +1,6 @@
 ﻿#pragma once
-#ifndef __Controller_h__
-#define __Controller_h__
+#ifndef __controller_h__
+#define __controller_h__
 #include <Windows.h>
 
 namespace RollingBall

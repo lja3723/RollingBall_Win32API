@@ -1,5 +1,5 @@
-﻿#include "ObjectManager.h"
-#include "FileManager.h"
+﻿#include "object.h"
+#include "file.h"
 
 using namespace RollingBall;
 
@@ -134,7 +134,7 @@ BOOL ObjectManager::init(HWND hwnd)
 BOOL ObjectManager::init_object_info(HWND hwnd)
 {
 	LPCTSTR filename = _T("..\\res\\bmp\\object_info.txt");
-	FileManager file;
+	File file;
 
 	if (!file.open(filename, _T("r")))
 	{

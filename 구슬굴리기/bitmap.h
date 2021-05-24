@@ -1,22 +1,22 @@
 ﻿#pragma once
-#ifndef __BitmapManager_h__
-#define __BitmapManager_h__
+#ifndef __bitmap_h__
+#define __bitmap_h__
 
 #include <Windows.h>
 #include <tchar.h>
 #include "resource.h"
-#include "ObjectManager.h"
+#include "object.h"
 
 /*
 * 
-* BitmapManager:
+* Bitmap:
 * 프로그램에서 사용하는 비트맵을 관리하는 클래스를 정의
 * 
 */
 
 namespace RollingBall
 {
-	class BitmapManager
+	class Bitmap
 	{
 	private:
 		ObjectManager om;
@@ -94,10 +94,10 @@ namespace RollingBall
 		void arrange_idx(int& objidx, int& textureidx, int& sizeidx, BOOL& mask);
 
 	public:
-		//BitmapManager 클래스 변수를 사용하기 전 반드시 수행해야 한다
+		//Bitmap 클래스 변수를 사용하기 전 반드시 수행해야 한다
 		BOOL init(HINSTANCE m_hInstance);
 		BOOL isInit();
-		~BitmapManager();
+		~Bitmap();
 
 		HBITMAP get(int index);
 

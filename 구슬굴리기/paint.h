@@ -1,28 +1,28 @@
 ﻿#pragma once
-#ifndef __PaintManager_h__
-#define __PaintManager_h__
+#ifndef __paint_h__
+#define __paint_h__
 
 #include <Windows.h>
 #include <vector>
-#include "BitmapManager.h"
-#include "ObjectManager.h"
-#include "Scaler.h"
+#include "bitmap.h"
+#include "object.h"
+#include "scaler.h"
 
 using std::vector;
 
 /*
 *
-* PaintManager:
+* Paint:
 * 프로그램의 시각적 표현을 전담하는 클래스를 정의
 *
 */
 
 namespace RollingBall
 {
-	class PaintManager
+	class Paint
 	{
 	private:
-		BitmapManager bmp;
+		Bitmap bmp;
 		ObjectManager om;
 		Scaler scale;
 
@@ -68,7 +68,7 @@ namespace RollingBall
 		} flag;
 	
 	public:
-		~PaintManager();
+		~Paint();
 
 		//PrantManager 클래스 변수를 사용하기 전 반드시 수행해야 한다
 		BOOL init(HINSTANCE m_hInstance, HWND m_hwnd);
@@ -94,7 +94,7 @@ namespace RollingBall
 		*
 		*********************************/
 		//클래스의 각종 플래그변수를 초기화
-		//PaintManager::init()에서만 호출되어야 함
+		//Paint::init()에서만 호출되어야 함
 		void init_flags();
 		void init_res_count();
 		void init_res_vectors();

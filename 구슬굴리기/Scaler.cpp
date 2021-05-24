@@ -1,4 +1,4 @@
-﻿#include "Scaler.h"
+﻿#include "scaler.h"
 
 using namespace RollingBall;
 

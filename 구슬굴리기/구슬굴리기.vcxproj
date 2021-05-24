@@ -139,28 +139,28 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="BitmapManager.cpp" />
-    <ClCompile Include="Debugger.cpp" />
-    <ClCompile Include="FileManager.cpp" />
-    <ClCompile Include="Main.cpp" />
-    <ClCompile Include="ObjectManager.cpp" />
-    <ClCompile Include="Controller.cpp" />
-    <ClCompile Include="Physics.cpp" />
-    <ClCompile Include="PaintManager.cpp" />
-    <ClCompile Include="RollingBall.cpp" />
-    <ClCompile Include="Scaler.cpp" />
+    <ClCompile Include="bitmap.cpp" />
+    <ClCompile Include="debugger.cpp" />
+    <ClCompile Include="file.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="object.cpp" />
+    <ClCompile Include="controller.cpp" />
+    <ClCompile Include="physics.cpp" />
+    <ClCompile Include="paint.cpp" />
+    <ClCompile Include="rolling_ball.cpp" />
+    <ClCompile Include="scaler.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BitmapManager.h" />
-    <ClInclude Include="Debugger.h" />
-    <ClInclude Include="FileManager.h" />
-    <ClInclude Include="ObjectManager.h" />
-    <ClInclude Include="Controller.h" />
-    <ClInclude Include="Physics.h" />
-    <ClInclude Include="PaintManager.h" />
+    <ClInclude Include="bitmap.h" />
+    <ClInclude Include="debugger.h" />
+    <ClInclude Include="file.h" />
+    <ClInclude Include="object.h" />
+    <ClInclude Include="controller.h" />
+    <ClInclude Include="physics.h" />
+    <ClInclude Include="paint.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="RollingBall.h" />
-    <ClInclude Include="Scaler.h" />
+    <ClInclude Include="rolling_ball.h" />
+    <ClInclude Include="scaler.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="구슬굴리기.rc" />

@@ -1,6 +1,6 @@
 #pragma once
-#ifndef __Debugger_h__
-#define __Debugger_h__
+#ifndef __debugger_h__
+#define __debugger_h__
 
 #include <Windows.h>
 #include <tchar.h>

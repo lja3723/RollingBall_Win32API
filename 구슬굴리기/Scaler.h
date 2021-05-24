@@ -1,6 +1,6 @@
 ﻿#pragma once
-#ifndef __Scaler_h__
-#define __Scaler_h__
+#ifndef __scaler_h__
+#define __scaler_h__
 
 namespace RollingBall
 {

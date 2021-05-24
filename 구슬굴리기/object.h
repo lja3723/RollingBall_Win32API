@@ -1,5 +1,6 @@
-﻿#ifndef __ObjectManager_h__
-#define __ObjectManager_h__
+﻿#pragma once
+#ifndef __object_h__
+#define __object_h__
 
 #include <Windows.h>
 #include <string>
