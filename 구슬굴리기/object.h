@@ -6,13 +6,15 @@
 #include <string>
 #include <vector>
 #include <tchar.h>
+#include "physics.h"
+#include "scaler.h"
 
 using std::vector;
 typedef std::basic_string<TCHAR> tstring;
 
 namespace RollingBall
 {
-	class ObjectInfo {
+	class ObjectBitmapInfo {
 	private:
 		tstring _name;
 		BOOL _has_mask;
@@ -49,28 +51,28 @@ namespace RollingBall
 	};
 
 
-	class ObjectManager 
+	class Object 
 	{
 	private:
-		static BOOL flag_isObjectInfoInit;
-		static vector<ObjectInfo> _object_info;
-	public:
-
-		ObjectInfo& object_info(int idx);
-		int object_count();
+		static BOOL flag_isInitVectorObjectBitmapInfo;
+		static vector<ObjectBitmapInfo> _vector_object_bitmap_info;
+		ObjectBitmapInfo& get_bmpInfo(int idx);
+		BOOL init_vector_object_info(HWND hwnd);
 		BOOL init(HWND hwnd);
-		BOOL init_object_info(HWND hwnd);
-		BOOL isInitObjectInfo();
-	};
+		BOOL isInitVectorObjectBitmapInfo();
 
-
-
-	class Object {
-	private:
+		struct _idx {
+			int object;
+			int texture;
+		};
 
 	public:
-		static ObjectInfo info;
+		static ObjectBitmapInfo bmpInfo;
+		int object_count();
+		BOOL isInitBmpInfo();
+		PhysicalValue physical;
 	};
+
 
 	class Ball : Object 
 	{

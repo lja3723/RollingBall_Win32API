@@ -21,7 +21,7 @@ namespace RollingBall
 		Paint paint;
 		Physics physics;
 		Controller controller;
-		ObjectManager objectManager;
+		Object objectManager;
 
 	public:
 		//RollingBallClass 변수를 사용하기 전 반드시 수행해야 함

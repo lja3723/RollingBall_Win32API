@@ -6,87 +6,86 @@ using namespace RollingBall;
 /*********************************************** 
 ************************************************ 
 *** 
-***		ObjectInfo class
+***		ObjectBitmapInfo class
 ***
 ************************************************  
 ************************************************/
-
-BOOL ObjectInfo::isIdxInRange(int idx, int rangeMax)
+BOOL ObjectBitmapInfo::isIdxInRange(int idx, int rangeMax)
 {
 	return 0 <= idx && idx < rangeMax;
 }
 
-LPCTSTR ObjectInfo::name()
+LPCTSTR ObjectBitmapInfo::name()
 {
 	return _name.c_str();
 }
-void ObjectInfo::name_set(tstring name)
+void ObjectBitmapInfo::name_set(tstring name)
 {
 	_name = name;
 }
 
-BOOL ObjectInfo::has_mask()
+BOOL ObjectBitmapInfo::has_mask()
 {
 	return _has_mask;
 }
-void ObjectInfo::has_mask_set(BOOL has_mask)
+void ObjectBitmapInfo::has_mask_set(BOOL has_mask)
 {
 	_has_mask = has_mask;
 }
 
-LPCTSTR ObjectInfo::texture_name(int idx)
+LPCTSTR ObjectBitmapInfo::texture_name(int idx)
 {
 	if (!isIdxInRange(idx, (int)_texture._name.size())) return _T("idx error");
 	return _texture._name[idx].c_str();
 }
-void ObjectInfo::texture_name_resize(int size)
+void ObjectBitmapInfo::texture_name_resize(int size)
 {
 	if (size < 0) size = 0;
 	_texture._name.resize(size);
 }
-void ObjectInfo::texture_name_set(int idx, tstring name)
+void ObjectBitmapInfo::texture_name_set(int idx, tstring name)
 {
 	if (!isIdxInRange(idx, (int)_texture._name.size())) return;
 	_texture._name[idx] = name;
 }
 
-void ObjectInfo::texture_name_push_back(tstring name)
+void ObjectBitmapInfo::texture_name_push_back(tstring name)
 {
 	_texture._name.push_back(name);
 }
 
-int ObjectInfo::texture_size(int idx)
+int ObjectBitmapInfo::texture_size(int idx)
 {
 	if (!isIdxInRange(idx, (int)_texture._size.size())) return 0;
 	return _texture._size[idx];
 }
-void ObjectInfo::texture_size_resize(int size)
+void ObjectBitmapInfo::texture_size_resize(int size)
 {
 	if (size < 0) size = 0;
 	_texture._size.resize(size);
 }
-void ObjectInfo::texture_size_set(int idx, int size)
+void ObjectBitmapInfo::texture_size_set(int idx, int size)
 {
 	if (!isIdxInRange(idx, (int)_texture._size.size())) return;
 	_texture._size[idx] = size;
 }
 
-void ObjectInfo::texture_size_push_back(int size)
+void ObjectBitmapInfo::texture_size_push_back(int size)
 {
 	_texture._size.push_back(size);
 }
 
 
-int ObjectInfo::count_texture()
+int ObjectBitmapInfo::count_texture()
 {
 	return (int)_texture._name.size();
 }
-int ObjectInfo::count_texture_size()
+int ObjectBitmapInfo::count_texture_size()
 {
 	return (int)_texture._size.size();
 }
 
-void ObjectInfo::clear()
+void ObjectBitmapInfo::clear()
 {
 	_name = _T("");
 	_has_mask = FALSE;
@@ -103,26 +102,26 @@ void ObjectInfo::clear()
 /***********************************************
 ************************************************
 ***
-***		ObjectManager class
+***		Object class
 ***
 ************************************************
 ************************************************/
 
-vector<ObjectInfo> ObjectManager::_object_info = vector<ObjectInfo>();
-BOOL ObjectManager::flag_isObjectInfoInit = FALSE;
+vector<ObjectBitmapInfo> Object::_vector_object_bitmap_info = vector<ObjectBitmapInfo>();
+BOOL Object::flag_isInitVectorObjectBitmapInfo = FALSE;
 
-ObjectInfo& ObjectManager::object_info(int idx)
+ObjectBitmapInfo& Object::get_bmpInfo(int idx)
 {
 	if (!(0 <= idx && idx < object_count())) 
 		idx = object_count(); //idx를 더미 데이터로 설정한다
 	return _object_info[idx];
 }
-int ObjectManager::object_count()
+int Object::object_count()
 {
 	//_object_info의 마지막 원소는 더미 데이터다
 	return (int)_object_info.size() - 1;
 }
-BOOL ObjectManager::init(HWND hwnd)
+BOOL Object::init(HWND hwnd)
 {
 	if (isInitObjectInfo()) return TRUE;
 	if (init_object_info(hwnd)) {
@@ -131,7 +130,7 @@ BOOL ObjectManager::init(HWND hwnd)
 	}
 	else return FALSE;
 }
-BOOL ObjectManager::init_object_info(HWND hwnd)
+BOOL Object::init_vector_object_info(HWND hwnd)
 {
 	LPCTSTR filename = _T("..\\res\\bmp\\object_info.txt");
 	File file;
@@ -147,7 +146,7 @@ BOOL ObjectManager::init_object_info(HWND hwnd)
 
 	//파일을 한 줄씩 읽어 object에 저장한다.
 	TCHAR line[128];
-	ObjectInfo oi;
+	ObjectBitmapInfo oi;
 	BOOL isObjectReading = FALSE;
 	//int objidx = -1;
 	while (file.readLine(line, sizeof(line)))
@@ -242,7 +241,7 @@ BOOL ObjectManager::init_object_info(HWND hwnd)
 	file.close();
 	return TRUE;
 }
-BOOL ObjectManager::isInitObjectInfo()
+BOOL Object::isInitBmpInfo()
 {
 	return flag_isObjectInfoInit;
 }

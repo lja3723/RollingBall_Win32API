@@ -19,7 +19,7 @@ namespace RollingBall
 	class Bitmap
 	{
 	private:
-		ObjectManager om;
+		Object om;
 
 		struct {
 			int object;

@@ -5,13 +5,16 @@
 namespace RollingBall
 {
 
+	typedef int pixel;
+	typedef double cm_val;
+
 	class Scaler {
 	private:
-		static int scale_px_per_cm;
+		static pixel scale_px_per_cm;
 	public:
-		void set_scale_px_per_cm(int px);
-		int px(double cm);
-		double cm(int px);
+		void set_scale_px_per_cm(pixel px);
+		pixel px(cm_val cm);
+		cm_val cm(pixel px);
 	};
 
 }
