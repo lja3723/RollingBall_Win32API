@@ -6,13 +6,15 @@
 #include <string>
 #include <vector>
 #include <tchar.h>
+#include "physics.h"
+#include "scaler.h"
 
 using std::vector;
 typedef std::basic_string<TCHAR> tstring;
 
 namespace RollingBall
 {
-	class ObjectInfo {
+	class ObjectBitmapInfo {
 	private:
 		tstring _name;
 		BOOL _has_mask;
@@ -25,19 +27,19 @@ namespace RollingBall
 
 	public:
 		LPCTSTR name();
-		void name_set(tstring name);
+		void name(tstring name);
 
 		BOOL has_mask();
-		void has_mask_set(BOOL has_mask);
+		void has_mask(BOOL has_mask);
 
 		LPCTSTR texture_name(int idx);
+		void texture_name(int idx, tstring name);
 		void texture_name_resize(int size);
-		void texture_name_set(int idx, tstring name);
 		void texture_name_push_back(tstring name);
 
 		int texture_size(int idx);
+		void texture_size(int idx, int size);
 		void texture_size_resize(int size);
-		void texture_size_set(int idx, int size);
 		void texture_size_push_back(int size);
 
 		//텍스쳐 개수를 반환
@@ -48,29 +50,42 @@ namespace RollingBall
 		void clear();
 	};
 
+	class ObjectBitmapInfoVector
+	{
 
-	class ObjectManager 
+	private:
+		static BOOL flag_isInit_bitmap_info;
+		static vector<ObjectBitmapInfo> _bitmap_info;
+
+	public:
+		BOOL load(HWND hwnd, LPCTSTR filename);
+		BOOL isLoaded();
+		ObjectBitmapInfo& get_bmpInfo(int idx);
+		int index(LPCTSTR object_name);
+		int count_object();
+	};
+
+
+	class Object 
 	{
 	private:
-		static BOOL flag_isObjectInfoInit;
-		static vector<ObjectInfo> _object_info;
-	public:
+		struct _idx {
+			int object;
+			int texture;
+		} idx;
 
-		ObjectInfo& object_info(int idx);
-		int object_count();
-		BOOL init(HWND hwnd);
-		BOOL init_object_info(HWND hwnd);
-		BOOL isInitObjectInfo();
-	};
+		static ObjectBitmapInfoVector _bmpInfoVec;
 
-
-
-	class Object {
-	private:
+	protected:
 
 	public:
-		static ObjectInfo info;
+		static ObjectBitmapInfo bmpInfo;
+		PhysicalValue physical;
+
+		//BOOL init(HWND hwnd);
+		BOOL init();
 	};
+
 
 	class Ball : Object 
 	{
@@ -79,7 +94,7 @@ namespace RollingBall
 
 	};
 
-	class Floor : Object 
+	class Background : Object 
 	{
 	private:
 	public:

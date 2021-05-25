@@ -23,7 +23,7 @@ namespace RollingBall
 	{
 	private:
 		Bitmap bmp;
-		ObjectManager om;
+		Object om;
 		Scaler scale;
 
 		//리소스 개수를 저장함

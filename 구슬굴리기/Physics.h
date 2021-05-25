@@ -4,7 +4,7 @@
 
 namespace RollingBall
 {
-	class Physics
+	class PhysicalValue
 	{
 	private:
 	public:
