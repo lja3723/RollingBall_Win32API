@@ -19,18 +19,6 @@ namespace RollingBall
 	class Bitmap
 	{
 	private:
-		/*
-		Object om;
-
-		
-		struct {
-			int object;
-			int texture;
-			int texture_size;
-			BOOL mask;
-		} curselidx;
-		*/
-
 		/*******************************
 		*	private variables: static
 		********************************/
@@ -71,23 +59,7 @@ namespace RollingBall
 		//hBitmap 벡터에 저장된 hBitmap들을 삭제하는 함수(소멸자 호출시 수행)
 		void delete_hBitmap();
 
-		/*
-		//curselidx 요소들을 초기화하는 함수(init시 수행)
-		void init_curselidx();
-
-		////아래 함수도 ObjectManager에서 관리해야 할 것 같다
-		//obj의 총 파일 개수를 구하는 함수
-		int get_object_file_count(int objidx);
-		
-		
-		//idx가 범위 안에 있는지 판단
-		BOOL isIdxInRange(int idx, int rangeMax)
-		{
-			return 0 <= idx && idx < rangeMax;
-		}
-		*/
-
-
+	
 
 
 		/************************************
@@ -97,11 +69,6 @@ namespace RollingBall
 		BOOL isInitFileCount();
 		BOOL isInitHBitmap();
 
-		/*
-		//idx의 범위가 정상적이도록 재배열함
-		void arrange_idx(int& objidx, int& textureidx, int& sizeidx, BOOL& mask);
-		*/
-
 	public:
 		//Bitmap 클래스 변수를 사용하기 전 반드시 수행해야 한다
 		BOOL init(HINSTANCE m_hInstance);
@@ -110,48 +77,13 @@ namespace RollingBall
 
 		HBITMAP get(int index);
 		HBITMAP get(Object& object, pixel texture_size, BOOL mask_texture = FALSE);
-		
-		/*
-		//get() 함수를 호출한다
-		HBITMAP operator[](int index);
-		*/
-
+	
 		HBITMAP operator()(Object& object, pixel texture_size, BOOL mask_texture = FALSE);
 
 		int idx(Object& object, pixel texture_size, BOOL mask_texture = FALSE);
 
-		/*
-		int get_curr_sel_idx();
-		int get_curr_object_idx();
-		LPCTSTR get_curr_object_name();
-
-		int get_curr_texture_idx();
-		LPCTSTR get_curr_texture_name();
-
-		int get_curr_texture_size_idx();
-		int get_curr_texture_size();
-
-		BOOL get_curr_object_has_mask();
-		*/
-
 		int file_count();
 
-		/*
-		int index(int objidx = 0, int textureidx = 0, int sizeidx = 0, BOOL m_mask = FALSE);
-		int index(LPCTSTR m_obj, LPCTSTR m_texture, int m_size, BOOL m_mask);
-
-		int object(LPCTSTR m_obj);
-		LPCTSTR object(int m_objidx);
-
-		int texture(LPCTSTR m_texture);
-		LPCTSTR texture(int m_textureidx);
-
-		int size(int m_size);
-		int idx_to_size(int sizeidx);
-
-		void set_cur_sel(int objidx = 0, int textureidx = 0, int sizeidx = 0, BOOL m_mask = FALSE);
-		void set_cur_sel(LPCTSTR m_obj, LPCTSTR m_texture, int m_size, BOOL m_mask);
-		*/
 
 		//hDC와 호환되는 크기가 rt인 hBitmap을 생성한다
 		HBITMAP create_hDC_compatible(HDC hdc, RECT& rt);

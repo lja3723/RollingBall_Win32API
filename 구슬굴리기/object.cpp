@@ -368,7 +368,7 @@ int RollingBall::Object::index_texture()
 {
 	return idx.texture;
 }
-int RollingBall::Object::index_texture(pixel texture_size)
+int RollingBall::Object::index_texture_size(pixel texture_size)
 {
 	int i;
 	for (i = 0; i < count_texture_size(); i++)
@@ -391,9 +391,9 @@ void RollingBall::Object::texture(LPCTSTR texture_name)
 	idx.texture = 0;
 }
 
-int RollingBall::Object::texture(pixel texture_size)
+pixel RollingBall::Object::round_texture_size(pixel texture_size)
 {
-	return bmpInfo.texture_size(index_texture(texture_size));
+	return bmpInfo.texture_size(index_texture_size(texture_size));
 }
 
 

@@ -54,16 +54,6 @@ BOOL Bitmap::isInitHBitmap()
 	return hBitmap.size() != 0;
 }
 
-/*
-void Bitmap::arrange_idx(int& objidx, int& textureidx, int& sizeidx, BOOL& mask)
-{
-	if (!isIdxInRange(objidx, om.object_count())) objidx = 0;
-	if (!isIdxInRange(textureidx, om.get_bmpInfo(objidx).count_texture())) textureidx = 0;
-	if (!isIdxInRange(sizeidx, om.get_bmpInfo(objidx).count_texture_size())) sizeidx = 0;
-	if (om.get_bmpInfo(objidx).has_mask() == FALSE && mask == TRUE) mask = FALSE;
-} 
-*/
-
 
 /*****************************************
 *
@@ -127,7 +117,7 @@ int RollingBall::Bitmap::idx(Object& object, pixel texture_size, BOOL mask_textu
 	if (mask_texture == TRUE) idx += object.count_texture_size();
 
 	//size에 따른 idx 탐색
-	idx += object.index_texture(texture_size);
+	idx += object.index_texture_size(texture_size);
 
 	//구한 idx가 범위에 벗어나면 0으로 초기화
 	if (!(0 <= idx && idx < v.count_bitmap_files())) idx = 0;
@@ -144,112 +134,7 @@ void Bitmap::delete_hDC_compatible(HBITMAP hDCcompatibleBitmap)
 {
 	DeleteObject(hDCcompatibleBitmap);
 }
-/*
-int Bitmap::get_curr_sel_idx()
-{
-	return index(
-		curselidx.object, curselidx.texture, 
-		curselidx.texture_size, curselidx.mask
-	);
-}
-int Bitmap::get_curr_object_idx()
-{
-	return curselidx.object;
-}
-LPCTSTR Bitmap::get_curr_object_name()
-{
-	return om.get_bmpInfo(curselidx.object).name();
-}
-
-int Bitmap::get_curr_texture_idx()
-{
-	return curselidx.texture;
-}
-LPCTSTR Bitmap::get_curr_texture_name()
-{
-	return om.get_bmpInfo(curselidx.object).texture_name(curselidx.texture);
-}
-
-int Bitmap::get_curr_texture_size_idx()
-{
-	return curselidx.texture_size;
-}
-int Bitmap::get_curr_texture_size()
-{
-	return om.get_bmpInfo(curselidx.object).texture_size(curselidx.texture_size);
-}
-
-BOOL Bitmap::get_curr_object_has_mask()
-{
-	return om.get_bmpInfo(curselidx.object).has_mask();
-}
-*/
 int Bitmap::file_count()
 {
 	return _file_count;
 }
-
-
-
-/*
-int Bitmap::object(LPCTSTR m_obj)
-{
-	for (int i = 0; i < om.object_count(); i++) 
-		if (_tcscmp(m_obj, om.get_bmpInfo(i).name()) == 0)
-			return i;
-
-	return 0;
-}
-LPCTSTR Bitmap::object(int m_objidx)
-{
-	return om.get_bmpInfo(m_objidx).name();
-}
-
-int Bitmap::texture(LPCTSTR m_texture)
-{
-	for (int i = 0; i < om.get_bmpInfo(curselidx.object).count_texture(); i++)
-		if (_tcscmp(m_texture, om.get_bmpInfo(curselidx.object).texture_name(i)) == 0)
-			return i;
-
-	return 0;
-}
-LPCTSTR Bitmap::texture(int m_textureidx)
-{
-	return om.get_bmpInfo(curselidx.object).texture_name(m_textureidx);
-}
-
-int Bitmap::size(int m_size)
-{
-	for (int i = 0; i < om.get_bmpInfo(curselidx.object).count_texture_size(); i++)
-		if (m_size == om.get_bmpInfo(curselidx.object).texture_size(i))
-			return i;
-
-	return 0;
-}
-int Bitmap::idx_to_size(int sizeidx)
-{
-	return om.get_bmpInfo(curselidx.object).texture_size(sizeidx);
-}
-
-void Bitmap::set_cur_sel(int objidx, int textureidx, int sizeidx, BOOL m_mask)
-{
-	curselidx.object = objidx;
-	curselidx.texture = textureidx;
-	curselidx.texture_size = sizeidx;
-	curselidx.mask = m_mask;
-	arrange_idx(curselidx.object, curselidx.texture, curselidx.texture_size, curselidx.mask);
-}
-void Bitmap::set_cur_sel(LPCTSTR m_obj, LPCTSTR m_texture, int m_size, BOOL m_mask)
-{
-	int objidx = object(m_obj);
-	curselidx.object = objidx;
-	int textureidx = texture(m_texture);
-	curselidx.texture = textureidx;
-	int sizeidx = size(m_size);
-	set_cur_sel(objidx, textureidx, sizeidx, m_mask);
-}
-HBITMAP Bitmap::operator[](int index)
-{
-	return get(index);
-}
-*/

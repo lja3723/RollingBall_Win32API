@@ -80,12 +80,6 @@ void Paint::background(Object& background)
 	paint_background_tobuffer(background);
 	paint_background_ruller_tobuffer();
 }
-/*
-void Paint::ball(int posX, int posY, int ballsize)
-{
-	paint_ball_tobuffer(posX, posY, ballsize);
-}
-*/
 
 void RollingBall::Paint::operator()(Object& obj)
 {
@@ -509,8 +503,7 @@ void Paint::paint_background_tobuffer(Object& background)
 
 	GetClientRect(winAPI.hwnd, &winAPI.windowRect);
 
-	int bksize = 256;
-	background.index_texture(bksize);
+	int bksize = background.round_texture_size(512);
 
 	for (int i = 0; i * bksize < winAPI.windowRect.right; i++)
 		for (int j = 0; j * bksize < winAPI.windowRect.bottom; j++)
@@ -524,53 +517,6 @@ void Paint::paint_background_ruller_tobuffer()
 {
 
 }
-/*
-void Paint::paint_ball_tobuffer(int x, int y, int ballsize)
-{
-	if (!isReadyToPaint()) return;
-
-	for (int i = 0; i < 2; i++)
-	{
-		BOOL mask;
-		DWORD paintmode;
-		if (i == 0)		
-			mask = TRUE, paintmode = SRCAND;
-		else if (i == 1)
-			mask = FALSE, paintmode = SRCPAINT;
-
-		int idx = bmp.index(_T("ball"), _T("iron1"), ballsize, mask);
-		
-		BitBlt(
-			winAPI.hDC.mem.windowBuffer,
-			x - ballsize / 2, y - ballsize / 2, ballsize, ballsize,
-			winAPI.hDC.mem.res[idx], 0, 0,
-			paintmode
-		);
-
-		/*
-		int texturesize;
-
-		int drawsize = (x + y) / 10;
-		if (drawsize > 256) drawsize = 256;
-
-		if (drawsize < 32) texturesize = 32;
-		else if (drawsize < 64) texturesize = 64;
-		else if (drawsize < 128) texturesize = 128;
-		else texturesize = 256;
-		int idx = bmp.index(_T("ball"), _T("iron1"), texturesize, mask);
-
-		//StretchBlt로 이미지 작게 표시할 때 깨짐현상을 방지한다
-		SetStretchBltMode(winAPI.hDC.mem.windowBuffer, HALFTONE);
-
-		StretchBlt(
-			winAPI.hDC.mem.windowBuffer,
-			x - drawsize / 2, y - drawsize / 2, drawsize, drawsize,
-			winAPI.hDC.mem.res[idx], 0, 0, texturesize, texturesize,
-			paintmode
-		);
-	}
-}
-*/
 
 void RollingBall::Paint::paint_tobuffer(Object& object)
 {
@@ -593,15 +539,14 @@ void RollingBall::Paint::paint_tobuffer(Object& object)
 				mask = FALSE, paintmode = SRCPAINT;
 
 			pixel physical_size = object.physical.size;
+			pixel texture_size = object.round_texture_size(physical_size);
 			PixelVector pos = object.physical.pos;
-			int idx = bmp.idx(object, physical_size, mask);
-			int texture_size = object.texture(physical_size);
-
+			int res_idx = bmp.idx(object, physical_size, mask);
 			SetStretchBltMode(winAPI.hDC.mem.windowBuffer, COLORONCOLOR);
 			StretchBlt(
 				winAPI.hDC.mem.windowBuffer,
 				pos.x - physical_size / 2, pos.y - physical_size / 2, physical_size, physical_size,
-				winAPI.hDC.mem.res[idx], 0, 0, texture_size, texture_size,
+				winAPI.hDC.mem.res[res_idx], 0, 0, texture_size, texture_size,
 				paintmode
 			);
 		}

@@ -26,26 +26,40 @@ namespace RollingBall
 		BOOL isIdxInRange(int idx, int rangeMax);
 
 	public:
+		//이름을 반환한다
 		LPCTSTR name();
+
+		//이름을 설정한다
 		void name(tstring name);
 
+		//마스크 여부를 반환한다
 		BOOL has_mask();
+
+		//마스크 여부를 설정한다
 		void has_mask(BOOL has_mask);
 
+		//idx번째 텍스쳐 이름을 반환한다
 		LPCTSTR texture_name(int idx);
+
+		//idx번째 텍스쳐를 설정한다
 		void texture_name(int idx, tstring name);
 		void texture_name_resize(int size);
 		void texture_name_push_back(tstring name);
 
+		//idx번째 텍스쳐 사이즈를 반환한다
 		pixel texture_size(int idx);
+
+		//idx번째 텍스쳐 사이즈를 설정한다
 		void texture_size(int idx, pixel size);
 		void texture_size_resize(pixel size);
 		void texture_size_push_back(pixel size);
 
-		//텍스쳐 개수를 반환
+		//텍스쳐 개수를 반환한다
 		int count_texture();
-		//텍스쳐 사이즈 개수를 반환
+
+		//텍스쳐 사이즈 개수를 반환한다
 		int count_texture_size();
+
 		//모든 정보를 초기화
 		void clear();
 	};
@@ -55,19 +69,30 @@ namespace RollingBall
 	{
 
 	private:
+		// _bitmap_info는 object_bitmap_info.txt 파일의 정보로 초기화된다
+		// _bitmap_info는 프로그램 실행 중 한 번만 초기화된다
 		static BOOL flag_isLoaded;
 		static vector<ObjectBitmapInfo> _bitmap_info;
+
+		// 사용자가 잘못된 조작을 할 경우 반환될수 있는 더미데이터
+		// 역시 한번만 초기화된다
 		static ObjectBitmapInfo _dummy_bmpInfo;
 		BOOL isIdxInRange(int idx, int idxMax);
 
 	public:
+		//프로그램 실행 중 한 번은 실행되어야 한다
 		BOOL Load(HWND hwnd, LPCTSTR filename);
 		BOOL isLoaded();
 		ObjectBitmapInfo& get_bmpInfo(int idx_object);
 		int index(LPCTSTR object_name);
 
+		//오브젝트의 개수를 반환한다
 		int count_object();
+
+		//오브젝트와 관련된 비트맵 개수를 반환한다
 		int count_bitmap(int idx_object);
+
+		//비트맵 파일 총 개수를 반환한다
 		int count_bitmap_files();
 	};
 
@@ -86,18 +111,38 @@ namespace RollingBall
 		//void init(int index_object);
 
 	public:
+		//물리값
 		PhysicalValue physical;
+
+		//오브젝트의 텍스쳐 개수를 반환한다
 		int count_texture();
+
+		//오브젝트의 텍스쳐 사이즈 수를 반환한다
 		int count_texture_size();
+
+		//오브젝트가 마스크 이미지를 가지는지 반환한다
 		BOOL has_mask();
+
+		//오브젝트 이름을 반환한다
 		LPCTSTR name();
 
+		//오브젝트의 인덱스를 반환한다
 		int index_object();
+
+		//오브젝트의 텍스쳐 인덱스를 반환한다
 		int index_texture();
-		int index_texture(pixel texture_size);
+
+		//texture_size와 가장 근접한 텍스처 크기를 표현하는 인덱스를 반환한다
+		int index_texture_size(pixel texture_size);
+
+		//오브젝트의 텍스쳐 이름을 반환한다
 		LPCTSTR texture();
+
+		//오브젝트의 텍스쳐를 설정한다
 		void texture(LPCTSTR texture_name);
-		int texture(pixel texture_size);
+
+		//texture_size와 가장 근접한 실제 존재하는 오브젝트 텍스처 크기를 반환한다
+		pixel round_texture_size(pixel texture_size);
 	};
 
 
