@@ -19,17 +19,14 @@ namespace RollingBall
 	class Bitmap
 	{
 	private:
-		/*
-		Object om;
+		ObjectManager om;
 
-		
 		struct {
 			int object;
 			int texture;
 			int texture_size;
 			BOOL mask;
 		} curselidx;
-		*/
 
 		/*******************************
 		*	private variables: static
@@ -52,7 +49,7 @@ namespace RollingBall
 		};
 
 		//비트맵 파일 개수: init 함수 호출시 자동으로 초기화됨
-		static int _file_count;
+		static int bitmap_file_count;
 
 		//로드된 hBitmap들을 담을 벡터
 		static vector<HBITMAP> hBitmap;
@@ -63,7 +60,7 @@ namespace RollingBall
 		*	private functions
 		*************************************/
 		//bitmap_file_count를 초기화하는 함수(init시 수행)
-		void init_file_count();
+		void init_bitmap_file_count();
 
 		//hBitmap 벡터에 hBitmap들을 로드하는 함수(init시 수행)
 		void init_hBitmap();
@@ -71,7 +68,6 @@ namespace RollingBall
 		//hBitmap 벡터에 저장된 hBitmap들을 삭제하는 함수(소멸자 호출시 수행)
 		void delete_hBitmap();
 
-		/*
 		//curselidx 요소들을 초기화하는 함수(init시 수행)
 		void init_curselidx();
 
@@ -79,14 +75,11 @@ namespace RollingBall
 		//obj의 총 파일 개수를 구하는 함수
 		int get_object_file_count(int objidx);
 		
-		
 		//idx가 범위 안에 있는지 판단
 		BOOL isIdxInRange(int idx, int rangeMax)
 		{
 			return 0 <= idx && idx < rangeMax;
 		}
-		*/
-
 
 
 
@@ -94,13 +87,11 @@ namespace RollingBall
 		*	private functions
 		*   BOOL returns
 		*************************************/
-		BOOL isInitFileCount();
+		BOOL isInitBitmapFileCount();
 		BOOL isInitHBitmap();
 
-		/*
 		//idx의 범위가 정상적이도록 재배열함
 		void arrange_idx(int& objidx, int& textureidx, int& sizeidx, BOOL& mask);
-		*/
 
 	public:
 		//Bitmap 클래스 변수를 사용하기 전 반드시 수행해야 한다
@@ -108,19 +99,9 @@ namespace RollingBall
 		BOOL isInit();
 		~Bitmap();
 
-		//HBITMAP get(int index);
-		HBITMAP get(Object object, pixel texture_size);
+		HBITMAP get(int index);
+
 		
-		/*
-		//get() 함수를 호출한다
-		HBITMAP operator[](int index);
-		*/
-
-		HBITMAP operator()(Object object, pixel texture_size);
-
-		int idx(Object object, pixel texture_size);
-
-		/*
 		int get_curr_sel_idx();
 		int get_curr_object_idx();
 		LPCTSTR get_curr_object_name();
@@ -132,11 +113,10 @@ namespace RollingBall
 		int get_curr_texture_size();
 
 		BOOL get_curr_object_has_mask();
-		*/
 
-		int file_count();
+		int get_bitmap_file_count();
 
-		/*
+
 		int index(int objidx = 0, int textureidx = 0, int sizeidx = 0, BOOL m_mask = FALSE);
 		int index(LPCTSTR m_obj, LPCTSTR m_texture, int m_size, BOOL m_mask);
 
@@ -151,7 +131,9 @@ namespace RollingBall
 
 		void set_cur_sel(int objidx = 0, int textureidx = 0, int sizeidx = 0, BOOL m_mask = FALSE);
 		void set_cur_sel(LPCTSTR m_obj, LPCTSTR m_texture, int m_size, BOOL m_mask);
-		*/
+
+		//get() 함수를 호출한다
+		HBITMAP operator[](int index);
 
 		//hDC와 호환되는 크기가 rt인 hBitmap을 생성한다
 		HBITMAP create_hDC_compatible(HDC hdc, RECT& rt);
