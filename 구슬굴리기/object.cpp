@@ -36,7 +36,7 @@ void ObjectBitmapInfo::has_mask(BOOL has_mask)
 
 LPCTSTR ObjectBitmapInfo::texture_name(int idx)
 {
-	if (!isIdxInRange(idx, (int)_texture._name.size())) return _T("idx error");
+	if (!isIdxInRange(idx, (int)_texture._name.size())) return _T("");
 	return _texture._name[idx].c_str();
 }
 void ObjectBitmapInfo::texture_name(int idx, tstring name)
@@ -122,9 +122,9 @@ BOOL ObjectBitmapInfoVector::Load(HWND hwnd, LPCTSTR filename)
 	if (isLoaded()) return TRUE;
 
 	//dummy data 초기화
-	_dummy_bmpInfo.name(_T("NULL"));
+	_dummy_bmpInfo.name(_T("__dummy__"));
 	_dummy_bmpInfo.has_mask(FALSE);
-	_dummy_bmpInfo.texture_name_push_back(_T("NULL"));
+	_dummy_bmpInfo.texture_name_push_back(_T("__dummy__"));
 	_dummy_bmpInfo.texture_size_push_back(0);
 
 	//파일을 열 수 없음

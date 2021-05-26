@@ -3,10 +3,12 @@
 #define __rolling_ball_h__
 
 #include <Windows.h>
+#include <vector>
 #include "paint.h"
 #include "physics.h"
 #include "controller.h"
 #include "object.h"
+
 
 namespace RollingBall
 {
@@ -22,6 +24,7 @@ namespace RollingBall
 		//Physics physics;
 		Controller controller;
 		ObjectBitmapInfoVector objbmpinfo;
+		vector<Ball> ball;
 
 	public:
 		//RollingBallClass 변수를 사용하기 전 반드시 수행해야 함
