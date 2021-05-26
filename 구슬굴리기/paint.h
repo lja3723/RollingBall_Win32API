@@ -23,7 +23,7 @@ namespace RollingBall
 	{
 	private:
 		Bitmap bmp;
-		ObjectManager om;
+		//Object om;
 		Scaler scale;
 
 		//리소스 개수를 저장함
@@ -86,7 +86,8 @@ namespace RollingBall
 		//공을 페인트한다
 		void ball(int posX, int posY, int ballsize = 64);
 
-		void operator()(Object obj);
+		//오브젝트를 페인트한다
+		void operator()(Object& obj);
 	
 	
 	private:

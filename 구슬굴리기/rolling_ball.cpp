@@ -6,10 +6,11 @@ BOOL RollingBallClass::init(HINSTANCE m_hInstance, HWND m_hwnd)
 {
 	winAPI.hInstance = m_hInstance;
 	winAPI.hwnd = m_hwnd;
-	if (!objectManager.init(m_hwnd)) return FALSE;
+	if (!objbmpinfo.Load(winAPI.hwnd, _T("..\\res\\bmp\\object_bmp_info.txt")))
+		return FALSE;
 	if (!paint.init(winAPI.hInstance, winAPI.hwnd)) return FALSE;
 
-	memset(&physics, 0, sizeof(physics));
+	//memset(&physics, 0, sizeof(physics));
 	return TRUE;
 }
 

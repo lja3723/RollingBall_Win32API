@@ -1,92 +1,89 @@
 ﻿#include "object.h"
 #include "file.h"
+#include "debugger.h"
 
 using namespace RollingBall;
 
 /*********************************************** 
 ************************************************ 
 *** 
-***		ObjectInfo class
+***		ObjectBitmapInfo class
 ***
 ************************************************  
 ************************************************/
-
-BOOL ObjectInfo::isIdxInRange(int idx, int rangeMax)
+BOOL ObjectBitmapInfo::isIdxInRange(int idx, int rangeMax)
 {
 	return 0 <= idx && idx < rangeMax;
 }
 
-LPCTSTR ObjectInfo::name()
+LPCTSTR ObjectBitmapInfo::name()
 {
 	return _name.c_str();
 }
-void ObjectInfo::name_set(tstring name)
+void ObjectBitmapInfo::name(tstring name)
 {
 	_name = name;
 }
 
-BOOL ObjectInfo::has_mask()
+BOOL ObjectBitmapInfo::has_mask()
 {
 	return _has_mask;
 }
-void ObjectInfo::has_mask_set(BOOL has_mask)
+void ObjectBitmapInfo::has_mask(BOOL has_mask)
 {
 	_has_mask = has_mask;
 }
 
-LPCTSTR ObjectInfo::texture_name(int idx)
+LPCTSTR ObjectBitmapInfo::texture_name(int idx)
 {
 	if (!isIdxInRange(idx, (int)_texture._name.size())) return _T("idx error");
 	return _texture._name[idx].c_str();
 }
-void ObjectInfo::texture_name_resize(int size)
-{
-	if (size < 0) size = 0;
-	_texture._name.resize(size);
-}
-void ObjectInfo::texture_name_set(int idx, tstring name)
+void ObjectBitmapInfo::texture_name(int idx, tstring name)
 {
 	if (!isIdxInRange(idx, (int)_texture._name.size())) return;
 	_texture._name[idx] = name;
 }
-
-void ObjectInfo::texture_name_push_back(tstring name)
+void ObjectBitmapInfo::texture_name_resize(int size)
+{
+	if (size < 0) size = 0;
+	_texture._name.resize(size);
+}
+void ObjectBitmapInfo::texture_name_push_back(tstring name)
 {
 	_texture._name.push_back(name);
 }
 
-int ObjectInfo::texture_size(int idx)
+pixel ObjectBitmapInfo::texture_size(int idx)
 {
 	if (!isIdxInRange(idx, (int)_texture._size.size())) return 0;
 	return _texture._size[idx];
 }
-void ObjectInfo::texture_size_resize(int size)
-{
-	if (size < 0) size = 0;
-	_texture._size.resize(size);
-}
-void ObjectInfo::texture_size_set(int idx, int size)
+void ObjectBitmapInfo::texture_size(int idx, pixel size)
 {
 	if (!isIdxInRange(idx, (int)_texture._size.size())) return;
 	_texture._size[idx] = size;
 }
-
-void ObjectInfo::texture_size_push_back(int size)
+void ObjectBitmapInfo::texture_size_resize(pixel size)
+{
+	if (size < 0) size = 0;
+	_texture._size.resize(size);
+}
+void ObjectBitmapInfo::texture_size_push_back(pixel size)
 {
 	_texture._size.push_back(size);
 }
 
-
-int ObjectInfo::count_texture()
+int ObjectBitmapInfo::count_texture()
 {
 	return (int)_texture._name.size();
 }
-int ObjectInfo::count_texture_size()
+int ObjectBitmapInfo::count_texture_size()
 {
 	return (int)_texture._size.size();
 }
 
-void ObjectInfo::clear()
+void ObjectBitmapInfo::clear()
 {
 	_name = _T("");
 	_has_mask = FALSE;
@@ -96,58 +93,51 @@ void ObjectInfo::clear()
 
 
 
-
-
-
-
 /***********************************************
 ************************************************
 ***
-***		ObjectManager class
+***		ObjectBitmapInfoVector class
 ***
 ************************************************
 ************************************************/
+BOOL ObjectBitmapInfoVector::flag_isLoaded = FALSE;
+vector<ObjectBitmapInfo> ObjectBitmapInfoVector::_bitmap_info = vector<ObjectBitmapInfo>();
+ObjectBitmapInfo ObjectBitmapInfoVector::_dummy_bmpInfo = ObjectBitmapInfo();
 
-vector<ObjectInfo> ObjectManager::_object_info = vector<ObjectInfo>();
-BOOL ObjectManager::flag_isObjectInfoInit = FALSE;
 
-ObjectInfo& ObjectManager::object_info(int idx)
+BOOL RollingBall::ObjectBitmapInfoVector::isIdxInRange(int idx, int idxMax)
 {
-	if (!(0 <= idx && idx < object_count())) 
-		idx = object_count(); //idx를 더미 데이터로 설정한다
-	return _object_info[idx];
+	return 0 <= idx && idx < idxMax;
 }
-int ObjectManager::object_count()
+
+BOOL ObjectBitmapInfoVector::Load(HWND hwnd, LPCTSTR filename)
 {
-	//_object_info의 마지막 원소는 더미 데이터다
-	return (int)_object_info.size() - 1;
-}
-BOOL ObjectManager::init(HWND hwnd)
-{
-	if (isInitObjectInfo()) return TRUE;
-	if (init_object_info(hwnd)) {
-		flag_isObjectInfoInit = TRUE;
-		return TRUE;
-	}
-	else return FALSE;
-}
-BOOL ObjectManager::init_object_info(HWND hwnd)
-{
-	LPCTSTR filename = _T("..\\res\\bmp\\object_info.txt");
 	File file;
+	const int errmsg_len = 256;
+	TCHAR errmsg[errmsg_len];
+	LPCTSTR open_failed = _T("%s 파일을 열 수 없습니다.");
+	LPCTSTR format_invalid = _T("%s 파일의 양식이 잘못되었습니다.");
 
+
+	if (isLoaded()) return TRUE;
+
+	//dummy data 초기화
+	_dummy_bmpInfo.name(_T("NULL"));
+	_dummy_bmpInfo.has_mask(FALSE);
+	_dummy_bmpInfo.texture_name_push_back(_T("NULL"));
+	_dummy_bmpInfo.texture_size_push_back(0);
+
+	//파일을 열 수 없음
 	if (!file.open(filename, _T("r")))
 	{
-		TCHAR errmsg[256];
-		_stprintf_s(errmsg, 256, _T("%s 파일을 열 수 없습니다."), filename);
+		_stprintf_s(errmsg, errmsg_len, open_failed, filename);
 		MessageBox(hwnd, errmsg, _T("오류"), MB_OK);
 		return FALSE;
 	}
 
-
 	//파일을 한 줄씩 읽어 object에 저장한다.
 	TCHAR line[128];
-	ObjectInfo oi;
+	ObjectBitmapInfo bmpInfo;
 	BOOL isObjectReading = FALSE;
 	//int objidx = -1;
 	while (file.readLine(line, sizeof(line)))
@@ -163,86 +153,267 @@ BOOL ObjectManager::init_object_info(HWND hwnd)
 			//파일이 시작됨
 			if (_tcscmp(line, _T("<object_info.txt>")) == 0)
 			{
-				oi.clear();
-				_object_info.clear();
+				bmpInfo.clear();
+				_bitmap_info.clear();
 				continue;
 			}
 
 			//오브젝트 정보를 읽기 시작함
-			if (_tcscmp(line, _T("<object>")) == 0) {
+			else if (_tcscmp(line, _T("<object>")) == 0) {
 				isObjectReading = TRUE;
 				continue;
 			}
 
 			//파일이 종료됨
 			//마지막 인덱스에 더미 데이터 저장
-			if (_tcscmp(line, _T("</object_info.txt>")) == 0)
+			else if (_tcscmp(line, _T("</object_info.txt>")) == 0)
 			{
-				oi.name_set(_T("NULL"));
-				oi.has_mask_set(FALSE);
-				oi.texture_name_push_back(_T("NULL"));
-				oi.texture_size_push_back(0);
-				_object_info.push_back(oi);
 				break;
 			}
+
+			//파일 양식이 잘못됨
+			else {
+				_stprintf_s(errmsg, errmsg_len, format_invalid, filename);
+				MessageBox(hwnd, errmsg, _T("오류"), MB_OK);
+				file.close();
+				return FALSE;
+			}
 		}
+
 		//오브젝트 정보를 읽는 중일 때..
 		else
 		{
 			//오브젝트의 이름을 저장
 			if (_tcscmp(line, _T("name=")) == 0) {
 				file.readLine(line, sizeof(line));
-				oi.name_set(line);
+				bmpInfo.name(line);
 				continue;
 			}
 
 			//오브젝트의 마스크 여부 저장
-			if (_tcscmp(line, _T("has_mask=")) == 0) {
+			else if (_tcscmp(line, _T("has_mask=")) == 0) {
 				file.readLine(line, sizeof(line));
 				BOOL flag = FALSE;
 				if (_tcscmp(line, _T("TRUE")) == 0) flag = TRUE;
 				if (_tcscmp(line, _T("FALSE")) == 0) flag = FALSE;
-				oi.has_mask_set(flag);
+				bmpInfo.has_mask(flag);
 				continue;
 			}
 
 			//오브젝트 텍스쳐 이름 저장
-			if (_tcscmp(line, _T("<texture_name>")) == 0) {
+			else if (_tcscmp(line, _T("<texture_name>")) == 0) {
 				while (TRUE)
 				{
-					file.readLine(line, sizeof(line));
+					if (!file.readLine(line, sizeof(line))) {
+						//파일 양식이 잘못됨
+						_stprintf_s(errmsg, errmsg_len, format_invalid, filename);
+						MessageBox(hwnd, errmsg, _T("오류"), MB_OK);
+						file.close();
+						return FALSE;
+					}
 					if (_tcscmp(line, _T("</texture_name>")) == 0) break;
-					oi.texture_name_push_back(line);
+					bmpInfo.texture_name_push_back(line);
 				}
 				continue;
 			}
 
 			//오브젝트 텍스쳐 크기 값 저장
-			if (_tcscmp(line, _T("<texture_size_value>")) == 0) {
+			else if (_tcscmp(line, _T("<texture_size_value>")) == 0) {
 				while (TRUE)
 				{
-					file.readLine(line, sizeof(line));
+					if (!file.readLine(line, sizeof(line))) {
+						//파일 양식이 잘못됨
+						_stprintf_s(errmsg, errmsg_len, format_invalid, filename);
+						MessageBox(hwnd, errmsg, _T("오류"), MB_OK);
+						file.close();
+						return FALSE;
+					}
 					if (_tcscmp(line, _T("</texture_size_value>")) == 0) break;
-					oi.texture_size_push_back(_ttoi(line));
+					bmpInfo.texture_size_push_back(_ttoi(line));
 				}
 				continue;
 			}
 
 			//오브젝트 정보를 모두 읽었음
-			if (_tcscmp(line, _T("</object>")) == 0) {
-				_object_info.push_back(oi);
-				oi.clear();
+			else if (_tcscmp(line, _T("</object>")) == 0) {
+				_bitmap_info.push_back(bmpInfo);
+				bmpInfo.clear();
 				isObjectReading = FALSE;
 				continue;
+			}
+
+			//파일 양식이 잘못됨
+			else {
+				_stprintf_s(errmsg, errmsg_len, format_invalid, filename);
+				MessageBox(hwnd, errmsg, _T("오류"), MB_OK);
+				file.close();
+				return FALSE;
 			}
 		}
 	}
 
 	//파일을 닫는다.
 	file.close();
+	flag_isLoaded = TRUE;
+
+#ifdef __debugger_h__
+	debuggerMessage("This massage showed by 'object.cpp'");
+	for (int i = 0; i < count_object(); i++)
+	{
+		tstring name, value;
+		for (int j = 0; j < _bitmap_info[i].count_texture(); j++)
+			name += _bitmap_info[i].texture_name(j), name += _T(" ");
+		for (int j = 0; j < _bitmap_info[i].count_texture_size(); j++)
+			value += std::to_wstring(_bitmap_info[i].texture_size(j)), value += _T(" ");
+
+		debuggerMessage(
+			"object index: %d\n"
+			"object name: %s\n\n"
+
+			"texture count: %d\n"
+			"texture name: %s\n\n"
+
+			"texture value count: %d\n"
+			"values: %s\n\n"
+
+			"has mask: %s",
+			i, _bitmap_info[i].name(),
+			(int)_bitmap_info[i].count_texture(), name.c_str(),
+			(int)_bitmap_info[i].count_texture_size(), value.c_str(),
+			(_bitmap_info[i].has_mask() ? _T("TRUE") : _T("FALSE"))
+		);
+	}
+#endif
 	return TRUE;
 }
-BOOL ObjectManager::isInitObjectInfo()
+BOOL ObjectBitmapInfoVector::isLoaded()
 {
-	return flag_isObjectInfoInit;
+	return flag_isLoaded;
+}
+ObjectBitmapInfo& ObjectBitmapInfoVector::get_bmpInfo(int idx_object)
+{
+	if (!isLoaded()) return _dummy_bmpInfo;
+	if (!isIdxInRange(idx_object, count_object()))
+		return _dummy_bmpInfo;
+	return _bitmap_info[idx_object];
+}
+int RollingBall::ObjectBitmapInfoVector::index(LPCTSTR object_name)
+{
+	for (int i = 0; i < count_object(); i++)
+		if (_tcscmp(object_name, _bitmap_info[i].name()) == 0)
+			return i;
+	return -1;
+}
+
+int ObjectBitmapInfoVector::count_object()
+{
+	return (int)_bitmap_info.size();
+}
+int RollingBall::ObjectBitmapInfoVector::count_bitmap(int idx_object)
+{
+	if (!isIdxInRange(idx_object, count_object())) return 0;
+	return (int)_bitmap_info[idx_object].count_texture()
+		* (int)_bitmap_info[idx_object].count_texture_size()
+		* (_bitmap_info[idx_object].has_mask() ? 2 : 1);
+}
+int RollingBall::ObjectBitmapInfoVector::count_bitmap_files()
+{
+	int bitmap_files = 0;
+	for (int i = 0; i < count_object(); i++)
+		bitmap_files += count_bitmap(i);
+	return bitmap_files;
+}
+
+
+
+/***********************************************
+************************************************
+***
+***		Object class (abstract)
+***
+************************************************
+************************************************/
+
+void RollingBall::Object::init(LPCTSTR object_name)
+{
+	idx.object = _bmpInfoVec.index(object_name);
+	bmpInfo = _bmpInfoVec.get_bmpInfo(idx.object);
+}
+
+int RollingBall::Object::count_texture()
+{
+	return bmpInfo.count_texture();
+}
+int RollingBall::Object::count_texture_size()
+{
+	return bmpInfo.count_texture_size();
+}
+BOOL RollingBall::Object::has_mask()
+{
+	return bmpInfo.has_mask();
+}
+LPCTSTR RollingBall::Object::name()
+{
+	return bmpInfo.name();
+}
+
+int RollingBall::Object::index_object()
+{
+	return idx.object;
+}
+int RollingBall::Object::index_texture()
+{
+	return idx.texture;
+}
+int RollingBall::Object::index_texture(pixel texture_size)
+{
+	int i;
+	for (i = 0; i < count_texture_size(); i++)
+		if (texture_size < bmpInfo.texture_size(i))
+			return i;
+	return i - 1;	//가장 큰 텍스쳐 크기의 인덱스를 리턴한다
+}
+LPCTSTR RollingBall::Object::texture()
+{
+	return bmpInfo.texture_name(idx.texture);
+}
+void RollingBall::Object::texture(LPCTSTR texture_name)
+{
+	for (int i = 0; i < bmpInfo.count_texture(); i++)
+		if (_tcscmp(texture_name, bmpInfo.texture_name(i)) == 0)
+		{
+			idx.texture = i;
+			return;
+		}
+	idx.texture = 0;
+}
+
+
+
+/***********************************************
+************************************************
+***
+***		Ball class
+***
+************************************************
+************************************************/
+RollingBall::Ball::Ball(LPCTSTR texture_name)
+{
+	init(_T("ball"));
+	texture(texture_name);
+}
+
+
+
+/***********************************************
+************************************************
+***
+***		Background class
+***
+************************************************
+************************************************/
+RollingBall::Background::Background(LPCTSTR texture_name)
+{
+	init(_T("floor"));
+	texture(texture_name);
 }

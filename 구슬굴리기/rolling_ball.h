@@ -19,9 +19,9 @@ namespace RollingBall
 		} winAPI;
 
 		Paint paint;
-		Physics physics;
+		//Physics physics;
 		Controller controller;
-		ObjectManager objectManager;
+		ObjectBitmapInfoVector objbmpinfo;
 
 	public:
 		//RollingBallClass 변수를 사용하기 전 반드시 수행해야 함
