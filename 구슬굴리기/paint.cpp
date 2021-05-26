@@ -503,13 +503,19 @@ void Paint::paint_background_tobuffer(Object& background)
 
 	GetClientRect(winAPI.hwnd, &winAPI.windowRect);
 
-	int bksize = background.round_texture_size(512);
+	int psize = background.physical.size;
+	pixel tsize = background.texture_size();
+	PixelVector pos = background.physical.pos;
+	pos.x %= psize;
+	pos.y %= psize;
 
-	for (int i = 0; i * bksize < winAPI.windowRect.right; i++)
-		for (int j = 0; j * bksize < winAPI.windowRect.bottom; j++)
-			BitBlt(
-				winAPI.hDC.mem.windowBuffer, i * bksize, j * bksize, bksize, bksize,
-				winAPI.hDC.mem.res[bmp.idx(background, bksize)], 0, 0,
+	SetStretchBltMode(winAPI.hDC.mem.windowBuffer, COLORONCOLOR);
+	for (int i = -1; i * psize + pos.x < winAPI.windowRect.right; i++)
+		for (int j = -1; j * psize + pos.y < winAPI.windowRect.bottom; j++)
+			StretchBlt(
+				winAPI.hDC.mem.windowBuffer, 
+				i * psize + pos.x, j * psize + pos.y, psize, psize,
+				winAPI.hDC.mem.res[bmp.idx(background, tsize)], 0, 0, tsize, tsize,
 				SRCCOPY
 			);
 }
@@ -522,12 +528,14 @@ void RollingBall::Paint::paint_tobuffer(Object& object)
 {
 	if (!isReadyToPaint()) return;
 
-	if (_tcscmp(object.name(), _T("floor")) == 0)
+	if (_tcscmp(object.bitmap_name(), _T("floor")) == 0)
 	{
 		paint_background_tobuffer(object);
 		paint_background_ruller_tobuffer();
+		return;
 	}
-	else if (_tcscmp(object.name(), _T("ball")) == 0)
+
+	else if (_tcscmp(object.bitmap_name(), _T("ball")) == 0)
 	{
 		for (int i = 0; i < 2; i++)
 		{

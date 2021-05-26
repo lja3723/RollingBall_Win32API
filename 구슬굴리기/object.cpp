@@ -335,10 +335,22 @@ int RollingBall::ObjectBitmapInfoVector::count_bitmap_files()
 ************************************************/
 ObjectBitmapInfoVector Object::_bmpInfoVec;
 
+Object::Object() 
+{ 
+	_name = _T(""); 
+	physical.size = 30;
+	physical.rotate_angle = 0;
+	physical.mass = 1;
+	physical.pos.x = 0;
+	physical.pos.y = 0;
+	physical.speed.x = 0;
+	physical.speed.y = 0;
+	physical.accel.x = 0;
+	physical.accel.y = 0;
+}
 
 void RollingBall::Object::init(LPCTSTR object_name)
 {
-	//idx.object = index_object;
 	idx.object = _bmpInfoVec.index(object_name);
 	bmpInfo = _bmpInfoVec.get_bmpInfo(idx.object);
 }
@@ -355,9 +367,18 @@ BOOL RollingBall::Object::has_mask()
 {
 	return bmpInfo.has_mask();
 }
-LPCTSTR RollingBall::Object::name()
+LPCTSTR RollingBall::Object::bitmap_name()
 {
 	return bmpInfo.name();
+}
+
+void RollingBall::Object::name(LPCTSTR name)
+{
+	_name = name;
+}
+LPCTSTR RollingBall::Object::name()
+{
+	return _name.c_str();
 }
 
 int RollingBall::Object::index_object()
@@ -396,6 +417,11 @@ pixel RollingBall::Object::round_texture_size(pixel texture_size)
 	return bmpInfo.texture_size(index_texture_size(texture_size));
 }
 
+pixel RollingBall::Object::texture_size()
+{
+	return round_texture_size(physical.size);
+}
+
 
 
 /***********************************************
@@ -407,7 +433,6 @@ pixel RollingBall::Object::round_texture_size(pixel texture_size)
 ************************************************/
 RollingBall::Ball::Ball(LPCTSTR texture_name)
 {
-	//init(0);
 	init(_T("ball"));
 	texture(texture_name);
 }
@@ -423,7 +448,6 @@ RollingBall::Ball::Ball(LPCTSTR texture_name)
 ************************************************/
 RollingBall::Background::Background(LPCTSTR texture_name)
 {
-	//init(1);
 	init(_T("floor"));
 	texture(texture_name);
 }

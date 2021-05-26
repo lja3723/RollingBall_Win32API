@@ -18,13 +18,21 @@ void RollingBallClass::update_window()
 {
 	paint.begin();
 
-	Background background;
-	paint(background);
 
 	Ball ball;
 	ball.physical.pos.x = controller.get_xPos();
 	ball.physical.pos.y = controller.get_yPos();
+	//ball.physical.pos.x = 500;
+	//ball.physical.pos.y = 500;
 	ball.physical.size = 64;
+
+	Background background;
+	background.physical.size = 800;
+	//background.physical.pos.x = controller.get_xPos();
+	//background.physical.pos.y = controller.get_yPos();
+	//background.physical.pos.x = ball.physical.pos.x;
+	//background.physical.pos.y = ball.physical.pos.y;
+	paint(background);
 
 	paint(ball);
 

@@ -99,6 +99,9 @@ namespace RollingBall
 	
 	class Object abstract
 	{
+	/*****************************
+	*	protected variables
+	******************************/
 	protected:
 		struct _idx {
 			int object;
@@ -106,43 +109,64 @@ namespace RollingBall
 		} idx;
 		static ObjectBitmapInfoVector _bmpInfoVec;
 		ObjectBitmapInfo bmpInfo;
+		tstring _name;
 
+
+
+	/*****************************
+	*	protected functions
+	******************************/
+	protected:
+		//상속받은 클래스는 생성자에서 반드시 호출해야 한다
 		void init(LPCTSTR object_name);
-		//void init(int index_object);
 
+
+	/*****************************
+	*	pubilc variables
+	******************************/
 	public:
 		//물리값
 		PhysicalValue physical;
 
+
+
+	/*****************************
+	*	pubilc functions
+	******************************/
+	public:
+		Object();
+
 		//오브젝트의 텍스쳐 개수를 반환한다
 		int count_texture();
-
 		//오브젝트의 텍스쳐 사이즈 수를 반환한다
 		int count_texture_size();
-
 		//오브젝트가 마스크 이미지를 가지는지 반환한다
 		BOOL has_mask();
+		//오브젝트 비트맵 이름을 반환한다
+		LPCTSTR bitmap_name();
 
-		//오브젝트 이름을 반환한다
+		//오브젝트의 이름을 설정한다
+		void name(LPCTSTR name);
+		//오브젝트의 이름을 반환한다
 		LPCTSTR name();
 
 		//오브젝트의 인덱스를 반환한다
 		int index_object();
-
 		//오브젝트의 텍스쳐 인덱스를 반환한다
 		int index_texture();
-
 		//texture_size와 가장 근접한 텍스처 크기를 표현하는 인덱스를 반환한다
 		int index_texture_size(pixel texture_size);
 
 		//오브젝트의 텍스쳐 이름을 반환한다
 		LPCTSTR texture();
-
 		//오브젝트의 텍스쳐를 설정한다
 		void texture(LPCTSTR texture_name);
 
-		//texture_size와 가장 근접한 실제 존재하는 오브젝트 텍스처 크기를 반환한다
+		//texture_size를 오브젝트가 가진 텍스쳐 중 가장 근접한 크기로 어림한다
 		pixel round_texture_size(pixel texture_size);
+
+		//object의 size에 가장 적절한 텍스쳐 크기를 반환한다
+		pixel texture_size();
 	};
 
 
