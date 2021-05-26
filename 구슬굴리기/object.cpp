@@ -151,7 +151,7 @@ BOOL ObjectBitmapInfoVector::Load(HWND hwnd, LPCTSTR filename)
 		//오브젝트 정보를 읽는 중이 아닐 때...
 		if (!isObjectReading) {
 			//파일이 시작됨
-			if (_tcscmp(line, _T("<object_info.txt>")) == 0)
+			if (_tcscmp(line, _T("<object_bmp_info.txt>")) == 0)
 			{
 				bmpInfo.clear();
 				_bitmap_info.clear();
@@ -166,7 +166,7 @@ BOOL ObjectBitmapInfoVector::Load(HWND hwnd, LPCTSTR filename)
 
 			//파일이 종료됨
 			//마지막 인덱스에 더미 데이터 저장
-			else if (_tcscmp(line, _T("</object_info.txt>")) == 0)
+			else if (_tcscmp(line, _T("</object_bmp_info.txt>")) == 0)
 			{
 				break;
 			}
@@ -195,7 +195,15 @@ BOOL ObjectBitmapInfoVector::Load(HWND hwnd, LPCTSTR filename)
 				file.readLine(line, sizeof(line));
 				BOOL flag = FALSE;
 				if (_tcscmp(line, _T("TRUE")) == 0) flag = TRUE;
-				if (_tcscmp(line, _T("FALSE")) == 0) flag = FALSE;
+				else if (_tcscmp(line, _T("FALSE")) == 0) flag = FALSE;
+				else {
+					//파일 양식이 잘못됨
+					_stprintf_s(errmsg, errmsg_len, format_invalid, filename);
+					MessageBox(hwnd, errmsg, _T("오류"), MB_OK);
+					file.close();
+					return FALSE;
+				}
+
 				bmpInfo.has_mask(flag);
 				continue;
 			}

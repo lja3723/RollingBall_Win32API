@@ -26,8 +26,8 @@ namespace RollingBall
 
 		//BMPFILEMACRO의 실질적 길이는 bitmap_file_count임
 		//새 비트맵 리소스를 추가시 수정
-		//수정 시 object_info.txt도 수정 필요
-		//매크로 작성 순서는 object_info.txt와 일치시켜야 함
+		//수정 시 object_bmp_info.txt도 수정 필요
+		//매크로 작성 순서는 object_bmp_info.txt와 일치시켜야 함
 		//
 		const UINT BMPFILEMACRO[256] = {
 			IDB_BALL_IRON1_0032, IDB_BALL_IRON1_0064, IDB_BALL_IRON1_0128, IDB_BALL_IRON1_0256,
