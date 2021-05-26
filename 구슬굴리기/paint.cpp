@@ -113,7 +113,7 @@ void Paint::init_flags()
 void Paint::init_res_count()
 {
 	if (!bmp.isInit()) return;
-	res_count = bmp.get_bitmap_file_count();
+	res_count = bmp.file_count();
 	init_res_vectors();
 }
 
@@ -344,7 +344,7 @@ void Paint::hBitmap_res_init()
 void Paint::hBitmap_res_set()
 {
 	for (int i = 0; i < res_count; i++)
-		winAPI.hBitmap.res[i] = bmp[i];
+		winAPI.hBitmap.res[i] = bmp(i);
 
 	flag.isSetHBitmapRes = TRUE;
 }

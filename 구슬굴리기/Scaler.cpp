@@ -2,19 +2,19 @@
 
 using namespace RollingBall;
 
-int Scaler::scale_px_per_cm = 30;
+pixel Scaler::scale_px_per_cm = 30;
 
-void Scaler::set_scale_px_per_cm(int px)
+void Scaler::set_scale_px_per_cm(pixel px)
 {
 	scale_px_per_cm = px;
 }
 
-int Scaler::px(double cm)
+pixel Scaler::px(cm_val cm)
 {
-	return int(cm * (double)scale_px_per_cm + 0.5); //반올림을 위함임
+	return int(cm * (cm_val)scale_px_per_cm + 0.5); //반올림을 위함임
 }
 
-double Scaler::cm(int px)
+cm_val Scaler::cm(pixel px)
 {
-	return (double)px / scale_px_per_cm;
+	return (cm_val)px / scale_px_per_cm;
 }
