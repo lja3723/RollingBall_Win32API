@@ -51,11 +51,6 @@ void ObjectBitmapInfo::texture_name_resize(int size)
 }
 void ObjectBitmapInfo::texture_name_push_back(tstring name)
 {
-	if (size < 0) size = 0;
-	_texture._name.resize(size);
-}
-void ObjectBitmapInfo::texture_name_push_back(tstring name)
-{
 	_texture._name.push_back(name);
 }
 
