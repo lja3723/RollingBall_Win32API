@@ -62,8 +62,9 @@ BOOL Bitmap::isInitHBitmap()
 *****************************************/
 BOOL Bitmap::init(HINSTANCE m_hInstance)
 {
-	ObjectBitmapInfoVector v;
 	if (isInit()) return TRUE;
+
+	ObjectBitmapInfoVector v;
 	if (!v.isLoaded()) return FALSE;
 
 	hInstance = m_hInstance;
@@ -96,6 +97,11 @@ HBITMAP RollingBall::Bitmap::get(Object& object, pixel texture_size, BOOL mask_t
 	return hBitmap[idx(object, texture_size, mask_texture)];
 }
 
+HBITMAP RollingBall::Bitmap::operator()(int index)
+{
+	return get(index);
+}
+
 HBITMAP RollingBall::Bitmap::operator()(Object& object, pixel texture_size, BOOL mask_texture)
 {
 	return get(object, texture_size, mask_texture);
@@ -120,7 +126,7 @@ int RollingBall::Bitmap::idx(Object& object, pixel texture_size, BOOL mask_textu
 	idx += object.index_texture_size(texture_size);
 
 	//구한 idx가 범위에 벗어나면 0으로 초기화
-	if (!(0 <= idx && idx < v.count_bitmap_files())) idx = 0;
+	if (!(0 <= idx && idx < file_count())) idx = 0;
 
 	return idx;
 }

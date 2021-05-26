@@ -113,7 +113,6 @@ void Paint::init_res_count()
 	res_count = bmp.file_count();
 	init_res_vectors();
 }
-
 void Paint::init_res_vectors()
 {
 	winAPI.hDC.mem.res.resize(res_count);
@@ -341,7 +340,7 @@ void Paint::hBitmap_res_init()
 void Paint::hBitmap_res_set()
 {
 	for (int i = 0; i < res_count; i++)
-		winAPI.hBitmap.res[i] = bmp.get(i);
+		winAPI.hBitmap.res[i] = bmp(i);
 
 	flag.isSetHBitmapRes = TRUE;
 }

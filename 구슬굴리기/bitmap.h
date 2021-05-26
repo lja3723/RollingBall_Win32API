@@ -24,7 +24,7 @@ namespace RollingBall
 		********************************/
 		static HINSTANCE hInstance;
 
-		//BMPFILEMACRO의 실질적 길이는 bitmap_file_count임
+		//BMPFILEMACRO의 실질적 길이는 _file_count임
 		//새 비트맵 리소스를 추가시 수정
 		//수정 시 object_bmp_info.txt도 수정 필요
 		//매크로 작성 순서는 object_bmp_info.txt와 일치시켜야 함
@@ -77,7 +77,8 @@ namespace RollingBall
 
 		HBITMAP get(int index);
 		HBITMAP get(Object& object, pixel texture_size, BOOL mask_texture = FALSE);
-	
+		
+		HBITMAP operator()(int index);
 		HBITMAP operator()(Object& object, pixel texture_size, BOOL mask_texture = FALSE);
 
 		int idx(Object& object, pixel texture_size, BOOL mask_texture = FALSE);
