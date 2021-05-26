@@ -343,6 +343,12 @@ int RollingBall::ObjectBitmapInfoVector::count_bitmap_files()
 ************************************************/
 ObjectBitmapInfoVector Object::_bmpInfoVec;
 
+void RollingBall::Object::init(LPCTSTR object_name)
+{
+	idx.object = _bmpInfoVec.index(object_name);
+	bmpInfo = _bmpInfoVec.get_bmpInfo(idx.object);
+}
+
 Object::Object() 
 { 
 	_name = _T(""); 
@@ -355,12 +361,6 @@ Object::Object()
 	physical.speed.y = 0;
 	physical.accel.x = 0;
 	physical.accel.y = 0;
-}
-
-void RollingBall::Object::init(LPCTSTR object_name)
-{
-	idx.object = _bmpInfoVec.index(object_name);
-	bmpInfo = _bmpInfoVec.get_bmpInfo(idx.object);
 }
 
 int RollingBall::Object::count_texture()
