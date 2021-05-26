@@ -75,18 +75,21 @@ void Paint::end()
 	hDCwindow_release();
 	doubleBuffering_stop();
 }
-void Paint::background()
+void Paint::background(Object& background)
 {
-	paint_background_tobuffer();
+	paint_background_tobuffer(background);
 	paint_background_ruller_tobuffer();
 }
+/*
 void Paint::ball(int posX, int posY, int ballsize)
 {
 	paint_ball_tobuffer(posX, posY, ballsize);
 }
+*/
 
 void RollingBall::Paint::operator()(Object& obj)
 {
+	paint_tobuffer(obj);
 }
 
 
@@ -500,20 +503,20 @@ void Paint::doubleBuffering_halt()
 *		- paint management
 *
 *********************************/
-void Paint::paint_background_tobuffer()
+void Paint::paint_background_tobuffer(Object& background)
 {
 	if (!isReadyToPaint()) return;
 
-	bmp.set_cur_sel(_T("floor"), _T("wood1"), 1024, FALSE);
-	int bksize = bmp.get_curr_texture_size();
-
 	GetClientRect(winAPI.hwnd, &winAPI.windowRect);
+
+	int bksize = 256;
+	background.index_texture(bksize);
 
 	for (int i = 0; i * bksize < winAPI.windowRect.right; i++)
 		for (int j = 0; j * bksize < winAPI.windowRect.bottom; j++)
 			BitBlt(
 				winAPI.hDC.mem.windowBuffer, i * bksize, j * bksize, bksize, bksize,
-				winAPI.hDC.mem.res[bmp.get_curr_sel_idx()], 0, 0,
+				winAPI.hDC.mem.res[bmp.idx(background, bksize)], 0, 0,
 				SRCCOPY
 			);
 }
@@ -521,6 +524,7 @@ void Paint::paint_background_ruller_tobuffer()
 {
 
 }
+/*
 void Paint::paint_ball_tobuffer(int x, int y, int ballsize)
 {
 	if (!isReadyToPaint()) return;
@@ -564,7 +568,43 @@ void Paint::paint_ball_tobuffer(int x, int y, int ballsize)
 			winAPI.hDC.mem.res[idx], 0, 0, texturesize, texturesize,
 			paintmode
 		);
-		*/
+	}
+}
+*/
+
+void RollingBall::Paint::paint_tobuffer(Object& object)
+{
+	if (!isReadyToPaint()) return;
+
+	if (_tcscmp(object.name(), _T("floor")) == 0)
+	{
+		paint_background_tobuffer(object);
+		paint_background_ruller_tobuffer();
+	}
+	else if (_tcscmp(object.name(), _T("ball")) == 0)
+	{
+		for (int i = 0; i < 2; i++)
+		{
+			BOOL mask;
+			DWORD paintmode;
+			if (i == 0)
+				mask = TRUE, paintmode = SRCAND;
+			else if (i == 1)
+				mask = FALSE, paintmode = SRCPAINT;
+
+			pixel physical_size = object.physical.size;
+			PixelVector pos = object.physical.pos;
+			int idx = bmp.idx(object, physical_size, mask);
+			int texture_size = object.texture(physical_size);
+
+			SetStretchBltMode(winAPI.hDC.mem.windowBuffer, COLORONCOLOR);
+			StretchBlt(
+				winAPI.hDC.mem.windowBuffer,
+				pos.x - physical_size / 2, pos.y - physical_size / 2, physical_size, physical_size,
+				winAPI.hDC.mem.res[idx], 0, 0, texture_size, texture_size,
+				paintmode
+			);
+		}
 	}
 }
 
@@ -579,12 +619,4 @@ void Paint::flush_buffer()
 		SRCCOPY
 	);
 }
-
-int Paint::choose_texture_size(LPCTSTR obj, LPCTSTR texture, BOOL mask, int px)
-{
-	bmp.set_cur_sel(obj, texture, 0, mask);
-	
-	return 0;
-}
-
 

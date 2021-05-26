@@ -98,17 +98,17 @@ Bitmap::~Bitmap()
 
 HBITMAP RollingBall::Bitmap::get(int index)
 {
-	if (0 <= index && index < file_count())
+	if (!(0 <= index && index < file_count())) index = 0;
 	return hBitmap[index];
 }
-HBITMAP RollingBall::Bitmap::get(Object& object, pixel texture_size)
+HBITMAP RollingBall::Bitmap::get(Object& object, pixel texture_size, BOOL mask_texture)
 {
-	return HBITMAP();
+	return hBitmap[idx(object, texture_size, mask_texture)];
 }
 
-HBITMAP RollingBall::Bitmap::operator()(Object& object, pixel texture_size)
+HBITMAP RollingBall::Bitmap::operator()(Object& object, pixel texture_size, BOOL mask_texture)
 {
-	return HBITMAP();
+	return get(object, texture_size, mask_texture);
 }
 
 int RollingBall::Bitmap::idx(Object& object, pixel texture_size, BOOL mask_texture)

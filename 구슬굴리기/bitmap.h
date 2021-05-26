@@ -109,14 +109,14 @@ namespace RollingBall
 		~Bitmap();
 
 		HBITMAP get(int index);
-		HBITMAP get(Object& object, pixel texture_size);
+		HBITMAP get(Object& object, pixel texture_size, BOOL mask_texture = FALSE);
 		
 		/*
 		//get() 함수를 호출한다
 		HBITMAP operator[](int index);
 		*/
 
-		HBITMAP operator()(Object& object, pixel texture_size);
+		HBITMAP operator()(Object& object, pixel texture_size, BOOL mask_texture = FALSE);
 
 		int idx(Object& object, pixel texture_size, BOOL mask_texture = FALSE);
 

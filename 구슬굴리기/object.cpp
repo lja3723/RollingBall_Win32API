@@ -257,7 +257,7 @@ BOOL ObjectBitmapInfoVector::Load(HWND hwnd, LPCTSTR filename)
 	flag_isLoaded = TRUE;
 
 #ifdef __debugger_h__
-	debuggerMessage("This massage showed by 'object.cpp'");
+	debuggerMessage("This massage showed by 'object.cpp' by ObjectBitmapInfoVector::Load()");
 	for (int i = 0; i < count_object(); i++)
 	{
 		tstring name, value;
@@ -333,9 +333,12 @@ int RollingBall::ObjectBitmapInfoVector::count_bitmap_files()
 ***
 ************************************************
 ************************************************/
+ObjectBitmapInfoVector Object::_bmpInfoVec;
+
 
 void RollingBall::Object::init(LPCTSTR object_name)
 {
+	//idx.object = index_object;
 	idx.object = _bmpInfoVec.index(object_name);
 	bmpInfo = _bmpInfoVec.get_bmpInfo(idx.object);
 }
@@ -369,7 +372,7 @@ int RollingBall::Object::index_texture(pixel texture_size)
 {
 	int i;
 	for (i = 0; i < count_texture_size(); i++)
-		if (texture_size < bmpInfo.texture_size(i))
+		if (texture_size <= bmpInfo.texture_size(i))
 			return i;
 	return i - 1;	//가장 큰 텍스쳐 크기의 인덱스를 리턴한다
 }
@@ -388,6 +391,11 @@ void RollingBall::Object::texture(LPCTSTR texture_name)
 	idx.texture = 0;
 }
 
+int RollingBall::Object::texture(pixel texture_size)
+{
+	return bmpInfo.texture_size(index_texture(texture_size));
+}
+
 
 
 /***********************************************
@@ -399,6 +407,7 @@ void RollingBall::Object::texture(LPCTSTR texture_name)
 ************************************************/
 RollingBall::Ball::Ball(LPCTSTR texture_name)
 {
+	//init(0);
 	init(_T("ball"));
 	texture(texture_name);
 }
@@ -414,6 +423,7 @@ RollingBall::Ball::Ball(LPCTSTR texture_name)
 ************************************************/
 RollingBall::Background::Background(LPCTSTR texture_name)
 {
+	//init(1);
 	init(_T("floor"));
 	texture(texture_name);
 }

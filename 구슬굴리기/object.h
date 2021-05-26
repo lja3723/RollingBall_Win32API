@@ -83,6 +83,7 @@ namespace RollingBall
 		ObjectBitmapInfo bmpInfo;
 
 		void init(LPCTSTR object_name);
+		//void init(int index_object);
 
 	public:
 		PhysicalValue physical;
@@ -96,6 +97,7 @@ namespace RollingBall
 		int index_texture(pixel texture_size);
 		LPCTSTR texture();
 		void texture(LPCTSTR texture_name);
+		int texture(pixel texture_size);
 	};
 
 

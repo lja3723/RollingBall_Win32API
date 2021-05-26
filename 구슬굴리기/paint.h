@@ -81,10 +81,10 @@ namespace RollingBall
 		void end();
 
 		//배경을 페인트한다
-		void background();
+		void background(Object& background);
 
 		//공을 페인트한다
-		void ball(int posX, int posY, int ballsize = 64);
+		//void ball(int posX, int posY, int ballsize = 64);
 
 		//오브젝트를 페인트한다
 		void operator()(Object& obj);
@@ -210,9 +210,10 @@ namespace RollingBall
 		*
 		*********************************/
 		//오브젝트를 버퍼에 그림
-		void paint_background_tobuffer();
+		void paint_background_tobuffer(Object& background);
 		void paint_background_ruller_tobuffer();
-		void paint_ball_tobuffer(int x, int y, int ballsize = 64);
+		//void paint_ball_tobuffer(int x, int y, int ballsize = 64);
+		void paint_tobuffer(Object& object);
 
 		//버퍼에 그려진 그림을 윈도우로 출력
 		void flush_buffer();
@@ -225,10 +226,6 @@ namespace RollingBall
 		*	etc
 		*
 		*********************************/
-		//object 크기에 따라 알맞은 텍스쳐를 선택하는 함수
-		//아직 구현 불가능
-		//Object class를 먼저 구현한 뒤 구현 시도할 것
-		int choose_texture_size(LPCTSTR obj, LPCTSTR texture, BOOL mask, int px);
 	};
 }
 

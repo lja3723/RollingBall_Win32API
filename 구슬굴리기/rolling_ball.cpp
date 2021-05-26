@@ -16,13 +16,16 @@ BOOL RollingBallClass::init(HINSTANCE m_hInstance, HWND m_hwnd)
 
 void RollingBallClass::update_window()
 {
-	int x = controller.get_xPos();
-	int y = controller.get_yPos();
+	Background background;
+	Ball ball;
 
+	ball.physical.pos.x = controller.get_xPos();
+	ball.physical.pos.y = controller.get_yPos();
+	ball.physical.size = 90;
 	paint.begin();
 
-	paint.background();
-	paint.ball(x, y, ballsize);
+	paint(background);
+	paint(ball);
 
 	paint.end();
 }
