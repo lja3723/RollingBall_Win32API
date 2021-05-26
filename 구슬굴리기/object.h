@@ -71,6 +71,13 @@ namespace RollingBall
 		int count_bitmap_files();
 	};
 
+	class Object 
+	{
+	private:
+		struct _idx {
+			int object;
+			int texture;
+		} idx;
 
 	class Object abstract
 	{
