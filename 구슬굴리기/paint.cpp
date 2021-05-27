@@ -32,7 +32,7 @@ BOOL Paint::init(HINSTANCE m_hInstance, HWND m_hwnd)
 
 	init_flags();
 	init_res_count();
-	scale_set(30);
+	scale_set(32);
 
 	memset(&winAPI.ps, 0, sizeof(winAPI.ps));
 	memset(&winAPI.windowRect, 0, sizeof(winAPI.windowRect));
@@ -53,15 +53,50 @@ BOOL Paint::init(HINSTANCE m_hInstance, HWND m_hwnd)
 }
 void Paint::translate_windowEvent(UINT m_iMsg, WPARAM m_wParam, LPARAM m_lParam)
 {
-	if (m_iMsg != WM_SIZE) return;
-
-	switch (m_wParam)
+	if (m_iMsg == WM_SIZE)
 	{
-	case SIZE_RESTORED:
-	case SIZE_MAXIMIZED:
-	case SIZE_MAXSHOW:
-		flag.isWindowSizeChanged = TRUE;
-		break;
+		switch (m_wParam)
+		{
+		case SIZE_RESTORED:
+		case SIZE_MAXIMIZED:
+		case SIZE_MAXSHOW:
+			flag.isWindowSizeChanged = TRUE;
+			break;
+		}
+	}
+	if (m_iMsg == WM_KEYDOWN)
+	{
+		PhysicalVector ppos;
+		switch (m_wParam)
+		{
+		case 'O':
+			if (scale.px_rate() > 5)
+				scale.px_rate(scale.px_rate() - 1);
+			break;
+		case 'P':
+			scale.px_rate(scale.px_rate() + 1);
+			break;
+		case 'W':
+			ppos = scale.fix_point_physical();
+			ppos.y -= 0.1;
+			scale.fix_point_physical(ppos);
+			break;
+		case 'A':
+			ppos = scale.fix_point_physical();
+			ppos.x += 0.1;
+			scale.fix_point_physical(ppos);
+			break;
+		case 'S':
+			ppos = scale.fix_point_physical();
+			ppos.y += 0.1;
+			scale.fix_point_physical(ppos);
+			break;
+		case 'D':
+			ppos = scale.fix_point_physical();
+			ppos.x -= 0.1;
+			scale.fix_point_physical(ppos);
+			break;
+		}
 	}
 }
 void RollingBall::Paint::scale_set(pixel px_rate)
@@ -69,8 +104,8 @@ void RollingBall::Paint::scale_set(pixel px_rate)
 	scale.px_rate(px_rate);
 	PhysicalVector ppos;
 	PixelCoord xpos;
-	ppos.x = 0;
-	ppos.y = 0;
+	ppos.x = 2;
+	ppos.y = 2;
 	scale.fix_point_physical(ppos);
 	GetClientRect(winAPI.hwnd, &winAPI.windowRect);
 	xpos.x = winAPI.windowRect.right / 2;
@@ -540,7 +575,33 @@ void Paint::paint_background_tobuffer(Object& background)
 }
 void Paint::paint_background_ruller_tobuffer()
 {
+	PhysicalVector p;
+	int cm = 40;
+	p.x = -cm, p.y = 0;
+	MoveToEx(winAPI.hDC.mem.windowBuffer, scale.transform(p).x, scale.transform(p).y, NULL);
+	p.x = cm;
+	LineTo(winAPI.hDC.mem.windowBuffer, scale.transform(p).x, scale.transform(p).y);
+	p.x = 0, p.y = -cm;
+	MoveToEx(winAPI.hDC.mem.windowBuffer, scale.transform(p).x, scale.transform(p).y, NULL);
+	p.y = cm;
+	LineTo(winAPI.hDC.mem.windowBuffer, scale.transform(p).x, scale.transform(p).y);
 
+
+	for (int i = -30; i < 30; i++)
+	{
+		p.x = i, p.y = 0.5;
+		MoveToEx(winAPI.hDC.mem.windowBuffer, scale.transform(p).x, scale.transform(p).y, NULL);
+		p.y = -0.5;
+		LineTo(winAPI.hDC.mem.windowBuffer, scale.transform(p).x, scale.transform(p).y);
+	}
+
+	for (int i = -30; i < 30; i++)
+	{
+		p.y = i, p.x = 0.5;
+		MoveToEx(winAPI.hDC.mem.windowBuffer, scale.transform(p).x, scale.transform(p).y, NULL);
+		p.x = -0.5;
+		LineTo(winAPI.hDC.mem.windowBuffer, scale.transform(p).x, scale.transform(p).y);
+	}
 }
 
 void RollingBall::Paint::paint_tobuffer(Object& object)
