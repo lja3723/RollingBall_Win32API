@@ -5,10 +5,8 @@ using namespace RollingBall;
 RollingBall::Scaler::Scaler(pixel m_px_rate)
 {
 	px_rate(m_px_rate);
-	_fix_point_physical.x = 0;
-	_fix_point_physical.y = 0;
-	_fix_point_pixel.x = 0;
-	_fix_point_pixel.y = 0;
+	_fix_point_physical(0, 0);
+	_fix_point_pixel(0, 0);
 }
 
 void Scaler::px_rate(pixel px)
@@ -53,20 +51,20 @@ PixelCoord RollingBall::Scaler::fix_point_pixel()
 
 PhysicalVector RollingBall::Scaler::transform(PixelCoord& point)
 {
-	PhysicalVector result;
+	PhysicalVector result = _fix_point_physical;
 
-	result.x = _fix_point_physical.x + cm(point.x - _fix_point_pixel.x);
-	result.y = _fix_point_physical.y - cm(point.y - _fix_point_pixel.y);
+	result.x += cm(point.x - _fix_point_pixel.x);
+	result.y -= cm(point.y - _fix_point_pixel.y);
 
 	return result;
 }
 
 PixelCoord RollingBall::Scaler::transform(PhysicalVector& point)
 {
-	PixelCoord result;
+	PixelCoord result = _fix_point_pixel;
 
-	result.x = _fix_point_pixel.x + px(point.x - _fix_point_physical.x);
-	result.y = _fix_point_pixel.y - px(point.y - _fix_point_physical.y);
+	result.x += px(point.x - _fix_point_physical.x);
+	result.y -= px(point.y - _fix_point_physical.y);
 
 	return result;
 }

@@ -10,9 +10,14 @@ namespace RollingBall
 	typedef int pixel;
 
 	//픽셀 좌표계를 표현한다
-	struct PixelCoord {
+	class PixelCoord {
+	public:
 		pixel x;
 		pixel y;
+
+		PixelCoord(pixel _x = 0, pixel _y = 0) { x = _x, y = _y; }
+
+		void operator()(pixel _x, pixel _y) { x = _x, y = _y; }
 	};
 
 	class Scaler 

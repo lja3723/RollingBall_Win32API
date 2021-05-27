@@ -15,6 +15,11 @@ namespace RollingBall
 	public:
 		Length x;
 		Length y;
+
+		BasicPhysicalVector(Length _x = 0, Length _y = 0) { x = _x, y = _y; }
+		void operator()(Length _x, Length _y) { x = _x, y = _y; }
+		BasicPhysicalVector<Length>& operator+=(BasicPhysicalVector<Length>& v);
+		BasicPhysicalVector<Length>& operator-=(BasicPhysicalVector<Length>& v);
 	};
 
 	template <typename Length, typename Mass>
@@ -29,6 +34,7 @@ namespace RollingBall
 
 	typedef NormalPhysicalValue<cm_val, g_val> PhysicalValue;
 	typedef BasicPhysicalVector<cm_val> PhysicalVector;
+	
 }
 
 #endif
