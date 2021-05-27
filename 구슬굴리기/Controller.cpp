@@ -96,6 +96,7 @@ void Controller::update_ballPos(HWND hwnd, Ball& ball)
 	GetClientRect(hwnd, &rt);
 	double boundConstant = 0.7;
 	cm_val mid_ball = ball.physical.size / 2;
+	/*
 	if (mid_ball > pos_x || pos_x > (int)rt.right - mid_ball)
 	{
 		speed_x = -boundConstant * speed_x;
@@ -112,6 +113,7 @@ void Controller::update_ballPos(HWND hwnd, Ball& ball)
 		else
 			pos_y = rt.bottom - mid_ball;
 	}
+	*/
 
 	if (-1 < speed_x && speed_x < 1 &&
 		-1 < speed_y && speed_y < 1)

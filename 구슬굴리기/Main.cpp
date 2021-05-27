@@ -69,6 +69,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 	static HINSTANCE hInstance;
 	static HWND hDebugDlg = NULL;
 	static HWND hProgramInfoDlg = NULL;
+	Ball ball;
+	ball.physical.size = 3;
 
 	switch (iMsg) 
 	{
@@ -76,6 +78,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 		SetTimer(hwnd, 1, 5, NULL);
 		hInstance = ((LPCREATESTRUCT)lParam)->hInstance;
 		debugger.init(hInstance, hwnd);
+		rollingBall.add_ball(ball);
 		return 0;
 
 	case WM_TIMER:

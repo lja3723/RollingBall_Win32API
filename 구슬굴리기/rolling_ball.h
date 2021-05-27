@@ -31,6 +31,7 @@ namespace RollingBall
 		BOOL init(HINSTANCE m_hInstance, HWND m_hwnd);
 		const static int ballsize = 64;
 
+		void add_ball(Ball m_ball);
 		void update_window();
 		void update_state();
 		void send_windowEvent(UINT m_iMsg, WPARAM m_wParam, LPARAM m_lParam);

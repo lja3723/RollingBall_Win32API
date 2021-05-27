@@ -352,7 +352,7 @@ void RollingBall::Object::init(LPCTSTR object_name)
 Object::Object() 
 { 
 	_name = _T(""); 
-	physical.size = 30;
+	physical.size = 1;
 	physical.rotate_angle = 0;
 	physical.mass = 1;
 	physical.pos.x = 0;
