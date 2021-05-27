@@ -359,8 +359,8 @@ Object::Object()
 	physical.pos.y = 0;
 	physical.speed.x = 0;
 	physical.speed.y = 0;
-	physical.accel.x = 0;
-	physical.accel.y = 0;
+	physical.accel.x = 0.02;
+	physical.accel.y = 0.02;
 }
 
 int RollingBall::Object::count_texture()

@@ -55,8 +55,8 @@ PhysicalVector RollingBall::Scaler::transform(PixelCoord& point)
 {
 	PhysicalVector result;
 
-	result.x = _fix_point_physical.x + px(point.x - _fix_point_pixel.x);
-	result.y = _fix_point_physical.y - px(point.y - _fix_point_pixel.y);
+	result.x = _fix_point_physical.x + cm(point.x - _fix_point_pixel.x);
+	result.y = _fix_point_physical.y - cm(point.y - _fix_point_pixel.y);
 
 	return result;
 }

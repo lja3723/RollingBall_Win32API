@@ -13,8 +13,8 @@ BOOL RollingBallClass::init(HINSTANCE m_hInstance, HWND m_hwnd)
 
 	if (!paint.init(winAPI.hInstance, winAPI.hwnd)) return FALSE;
 	Ball _ball;
-	_ball.physical.pos.x = 1;
-	_ball.physical.pos.y = 1;
+	_ball.physical.pos.x = 0;
+	_ball.physical.pos.y = 0;
 	ball.push_back(_ball);
 
 	//memset(&physics, 0, sizeof(physics));
@@ -45,7 +45,7 @@ void RollingBallClass::update_window()
 	//Ball ball;
 	//ball.physical.pos.x = 500;
 	//ball.physical.pos.y = 500;
-	paint(ball[0]);
+	//paint(ball[0]);
 	paint(ball[1]);
 
 	paint.end();
@@ -53,7 +53,8 @@ void RollingBallClass::update_window()
 
 void RollingBallClass::update_state()
 {
-	controller.update_ballPos(winAPI.hwnd, ball[0]);
+	if (ball.size() > 1)
+		controller.update_ballPos(winAPI.hwnd, ball[1]);
 }
 
 void RollingBallClass::send_windowEvent(UINT m_iMsg, WPARAM m_wParam, LPARAM m_lParam)

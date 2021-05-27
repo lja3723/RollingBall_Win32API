@@ -67,6 +67,15 @@ void Paint::translate_windowEvent(UINT m_iMsg, WPARAM m_wParam, LPARAM m_lParam)
 void RollingBall::Paint::scale_set(pixel px_rate)
 {
 	scale.px_rate(px_rate);
+	PhysicalVector ppos;
+	PixelCoord xpos;
+	ppos.x = 0;
+	ppos.y = 0;
+	scale.fix_point_physical(ppos);
+	GetClientRect(winAPI.hwnd, &winAPI.windowRect);
+	xpos.x = winAPI.windowRect.right / 2;
+	xpos.y = winAPI.windowRect.bottom / 2;
+	scale.fix_point_pixel(xpos);
 }
 void Paint::begin()
 {
@@ -455,6 +464,11 @@ void Paint::doubleBuffering_start()
 		//hBitmap.windowBuffer를 생성한 뒤 그것을 hDC.mem.windowBuffer에 선택시킨다
 		hBitmap_windowBuffer_set();
 		hBitmap_old_windowBuffer_backup();
+
+		PixelCoord p;
+		p.x = winAPI.windowRect.right / 2;
+		p.y = winAPI.windowRect.bottom / 2;
+		scale.fix_point_pixel(p);
 
 		flag.isWindowSizeChanged = FALSE;
 	}

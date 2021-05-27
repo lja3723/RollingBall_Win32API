@@ -75,18 +75,18 @@ void Controller::update_ballPos(HWND hwnd, Ball& ball)
 		if (isPushed.key.control)
 		{
 			initialize_ball_data(ball);
-			pos_x = 1;
-			pos_y = 1;
+			pos_x = 0;
+			pos_y = 0;
 		}
 	}
 	else
 	{
 
 		if (isPushed.key.left) speed_x -= accel_x;
-		if (isPushed.key.right) speed_y += accel_x;
+		if (isPushed.key.right) speed_x += accel_x;
 
-		if (isPushed.key.up) speed_y -= accel_y;
-		if (isPushed.key.down) speed_y += accel_y;
+		if (isPushed.key.up) speed_y += accel_y;
+		if (isPushed.key.down) speed_y -= accel_y;
 	}	
 
 	pos_x += speed_x;
@@ -133,6 +133,4 @@ void Controller::initialize_ball_data(Ball& ball)
 	ball.physical.pos.y = 0;
 	ball.physical.speed.x = 0;
 	ball.physical.speed.y = 0;
-	ball.physical.accel.x = 1;
-	ball.physical.accel.y = 1;
 }
