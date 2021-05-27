@@ -154,8 +154,9 @@ namespace RollingBall
 		int index_object();
 		//오브젝트의 텍스쳐 인덱스를 반환한다
 		int index_texture();
-		//texture_size와 가장 근접한 텍스처 크기를 표현하는 인덱스를 반환한다
-		int index_texture_size(pixel texture_size);
+
+		//scaler를 기반으로 오브젝트 size를 가장 잘 표현하는 텍스쳐 사이즈의 인덱스를 반환한다
+		int index_texture_size(Scaler& scale);
 
 		//오브젝트의 텍스쳐 이름을 반환한다
 		LPCTSTR texture();
@@ -163,10 +164,10 @@ namespace RollingBall
 		void texture(LPCTSTR texture_name);
 
 		//texture_size를 오브젝트가 가진 텍스쳐 중 가장 근접한 크기로 어림한다
-		pixel round_texture_size(pixel texture_size);
+		//pixel round_texture_size(pixel texture_size);
 
-		//object의 size에 가장 적절한 텍스쳐 크기를 반환한다
-		pixel texture_size();
+		//scaler를 기반으로 오브젝트 size를 가장 잘 표현하는 texture size를 반환한다
+		pixel texture_size(Scaler& scale);
 	};
 
 

@@ -2,6 +2,7 @@
 #ifndef __controller_h__
 #define __controller_h__
 #include <Windows.h>
+#include "object.h"
 
 namespace RollingBall
 {
@@ -27,36 +28,14 @@ namespace RollingBall
 
 		} isPushed;
 
-		struct {
-			double Pos;
-			double Speed;
-			double Accel;
-		} x;
-
-		struct {
-			double Pos;
-			double Speed;
-			double Accel;
-		} y;
-
 		void set_windowEvent(UINT m_iMsg, WPARAM m_wParam, LPARAM m_lParam);
 		void detect_keyPushed();
 
-
 	public:
 		void translate_windowEvent(UINT m_iMsg, WPARAM m_wParam, LPARAM m_lParam);
-		void update_ballPos(HWND hwnd, int ballsize = 64);
+		void update_ballPos(HWND hwnd, Ball& ball);
 
-		int get_xPos();
-		int get_xSpeed();
-		int get_xAccel();
-		int get_yPos();
-		int get_ySpeed();
-		int get_yAccel();
-
-		void initialize_ball_data();
-
-		Controller();
+		void initialize_ball_data(Ball& ball);
 	};
 }
 

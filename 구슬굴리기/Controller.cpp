@@ -51,9 +51,16 @@ void Controller::translate_windowEvent(UINT m_iMsg, WPARAM m_wParam, LPARAM m_lP
 	detect_keyPushed();
 }
 
-void Controller::update_ballPos(HWND hwnd, int ballsize)
+void Controller::update_ballPos(HWND hwnd, Ball& ball)
 {
 	double fraction = 0.005;
+
+	cm_val& pos_x = ball.physical.pos.x;
+	cm_val& pos_y = ball.physical.pos.y;
+	cm_val& speed_x = ball.physical.speed.x;
+	cm_val& speed_y = ball.physical.speed.y;
+	cm_val& accel_x = ball.physical.accel.x;
+	cm_val& accel_y = ball.physical.accel.y;
 
 	if (isPushed.key.space)
 	{
@@ -61,96 +68,69 @@ void Controller::update_ballPos(HWND hwnd, int ballsize)
 	}
 	else if (isPushed.key.H)
 	{
-		RECT rt;
-		GetClientRect(hwnd, &rt);
-		x.Pos = rt.right / 2;
-		y.Pos = rt.bottom / 2;
+		//RECT rt;
+		//GetClientRect(hwnd, &rt);
+		pos_x = 0;
+		pos_y = 0;
 		if (isPushed.key.control)
 		{
-			initialize_ball_data();
-			x.Pos = rt.right / 2;
-			y.Pos = rt.bottom / 2;
+			initialize_ball_data(ball);
+			pos_x = 1;
+			pos_y = 1;
 		}
 	}
 	else
 	{
 
-		if (isPushed.key.left) x.Speed -= x.Accel;
-		if (isPushed.key.right) x.Speed += x.Accel;
+		if (isPushed.key.left) speed_x -= accel_x;
+		if (isPushed.key.right) speed_y += accel_x;
 
-		if (isPushed.key.up) y.Speed -= y.Accel;
-		if (isPushed.key.down) y.Speed += y.Accel;
+		if (isPushed.key.up) speed_y -= accel_y;
+		if (isPushed.key.down) speed_y += accel_y;
 	}	
 
-	x.Pos += x.Speed;
-	y.Pos += y.Speed;
+	pos_x += speed_x;
+	pos_y += speed_y;
 
 	RECT rt;
 	GetClientRect(hwnd, &rt);
 	double boundConstant = 0.7;
-	int mid_ball = ballsize / 2;
-	if (mid_ball > x.Pos || x.Pos > (int)rt.right - mid_ball)
+	cm_val mid_ball = ball.physical.size / 2;
+	if (mid_ball > pos_x || pos_x > (int)rt.right - mid_ball)
 	{
-		x.Speed = -boundConstant *x.Speed;
-		if (mid_ball > x.Pos)
-			x.Pos = mid_ball;
+		speed_x = -boundConstant * speed_x;
+		if (mid_ball > pos_x)
+			pos_x = mid_ball;
 		else
-			x.Pos = (int)rt.right - mid_ball;
+			pos_x = (int)rt.right - mid_ball;
 	}
-	if (mid_ball > y.Pos || y.Pos > (int)rt.bottom - mid_ball)
+	if (mid_ball > pos_y || pos_y > (int)rt.bottom - mid_ball)
 	{
-		y.Speed = -boundConstant *y.Speed;
-		if (mid_ball > y.Pos)
-			y.Pos = mid_ball;
+		speed_y = -boundConstant * speed_y;
+		if (mid_ball > pos_y)
+			pos_y = mid_ball;
 		else
-			y.Pos = rt.bottom - mid_ball;
+			pos_y = rt.bottom - mid_ball;
 	}
 
-	if (-1 < x.Speed && x.Speed < 1 &&
-		-1 < y.Speed && y.Speed < 1)
+	if (-1 < speed_x && speed_x < 1 &&
+		-1 < speed_y && speed_y < 1)
 		fraction *= 5;
-	x.Speed *= (1 - fraction);
-	y.Speed *= (1 - fraction);
+	speed_x *= (1 - fraction);
+	speed_y *= (1 - fraction);
 
-	if (-0.01 < x.Speed && x.Speed < 0.01)
-		x.Speed = 0;
-	if (-0.01 < y.Speed && y.Speed < 0.01)
-		y.Speed = 0;
-}
-
-int Controller::get_xPos()
-{
-	return (int)x.Pos;
-}
-int Controller::get_xSpeed()
-{
-	return (int)x.Speed;
-}
-int Controller::get_xAccel()
-{
-	return (int)x.Accel;
-}
-int Controller::get_yPos()
-{
-	return (int)y.Pos;
-}
-int Controller::get_ySpeed()
-{
-	return (int)y.Speed;
-}
-int Controller::get_yAccel()
-{
-	return (int)y.Accel;
+	if (-0.01 < speed_x && speed_x < 0.01)
+		speed_x = 0;
+	if (-0.01 < speed_y && speed_y < 0.01)
+		speed_y = 0;
 }
 
-void Controller::initialize_ball_data()
+void Controller::initialize_ball_data(Ball& ball)
 {
-	x.Pos = y.Pos = 150;
-	x.Speed = y.Speed = 0;
-	x.Accel = y.Accel = 0.3;
-}
-
-Controller::Controller()
-{
-	initialize_ball_data();
+	ball.physical.pos.x = 0;
+	ball.physical.pos.y = 0;
+	ball.physical.speed.x = 0;
+	ball.physical.speed.y = 0;
+	ball.physical.accel.x = 1;
+	ball.physical.accel.y = 1;
 }

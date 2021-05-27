@@ -6,6 +6,7 @@
 #include <tchar.h>
 #include "resource.h"
 #include "object.h"
+#include "scaler.h"
 
 /*
 * 
@@ -76,12 +77,15 @@ namespace RollingBall
 		~Bitmap();
 
 		HBITMAP get(int index);
-		HBITMAP get(Object& object, pixel texture_size, BOOL mask_texture = FALSE);
+		//HBITMAP get(Object& object, pixel texture_size, BOOL mask_texture = FALSE);
+		HBITMAP get(Object& object, Scaler& scale, BOOL mask_texture = FALSE);
 		
 		HBITMAP operator()(int index);
-		HBITMAP operator()(Object& object, pixel texture_size, BOOL mask_texture = FALSE);
+		//HBITMAP operator()(Object& object, pixel texture_size, BOOL mask_texture = FALSE);
+		HBITMAP operator()(Object& object, Scaler& scale, BOOL mask_texture = FALSE);
 
-		int idx(Object& object, pixel texture_size, BOOL mask_texture = FALSE);
+		//int idx(Object& object, pixel texture_size, BOOL mask_texture = FALSE);
+		int idx(Object& object, Scaler& scale, BOOL mask_texture = FALSE);
 
 		int file_count();
 

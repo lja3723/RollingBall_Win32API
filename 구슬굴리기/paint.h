@@ -73,6 +73,9 @@ namespace RollingBall
 		BOOL init(HINSTANCE m_hInstance, HWND m_hwnd);
 		void translate_windowEvent(UINT m_iMsg, WPARAM m_wParam, LPARAM m_lParam);
 
+		//scaler의 px_rate를 설정한다
+		void scale_set(pixel px_rate);
+
 		//페인트를 시작한다
 		void begin();
 

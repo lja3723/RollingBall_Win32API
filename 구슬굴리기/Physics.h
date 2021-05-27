@@ -1,35 +1,34 @@
 ﻿#pragma once
 #ifndef __physics_h__
 #define __physics_h__
-#include "scaler.h"
 
 typedef double g_val;
 typedef double kg_val;
+typedef double cm_val;
+typedef double m_val;
 
 namespace RollingBall
 {
-	class PixelVector
+	template <typename Length>
+	class BasicPhysicalVector
 	{
 	public:
-		pixel x;
-		pixel y;
+		Length x;
+		Length y;
 	};
 
-	class PhysicalVector
+	template <typename Length, typename Mass>
+	class NormalPhysicalValue
 	{
 	public:
-		cm_val x;
-		cm_val y;
-	};
-
-	class PhysicalValue
-	{
-	public:
-		g_val mass;
-		pixel size;
-		PixelVector pos, speed, accel;
+		Mass mass;
+		Length size;
+		BasicPhysicalVector<Length> pos, speed, accel;
 		double rotate_angle;
 	};
+
+	typedef NormalPhysicalValue<cm_val, g_val> PhysicalValue;
+	typedef BasicPhysicalVector<cm_val> PhysicalVector;
 }
 
 #endif
