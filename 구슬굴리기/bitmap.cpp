@@ -110,14 +110,15 @@ HBITMAP RollingBall::Bitmap::operator()(Object& object, Scaler& scale, BOOL mask
 int RollingBall::Bitmap::idx(Object& object, Scaler& scale, BOOL mask_texture)
 {
 	int idx = 0;
-	ObjectBitmapInfoVector v;
 	int idx_object = object.index_object();
 	//object에 따른 idx 탐색
 	for (int curobjidx = 0; curobjidx < idx_object; curobjidx++) 
-		idx += v.count_bitmap(curobjidx);
+		idx += ObjectBitmapInfoVector::count_bitmap(curobjidx);
 
 	//texture에 따른 idx 탐색
-	idx += (v.count_bitmap(idx_object) / object.count_texture()) * object.index_texture();
+	idx += 
+		(ObjectBitmapInfoVector::count_bitmap(idx_object) / object.count_texture()) 
+		* object.index_texture();
 
 	//mask 유무에 따른 idx 탐색
 	if (mask_texture == TRUE) idx += object.count_texture_size();

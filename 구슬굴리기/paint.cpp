@@ -492,6 +492,7 @@ void Paint::doubleBuffering_start()
 	//윈도우 크기가 변경되었으면 변경된 크기에 맞는 hBitmap_windowBuffer를 등록한다
 	if (isWindowSizeChanged())
 	{
+		GetClientRect(winAPI.hwnd, &winAPI.windowRect);
 		//hBitmap.windowBuffer를 hDC.mem.windowBuffer에서 롤백하고 release한다
 		hBitmap_old_windowBuffer_rollback();
 		hBitmap_windowBuffer_release();
@@ -500,9 +501,7 @@ void Paint::doubleBuffering_start()
 		hBitmap_windowBuffer_set();
 		hBitmap_old_windowBuffer_backup();
 
-		PixelCoord p;
-		p.x = winAPI.windowRect.right / 2;
-		p.y = winAPI.windowRect.bottom / 2;
+		PixelCoord p(winAPI.windowRect.right / 2, winAPI.windowRect.bottom / 2);
 		scale.fix_point_pixel(p);
 
 		flag.isWindowSizeChanged = FALSE;
@@ -556,19 +555,18 @@ void Paint::paint_background_tobuffer(Object& background)
 
 	GetClientRect(winAPI.hwnd, &winAPI.windowRect);
 
-	cm_val physical_size = background.physical.size;
-	pixel px_size = scale.px(physical_size);
+	pixel px_size = scale.px(background.physical.size);
 	pixel tsize = background.texture_size(scale);
-	PixelCoord pos = scale.transform(background.physical.pos);
-	pos.x %= px_size;
-	pos.y %= px_size;
+	PixelCoord px_pos = scale.transform(background.physical.pos);
+	px_pos.x %= px_size;
+	px_pos.y %= px_size;
 
 	SetStretchBltMode(winAPI.hDC.mem.windowBuffer, COLORONCOLOR);
-	for (int i = -1; i * px_size + pos.x < winAPI.windowRect.right; i++)
-		for (int j = -1; j * px_size + pos.y < winAPI.windowRect.bottom; j++)
+	for (int i = -1; i * px_size + px_pos.x < winAPI.windowRect.right; i++)
+		for (int j = -1; j * px_size + px_pos.y < winAPI.windowRect.bottom; j++)
 			StretchBlt(
 				winAPI.hDC.mem.windowBuffer, 
-				i * px_size + pos.x, j * px_size + pos.y, px_size, px_size,
+				i * px_size + px_pos.x, j * px_size + px_pos.y, px_size, px_size,
 				winAPI.hDC.mem.res[bmp.idx(background, scale)], 0, 0, tsize, tsize,
 				SRCCOPY
 			);
@@ -626,16 +624,14 @@ void RollingBall::Paint::paint_tobuffer(Object& object)
 			else if (i == 1)
 				mask = FALSE, paintmode = SRCPAINT;
 
-			cm_val physical_size = object.physical.size;
-			pixel px_size = scale.px(physical_size);
+			pixel px_size = scale.px(object.physical.size);
 			pixel tsize = object.texture_size(scale);
-			PixelCoord pos = scale.transform(object.physical.pos);
-			int res_idx = bmp.idx(object, scale, mask);
+			PixelCoord px_pos = scale.transform(object.physical.pos);
 			SetStretchBltMode(winAPI.hDC.mem.windowBuffer, COLORONCOLOR);
 			StretchBlt(
 				winAPI.hDC.mem.windowBuffer,
-				pos.x - px_size / 2, pos.y - px_size / 2, px_size, px_size,
-				winAPI.hDC.mem.res[res_idx], 0, 0, tsize, tsize,
+				px_pos.x - px_size / 2, px_pos.y - px_size / 2, px_size, px_size,
+				winAPI.hDC.mem.res[bmp.idx(object, scale, mask)], 0, 0, tsize, tsize,
 				paintmode
 			);
 		}

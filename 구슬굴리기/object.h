@@ -77,23 +77,23 @@ namespace RollingBall
 		// 사용자가 잘못된 조작을 할 경우 반환될수 있는 더미데이터
 		// 역시 한번만 초기화된다
 		static ObjectBitmapInfo _dummy_bmpInfo;
-		BOOL isIdxInRange(int idx, int idxMax);
+		static BOOL isIdxInRange(int idx, int idxMax);
 
 	public:
 		//프로그램 실행 중 한 번은 실행되어야 한다
-		BOOL Load(HWND hwnd, LPCTSTR filename);
-		BOOL isLoaded();
-		ObjectBitmapInfo& get_bmpInfo(int idx_object);
-		int index(LPCTSTR object_name);
+		static BOOL Load(HWND hwnd, LPCTSTR filename);
+		static BOOL isLoaded();
+		static ObjectBitmapInfo& get_bmpInfo(int idx_object);
+		static int index(LPCTSTR object_name);
 
 		//오브젝트의 개수를 반환한다
-		int count_object();
+		static int count_object();
 
 		//오브젝트와 관련된 비트맵 개수를 반환한다
-		int count_bitmap(int idx_object);
+		static int count_bitmap(int idx_object);
 
 		//비트맵 파일 총 개수를 반환한다
-		int count_bitmap_files();
+		static int count_bitmap_files();
 	};
 
 	

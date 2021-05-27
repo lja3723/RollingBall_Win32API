@@ -21,17 +21,13 @@ namespace RollingBall
 		} winAPI;
 
 		Paint paint;
-		//Physics physics;
 		Controller controller;
-		ObjectBitmapInfoVector objbmpinfo;
 		vector<Ball> ball;
 
 	public:
 		//RollingBallClass 변수를 사용하기 전 반드시 수행해야 함
 		BOOL init(HINSTANCE m_hInstance, HWND m_hwnd);
-		const static int ballsize = 64;
 
-		void add_ball(Ball m_ball);
 		void update_window();
 		void update_state();
 		void send_windowEvent(UINT m_iMsg, WPARAM m_wParam, LPARAM m_lParam);
