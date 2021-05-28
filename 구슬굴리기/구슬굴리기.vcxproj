@@ -139,30 +139,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="bitmap.cpp" />
-    <ClCompile Include="debugger.cpp" />
-    <ClCompile Include="file.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="object.cpp" />
-    <ClCompile Include="controller.cpp" />
-    <ClCompile Include="physics.cpp" />
-    <ClCompile Include="paint.cpp" />
-    <ClCompile Include="rolling_ball.cpp" />
-    <ClCompile Include="scaler.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="bitmap.h" />
-    <ClInclude Include="debugger.h" />
-    <ClInclude Include="file.h" />
-    <ClInclude Include="object.h" />
-    <ClInclude Include="controller.h" />
-    <ClInclude Include="physics.h" />
-    <ClInclude Include="paint.h" />
-    <ClInclude Include="resource.h" />
-    <ClInclude Include="rolling_ball.h" />
-    <ClInclude Include="scaler.h" />
-  </ItemGroup>
-  <ItemGroup>
     <ResourceCompile Include="구슬굴리기.rc" />
   </ItemGroup>
   <ItemGroup>
