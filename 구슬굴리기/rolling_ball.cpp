@@ -27,7 +27,7 @@ void RollingBallClass::update_window()
 	paint.begin();
 
 	Background background;
-	background.physical.size = 2;
+	background.physical.size = 10;
 
 	paint(background);
 	paint(ball[0]);
