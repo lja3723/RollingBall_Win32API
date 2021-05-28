@@ -166,6 +166,30 @@
   <ItemGroup>
     <Text Include="..\res\bmp\object_info.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="bitmap.cpp" />
+    <ClCompile Include="controller.cpp" />
+    <ClCompile Include="debugger.cpp" />
+    <ClCompile Include="file.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="object.cpp" />
+    <ClCompile Include="paint.cpp" />
+    <ClCompile Include="physics.cpp" />
+    <ClCompile Include="rolling_ball.cpp" />
+    <ClCompile Include="scaler.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="bitmap.h" />
+    <ClInclude Include="controller.h" />
+    <ClInclude Include="debugger.h" />
+    <ClInclude Include="file.h" />
+    <ClInclude Include="object.h" />
+    <ClInclude Include="paint.h" />
+    <ClInclude Include="physics.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="rolling_ball.h" />
+    <ClInclude Include="scaler.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
