@@ -66,35 +66,31 @@ void Paint::translate_windowEvent(UINT m_iMsg, WPARAM m_wParam, LPARAM m_lParam)
 	}
 	if (m_iMsg == WM_KEYDOWN)
 	{
-		PhysicalVector ppos;
+		//controller에서 키 입력 여부를 구하고 부드럽게 화면을 변하게 만들자.
+		PhysicalVector ppos = scale.fix_point_physical();
+		double zoom_in_out_rate = 0.03;
+		cm_val move_distance = 0.2;
 		switch (m_wParam)
 		{
 		case 'O':
-			if (scale.px_rate() > 5)
-				scale.px_rate(scale.px_rate() - 1);
+			if (scale.px_rate() > 20)
+				scale.px_rate(scale.px_rate() * (1 - zoom_in_out_rate));
 			break;
 		case 'P':
-			scale.px_rate(scale.px_rate() + 1);
+			if (scale.px_rate() < 720)
+				scale.px_rate(scale.px_rate() * (1 + zoom_in_out_rate));
 			break;
 		case 'W':
-			ppos = scale.fix_point_physical();
-			ppos.y -= 0.1;
-			scale.fix_point_physical(ppos);
+			scale.fix_point_physical(ppos(ppos.x, ppos.y - move_distance));
 			break;
 		case 'A':
-			ppos = scale.fix_point_physical();
-			ppos.x += 0.1;
-			scale.fix_point_physical(ppos);
+			scale.fix_point_physical(ppos(ppos.x + move_distance, ppos.y));
 			break;
 		case 'S':
-			ppos = scale.fix_point_physical();
-			ppos.y += 0.1;
-			scale.fix_point_physical(ppos);
+			scale.fix_point_physical(ppos(ppos.x, ppos.y + move_distance));
 			break;
 		case 'D':
-			ppos = scale.fix_point_physical();
-			ppos.x -= 0.1;
-			scale.fix_point_physical(ppos);
+			scale.fix_point_physical(ppos(ppos.x - move_distance, ppos.y));
 			break;
 		}
 	}
@@ -102,15 +98,9 @@ void Paint::translate_windowEvent(UINT m_iMsg, WPARAM m_wParam, LPARAM m_lParam)
 void RollingBall::Paint::scale_set(pixel px_rate)
 {
 	scale.px_rate(px_rate);
-	PhysicalVector ppos;
-	PixelCoord xpos;
-	ppos.x = 2;
-	ppos.y = 2;
-	scale.fix_point_physical(ppos);
+	scale.fix_point_physical(PhysicalVector(5, 5));
 	GetClientRect(winAPI.hwnd, &winAPI.windowRect);
-	xpos.x = winAPI.windowRect.right / 2;
-	xpos.y = winAPI.windowRect.bottom / 2;
-	scale.fix_point_pixel(xpos);
+	scale.fix_point_pixel(PixelCoord(winAPI.windowRect.right / 2, winAPI.windowRect.bottom / 2));
 }
 void Paint::begin()
 {
@@ -575,29 +565,29 @@ void Paint::paint_background_ruller_tobuffer()
 {
 	PhysicalVector p;
 	int cm = 40;
-	p.x = -cm, p.y = 0;
+	p(-cm, 0);
 	MoveToEx(winAPI.hDC.mem.windowBuffer, scale.transform(p).x, scale.transform(p).y, NULL);
-	p.x = cm;
+	p(cm, 0);
 	LineTo(winAPI.hDC.mem.windowBuffer, scale.transform(p).x, scale.transform(p).y);
-	p.x = 0, p.y = -cm;
+	p(0, -cm);
 	MoveToEx(winAPI.hDC.mem.windowBuffer, scale.transform(p).x, scale.transform(p).y, NULL);
-	p.y = cm;
+	p(0, cm);
 	LineTo(winAPI.hDC.mem.windowBuffer, scale.transform(p).x, scale.transform(p).y);
 
 
 	for (int i = -30; i < 30; i++)
 	{
-		p.x = i, p.y = 0.5;
+		p(i, 0.5);
 		MoveToEx(winAPI.hDC.mem.windowBuffer, scale.transform(p).x, scale.transform(p).y, NULL);
-		p.y = -0.5;
+		p(i, -0.5);
 		LineTo(winAPI.hDC.mem.windowBuffer, scale.transform(p).x, scale.transform(p).y);
 	}
 
 	for (int i = -30; i < 30; i++)
 	{
-		p.y = i, p.x = 0.5;
+		p(0.5, i);
 		MoveToEx(winAPI.hDC.mem.windowBuffer, scale.transform(p).x, scale.transform(p).y, NULL);
-		p.x = -0.5;
+		p(-0.5, i);
 		LineTo(winAPI.hDC.mem.windowBuffer, scale.transform(p).x, scale.transform(p).y);
 	}
 }

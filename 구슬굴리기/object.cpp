@@ -341,26 +341,22 @@ int RollingBall::ObjectBitmapInfoVector::count_bitmap_files()
 ***
 ************************************************
 ************************************************/
-ObjectBitmapInfoVector Object::_bmpInfoVec;
 
 void RollingBall::Object::init(LPCTSTR object_name)
 {
-	idx.object = _bmpInfoVec.index(object_name);
-	bmpInfo = _bmpInfoVec.get_bmpInfo(idx.object);
+	idx.object = ObjectBitmapInfoVector::index(object_name);
+	bmpInfo = ObjectBitmapInfoVector::get_bmpInfo(idx.object);
 }
 
 Object::Object() 
 { 
 	_name = _T(""); 
-	physical.size = 0.5;
-	physical.rotate_angle = 0;
+	physical.size = 1;
 	physical.mass = 1;
-	physical.pos.x = 0;
-	physical.pos.y = 0;
-	physical.speed.x = 0;
-	physical.speed.y = 0;
-	physical.accel.x = 0.02;
-	physical.accel.y = 0.02;
+	physical.rotate_angle = 0;
+	physical.pos(0, 0);
+	physical.speed(0, 0);
+	physical.accel(0, 0);
 }
 
 int RollingBall::Object::count_texture()
@@ -389,23 +385,6 @@ LPCTSTR RollingBall::Object::name()
 	return _name.c_str();
 }
 
-int RollingBall::Object::index_object()
-{
-	return idx.object;
-}
-int RollingBall::Object::index_texture()
-{
-	return idx.texture;
-}
-//int RollingBall::Object::index_texture_size(pixel texture_size)
-int RollingBall::Object::index_texture_size(Scaler& scale)
-{
-	int i;
-	for (i = 0; i < count_texture_size(); i++)
-		if (scale.px(physical.size) <= bmpInfo.texture_size(i))
-			return i;
-	return i - 1;	//가장 큰 텍스쳐 크기의 인덱스를 리턴한다
-}
 LPCTSTR RollingBall::Object::texture()
 {
 	return bmpInfo.texture_name(idx.texture);
@@ -420,19 +399,27 @@ void RollingBall::Object::texture(LPCTSTR texture_name)
 		}
 	idx.texture = 0;
 }
-
-/*
-pixel RollingBall::Object::round_texture_size(pixel texture_size)
-{
-	return bmpInfo.texture_size(index_texture_size(texture_size));
-}
-*/
-
 pixel RollingBall::Object::texture_size(Scaler& scale)
 {
 	return bmpInfo.texture_size(index_texture_size(scale));
 }
 
+int RollingBall::Object::index_object()
+{
+	return idx.object;
+}
+int RollingBall::Object::index_texture()
+{
+	return idx.texture;
+}
+int RollingBall::Object::index_texture_size(Scaler& scale)
+{
+	int i;
+	for (i = 0; i < count_texture_size(); i++)
+		if (scale.px(physical.size) <= bmpInfo.texture_size(i))
+			return i;
+	return i - 1;	//가장 큰 텍스쳐 크기의 인덱스를 리턴한다
+}
 
 
 /***********************************************

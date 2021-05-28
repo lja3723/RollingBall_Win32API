@@ -14,7 +14,8 @@ BOOL RollingBallClass::init(HINSTANCE m_hInstance, HWND m_hwnd)
 	if (!paint.init(winAPI.hInstance, winAPI.hwnd)) return FALSE;
 
 	Ball _ball;
-	_ball.physical.pos(3, 2);
+	_ball.physical.pos(0, 1);
+	_ball.physical.accel(0.015, 0.015);
 	ball.push_back(_ball);
 
 	//memset(&physics, 0, sizeof(physics));
@@ -26,7 +27,7 @@ void RollingBallClass::update_window()
 	paint.begin();
 
 	Background background;
-	background.physical.size = 25;
+	background.physical.size = 2;
 
 	paint(background);
 	paint(ball[0]);

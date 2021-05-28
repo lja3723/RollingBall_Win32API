@@ -17,7 +17,7 @@ namespace RollingBall
 		Length y;
 
 		BasicPhysicalVector(Length _x = 0, Length _y = 0) { x = _x, y = _y; }
-		void operator()(Length _x, Length _y) { x = _x, y = _y; }
+		BasicPhysicalVector<Length>& operator()(Length _x, Length _y) { x = _x, y = _y; return *this; }
 		BasicPhysicalVector<Length>& operator+=(BasicPhysicalVector<Length>& v);
 		BasicPhysicalVector<Length>& operator-=(BasicPhysicalVector<Length>& v);
 	};

@@ -21,10 +21,9 @@ vector<HBITMAP> Bitmap::hBitmap = vector<HBITMAP>();
 *****************************************/
 void Bitmap::init_file_count()
 {
-	ObjectBitmapInfoVector v;
-	if (!v.isLoaded()) return;
+	if (!ObjectBitmapInfoVector::isLoaded()) return;
 
-	_file_count = v.count_bitmap_files();
+	_file_count = ObjectBitmapInfoVector::count_bitmap_files();
 			
 }
 void Bitmap::init_hBitmap()
@@ -64,8 +63,7 @@ BOOL Bitmap::init(HINSTANCE m_hInstance)
 {
 	if (isInit()) return TRUE;
 
-	ObjectBitmapInfoVector v;
-	if (!v.isLoaded()) return FALSE;
+	if (!ObjectBitmapInfoVector::isLoaded()) return FALSE;
 
 	hInstance = m_hInstance;
 	init_file_count();

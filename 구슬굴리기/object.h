@@ -80,6 +80,8 @@ namespace RollingBall
 		static BOOL isIdxInRange(int idx, int idxMax);
 
 	public:
+		ObjectBitmapInfoVector() = delete;
+
 		//프로그램 실행 중 한 번은 실행되어야 한다
 		static BOOL Load(HWND hwnd, LPCTSTR filename);
 		static BOOL isLoaded();
@@ -107,7 +109,6 @@ namespace RollingBall
 			int object;
 			int texture;
 		} idx;
-		static ObjectBitmapInfoVector _bmpInfoVec;
 		ObjectBitmapInfo bmpInfo;
 		tstring _name;
 
@@ -150,14 +151,6 @@ namespace RollingBall
 		//오브젝트의 이름을 반환한다
 		LPCTSTR name();
 
-		//오브젝트의 인덱스를 반환한다
-		int index_object();
-		//오브젝트의 텍스쳐 인덱스를 반환한다
-		int index_texture();
-
-		//scaler를 기반으로 오브젝트 size를 가장 잘 표현하는 텍스쳐 사이즈의 인덱스를 반환한다
-		int index_texture_size(Scaler& scale);
-
 		//오브젝트의 텍스쳐 이름을 반환한다
 		LPCTSTR texture();
 		//오브젝트의 텍스쳐를 설정한다
@@ -168,6 +161,15 @@ namespace RollingBall
 
 		//scaler를 기반으로 오브젝트 size를 가장 잘 표현하는 texture size를 반환한다
 		pixel texture_size(Scaler& scale);
+		//오브젝트의 인덱스를 반환한다
+		int index_object();
+		//오브젝트의 텍스쳐 인덱스를 반환한다
+		int index_texture();
+
+		//scaler를 기반으로 오브젝트 size를 가장 잘 표현하는 텍스쳐 사이즈의 인덱스를 반환한다
+		int index_texture_size(Scaler& scale);
+
+
 	};
 
 
