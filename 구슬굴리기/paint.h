@@ -87,6 +87,9 @@ namespace RollingBall
 
 		//오브젝트를 페인트한다
 		void operator()(Object& obj);
+
+		//오브젝트 정보를 페인트한다
+		void info(Object& obj);
 	
 	
 	private:
@@ -213,6 +216,8 @@ namespace RollingBall
 		void paint_background_ruller_tobuffer();
 		//void paint_ball_tobuffer(int x, int y, int ballsize = 64);
 		void paint_tobuffer(Object& object);
+
+		void paint_info_tobuffer(Object& object);
 
 		//버퍼에 그려진 그림을 윈도우로 출력
 		void flush_buffer();

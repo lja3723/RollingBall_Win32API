@@ -81,16 +81,16 @@ void Paint::translate_windowEvent(UINT m_iMsg, WPARAM m_wParam, LPARAM m_lParam)
 				scale.px_rate(scale.px_rate() * (1 + zoom_in_out_rate));
 			break;
 		case 'W':
-			scale.fix_point_physical(ppos(ppos.x, ppos.y - move_distance));
-			break;
-		case 'A':
-			scale.fix_point_physical(ppos(ppos.x + move_distance, ppos.y));
-			break;
-		case 'S':
 			scale.fix_point_physical(ppos(ppos.x, ppos.y + move_distance));
 			break;
-		case 'D':
+		case 'A':
 			scale.fix_point_physical(ppos(ppos.x - move_distance, ppos.y));
+			break;
+		case 'S':
+			scale.fix_point_physical(ppos(ppos.x, ppos.y - move_distance));
+			break;
+		case 'D':
+			scale.fix_point_physical(ppos(ppos.x + move_distance, ppos.y));
 			break;
 		}
 	}
@@ -123,6 +123,11 @@ void Paint::background(Object& background)
 void RollingBall::Paint::operator()(Object& obj)
 {
 	paint_tobuffer(obj);
+}
+
+void RollingBall::Paint::info(Object& obj)
+{
+	paint_info_tobuffer(obj);
 }
 
 
@@ -626,6 +631,13 @@ void RollingBall::Paint::paint_tobuffer(Object& object)
 			);
 		}
 	}
+}
+
+void RollingBall::Paint::paint_info_tobuffer(Object& object)
+{
+	TCHAR buff[256];
+	_stprintf_s(buff, 256, _T("좌표(%lf, %lf)"), object.physical.pos.x, object.physical.pos.y);
+	TextOut(winAPI.hDC.mem.windowBuffer, 0, 0, buff, _tcslen(buff));
 }
 
 void Paint::flush_buffer()
