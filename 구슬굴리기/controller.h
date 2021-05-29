@@ -31,6 +31,7 @@ namespace RollingBall
 				BOOL _C;
 				BOOL _control;
 			public:
+				_key();
 				BOOL left();
 				BOOL right();
 				BOOL up();
@@ -49,6 +50,7 @@ namespace RollingBall
 				BOOL _mButton;
 				BOOL _rButton;
 			public:
+				_mouse();
 				BOOL lButton();
 				BOOL mButton();
 				BOOL rButton();

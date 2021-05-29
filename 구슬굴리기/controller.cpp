@@ -157,6 +157,18 @@ void Controller::initialize_ball_data(Ball& ball)
 	ball.physical.speed.y = 0;
 }
 
+RollingBall::Controller::_isPushed::_key::_key()
+{
+	_left = FALSE;
+	_right = FALSE;
+	_up = FALSE;
+	_down = FALSE;
+	_space = FALSE;
+	_H = FALSE;
+	_C = FALSE;
+	_control = FALSE;
+}
+
 BOOL RollingBall::Controller::_isPushed::_key::left()
 {
 	return _left;
@@ -188,6 +200,12 @@ BOOL RollingBall::Controller::_isPushed::_key::C()
 BOOL RollingBall::Controller::_isPushed::_key::control()
 {
 	return _control;
+}
+RollingBall::Controller::_isPushed::_mouse::_mouse()
+{
+	_lButton = FALSE;
+	_mButton = FALSE;
+	_rButton = FALSE;
 }
 BOOL RollingBall::Controller::_isPushed::_mouse::lButton()
 {
