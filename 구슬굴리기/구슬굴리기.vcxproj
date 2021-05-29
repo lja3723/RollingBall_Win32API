@@ -170,6 +170,7 @@
     <ClCompile Include="bitmap.cpp" />
     <ClCompile Include="controller.cpp" />
     <ClCompile Include="debugger.cpp" />
+    <ClCompile Include="device.cpp" />
     <ClCompile Include="file.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="object.cpp" />
@@ -182,6 +183,7 @@
     <ClInclude Include="bitmap.h" />
     <ClInclude Include="controller.h" />
     <ClInclude Include="debugger.h" />
+    <ClInclude Include="device.h" />
     <ClInclude Include="file.h" />
     <ClInclude Include="object.h" />
     <ClInclude Include="monitor.h" />
