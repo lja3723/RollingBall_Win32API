@@ -172,9 +172,11 @@
     <ClCompile Include="debugger.cpp" />
     <ClCompile Include="device.cpp" />
     <ClCompile Include="file.cpp" />
+    <ClCompile Include="device_input.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="object.cpp" />
     <ClCompile Include="monitor.cpp" />
+    <ClCompile Include="device_output.cpp" />
     <ClCompile Include="physics.cpp" />
     <ClCompile Include="rolling_ball.cpp" />
     <ClCompile Include="scaler.cpp" />
@@ -184,7 +186,9 @@
     <ClInclude Include="controller.h" />
     <ClInclude Include="debugger.h" />
     <ClInclude Include="device.h" />
+    <ClInclude Include="device_output.h" />
     <ClInclude Include="file.h" />
+    <ClInclude Include="device_input.h" />
     <ClInclude Include="object.h" />
     <ClInclude Include="monitor.h" />
     <ClInclude Include="physics.h" />
