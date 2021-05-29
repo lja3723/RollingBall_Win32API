@@ -23,7 +23,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLi
 	HWND hwnd;
 	MSG msg;
 	WNDCLASS WndClass;
-	WndClass.style = CS_HREDRAW | CS_VREDRAW;
+	WndClass.style = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS;
 	WndClass.lpfnWndProc = WndProc;
 	WndClass.cbClsExtra = 0;
 	WndClass.cbWndExtra = 0;
@@ -78,24 +78,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 		debugger.init(hInstance, hwnd);
 		return 0;
 
-	case WM_TIMER:
-		rollingBall.update_state();
-		InvalidateRgn(hwnd, NULL, FALSE);
-		return 0;
-
-	case WM_PAINT:
-		rollingBall.update_window();
-		return 0;
-
-	case WM_KEYDOWN:
-	case WM_KEYUP:
-	case WM_LBUTTONDOWN:
-	case WM_LBUTTONUP:
-	case WM_MOUSEMOVE:
-	case WM_SIZE:
-		rollingBall.send_windowEvent(iMsg, wParam, lParam);
-		return 0;
-
 	case WM_COMMAND:
 		switch (LOWORD(wParam))
 		{
@@ -129,6 +111,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 		KillTimer(hwnd, 1);
 		PostQuitMessage(0);
 		return 0;
+
+	default:
+		rollingBall.send_windowEvent(iMsg, wParam, lParam);
 	}
 
 	return DefWindowProc(hwnd, iMsg, wParam, lParam);

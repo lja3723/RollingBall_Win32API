@@ -45,6 +45,17 @@ void RollingBallClass::update_state()
 
 void RollingBallClass::send_windowEvent(UINT m_iMsg, WPARAM m_wParam, LPARAM m_lParam)
 {
-	controller.translate_windowEvent(m_iMsg, m_wParam, m_lParam);
-	paint.translate_windowEvent(m_iMsg, m_wParam, m_lParam);
+	switch (m_iMsg)
+	{
+	case WM_PAINT:
+		update_window();
+		return;
+	case WM_TIMER:
+		update_state();
+		InvalidateRgn(winAPI.hwnd, NULL, FALSE);
+		return;
+	default:
+		controller.translate_windowEvent(m_iMsg, m_wParam, m_lParam);
+		paint.translate_windowEvent(m_iMsg, m_wParam, m_lParam);
+	}
 }
