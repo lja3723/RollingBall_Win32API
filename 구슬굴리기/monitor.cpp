@@ -10,7 +10,7 @@ using namespace RollingBall;
 *		initialization
 *
 *********************************/
-int Paint::res_count = 0;
+int Monitor::res_count = 0;
 
 
 /********************************
@@ -18,11 +18,11 @@ int Paint::res_count = 0;
 *		public functions
 *
 *********************************/
-Paint::~Paint()
+Monitor::~Monitor()
 {
 	doubleBuffering_halt();
 }
-BOOL Paint::init(HINSTANCE m_hInstance, HWND m_hwnd)
+BOOL Monitor::init(HINSTANCE m_hInstance, HWND m_hwnd)
 {
 	if (isInit()) return TRUE;
 
@@ -51,7 +51,7 @@ BOOL Paint::init(HINSTANCE m_hInstance, HWND m_hwnd)
 
 	return TRUE;
 }
-void Paint::translate_windowEvent(UINT m_iMsg, WPARAM m_wParam, LPARAM m_lParam)
+void Monitor::translate_windowEvent(UINT m_iMsg, WPARAM m_wParam, LPARAM m_lParam)
 {
 	if (m_iMsg == WM_SIZE)
 	{
@@ -95,42 +95,42 @@ void Paint::translate_windowEvent(UINT m_iMsg, WPARAM m_wParam, LPARAM m_lParam)
 		}
 	}
 }
-void RollingBall::Paint::scale_set(pixel px_rate)
+void RollingBall::Monitor::scale_set(pixel px_rate)
 {
 	scale.px_rate(px_rate);
 	scale.fix_point_physical(PhysicalVector(5, 5));
 	GetClientRect(winAPI.hwnd, &winAPI.windowRect);
 	scale.fix_point_pixel(PixelCoord(winAPI.windowRect.right / 2, winAPI.windowRect.bottom / 2));
 }
-void Paint::begin()
+void Monitor::begin()
 {
 	hDCwindowMode_set_BeginPaint();
 	hDCwindow_set();
 	doubleBuffering_start();
 }
-void Paint::end()
+void Monitor::end()
 {
 	flush_buffer();
 	hDCwindow_release();
 	doubleBuffering_stop();
 }
-void Paint::background(Object& background)
+void Monitor::background(Object& background)
 {
 	paint_background_tobuffer(background);
 	paint_background_ruller_tobuffer();
 }
 
-void RollingBall::Paint::operator()(Object& obj)
+void RollingBall::Monitor::operator()(Object& obj)
 {
 	paint_tobuffer(obj);
 }
 
-void RollingBall::Paint::info(Object& obj, int yPos)
+void RollingBall::Monitor::info(Object& obj, int yPos)
 {
 	paint_info_tobuffer(obj, yPos);
 }
 
-void RollingBall::Paint::text(LPCTSTR text, pixel x, pixel y)
+void RollingBall::Monitor::text(LPCTSTR text, pixel x, pixel y)
 {
 	paint_text_tobuffer(text, x, y);
 }
@@ -144,7 +144,7 @@ void RollingBall::Paint::text(LPCTSTR text, pixel x, pixel y)
 *
 *********************************/
 //처음 init 될 때 한 번만 호출되는 함수
-void Paint::init_flags()
+void Monitor::init_flags()
 {
 	hDCwindowMode_set_BeginPaint();
 
@@ -156,13 +156,13 @@ void Paint::init_flags()
 	flag.isInitDoubleBuffering = FALSE;
 	flag.isWindowSizeChanged = FALSE;
 }
-void Paint::init_res_count()
+void Monitor::init_res_count()
 {
 	if (!bmp.isInit()) return;
 	res_count = bmp.file_count();
 	init_res_vectors();
 }
-void Paint::init_res_vectors()
+void Monitor::init_res_vectors()
 {
 	winAPI.hDC.mem.res.resize(res_count);
 	winAPI.hBitmap.res.resize(res_count);
@@ -177,62 +177,62 @@ void Paint::init_res_vectors()
 *		- BOOL returns
 *
 *********************************/
-BOOL Paint::isInit()
+BOOL Monitor::isInit()
 {
 	return winAPI.hInstance != NULL;
 }
 
-BOOL Paint::isHDCwindowMode_GetDC()
+BOOL Monitor::isHDCwindowMode_GetDC()
 {
 	return flag.isHDCwindowMode_GetDC;
 }
-BOOL Paint::isHDCwindowMode_BeginPaint()
+BOOL Monitor::isHDCwindowMode_BeginPaint()
 {
 	return !isHDCwindowMode_GetDC();
 }
 
-BOOL Paint::isSetHDCwindow()
+BOOL Monitor::isSetHDCwindow()
 {
 	return winAPI.hDC.window != NULL;
 }
-BOOL Paint::isSetMemDCwindowBuffer()
+BOOL Monitor::isSetMemDCwindowBuffer()
 {
 	return winAPI.hDC.mem.windowBuffer != NULL;
 }
-BOOL Paint::isSetMemDCres()
+BOOL Monitor::isSetMemDCres()
 {
 	return flag.isSetMemDCres;
 }
-BOOL Paint::isSetHBitmapWindowBuffer()
+BOOL Monitor::isSetHBitmapWindowBuffer()
 {
 	return winAPI.hBitmap.windowBuffer != NULL;
 }
-BOOL Paint::isSetHBitmapRes()
+BOOL Monitor::isSetHBitmapRes()
 {
 	return flag.isSetHBitmapRes;
 }
-BOOL Paint::isBackedUpHBitmapWindowBuffer()
+BOOL Monitor::isBackedUpHBitmapWindowBuffer()
 {
 	return winAPI.hBitmap.old.windowBuffer != NULL;
 }
-BOOL Paint::isBackedUpHBitmapRes()
+BOOL Monitor::isBackedUpHBitmapRes()
 {
 	return flag.isBackedUpHBitmapRes;
 }
 
-BOOL Paint::isDoubleBufferingStart()
+BOOL Monitor::isDoubleBufferingStart()
 {
 	return flag.isDoubleBufferingStart;
 }
-BOOL Paint::isReadyToPaint()
+BOOL Monitor::isReadyToPaint()
 {
 	return isDoubleBufferingStart();
 }
-BOOL Paint::isInitDoubleBuffering()
+BOOL Monitor::isInitDoubleBuffering()
 {
 	return flag.isInitDoubleBuffering;
 }
-BOOL Paint::isWindowSizeChanged()
+BOOL Monitor::isWindowSizeChanged()
 {
 	return flag.isWindowSizeChanged;
 }
@@ -246,20 +246,20 @@ BOOL Paint::isWindowSizeChanged()
 *		- hDCwindow Management
 *
 *********************************/
-void Paint::hDCwindowMode_set_BeginPaint()
+void Monitor::hDCwindowMode_set_BeginPaint()
 {
 	flag.isHDCwindowMode_GetDC = FALSE;
 }
-void Paint::hDCwindowMode_set_GetDC()
+void Monitor::hDCwindowMode_set_GetDC()
 {
 	flag.isHDCwindowMode_GetDC = TRUE;
 }
 
-void Paint::hDCwindow_init()
+void Monitor::hDCwindow_init()
 {
 	winAPI.hDC.window = NULL;
 }
-void Paint::hDCwindow_set()
+void Monitor::hDCwindow_set()
 {
 	if (isSetHDCwindow())
 		hDCwindow_release();
@@ -269,7 +269,7 @@ void Paint::hDCwindow_set()
 	else
 		winAPI.hDC.window = BeginPaint(winAPI.hwnd, &winAPI.ps);
 }
-void Paint::hDCwindow_release()
+void Monitor::hDCwindow_release()
 {
 	if (!isSetHDCwindow()) return;
 
@@ -290,11 +290,11 @@ void Paint::hDCwindow_release()
 *		- hDC.mem management
 *
 *********************************/
-void Paint::memDC_windowBuffer_init()
+void Monitor::memDC_windowBuffer_init()
 {
 	winAPI.hDC.mem.windowBuffer = NULL;
 }
-void Paint::memDC_windowBuffer_set()
+void Monitor::memDC_windowBuffer_set()
 {	
 	if (isSetMemDCwindowBuffer())
 		memDC_windowBuffer_release();
@@ -302,7 +302,7 @@ void Paint::memDC_windowBuffer_set()
 	//화면 DC와 호환이 되는 memDC를 생성
 	winAPI.hDC.mem.windowBuffer = CreateCompatibleDC(winAPI.hDC.window);
 }
-void Paint::memDC_windowBuffer_release()
+void Monitor::memDC_windowBuffer_release()
 {
 	if (!isSetMemDCwindowBuffer()) return;
 
@@ -310,12 +310,12 @@ void Paint::memDC_windowBuffer_release()
 	memDC_windowBuffer_init();
 }
 
-void Paint::memDC_res_init()
+void Monitor::memDC_res_init()
 {
 	for (int i = 0; i < res_count; i++)
 		winAPI.hDC.mem.res[i] = NULL;
 }
-void Paint::memDC_res_set()
+void Monitor::memDC_res_set()
 {
 	if (isSetMemDCres())
 		memDC_res_release();
@@ -326,7 +326,7 @@ void Paint::memDC_res_set()
 
 	flag.isSetMemDCres = TRUE;
 }
-void Paint::memDC_res_release()
+void Monitor::memDC_res_release()
 {
 	if (!isSetMemDCres()) return;
 
@@ -338,12 +338,12 @@ void Paint::memDC_res_release()
 	flag.isSetMemDCres = FALSE;
 }
 
-void Paint::memDC_create()
+void Monitor::memDC_create()
 {
 	memDC_windowBuffer_set();
 	memDC_res_set();
 }
-void Paint::memDC_delete()
+void Monitor::memDC_delete()
 {
 	memDC_windowBuffer_release();
 	memDC_res_release();
@@ -357,11 +357,11 @@ void Paint::memDC_delete()
 *		- hBitmap management
 *
 *********************************/
-void Paint::hBitmap_windowBuffer_init()
+void Monitor::hBitmap_windowBuffer_init()
 {
 	winAPI.hBitmap.windowBuffer = NULL;
 }
-void Paint::hBitmap_windowBuffer_set()
+void Monitor::hBitmap_windowBuffer_set()
 {
 	if (isSetHBitmapWindowBuffer())
 		hBitmap_windowBuffer_release();
@@ -370,14 +370,14 @@ void Paint::hBitmap_windowBuffer_set()
 	GetClientRect(winAPI.hwnd, &winAPI.windowRect);
 	winAPI.hBitmap.windowBuffer = bmp.create_hDC_compatible(winAPI.hDC.window, winAPI.windowRect);
 }
-void Paint::hBitmap_windowBuffer_release()
+void Monitor::hBitmap_windowBuffer_release()
 {
 	if (!isSetHBitmapWindowBuffer()) return;
 	//hBitmap을 삭제함
 	bmp.delete_hDC_compatible(winAPI.hBitmap.windowBuffer);
 	hBitmap_windowBuffer_init();
 }
-void Paint::hBitmap_res_init()
+void Monitor::hBitmap_res_init()
 {
 	for (int i = 0; i < res_count; i++)
 		winAPI.hBitmap.res[i] = NULL;
@@ -386,7 +386,7 @@ void Paint::hBitmap_res_init()
 	//(winAPI.hBitmap.resource.size() != 0)
 	flag.isSetHBitmapRes = FALSE;
 }
-void Paint::hBitmap_res_set()
+void Monitor::hBitmap_res_set()
 {
 	for (int i = 0; i < res_count; i++)
 		winAPI.hBitmap.res[i] = bmp(i);
@@ -394,11 +394,11 @@ void Paint::hBitmap_res_set()
 	flag.isSetHBitmapRes = TRUE;
 }
 
-void Paint::hBitmap_old_windowBuffer_init()
+void Monitor::hBitmap_old_windowBuffer_init()
 {
 	winAPI.hBitmap.old.windowBuffer = NULL;
 }
-void Paint::hBitmap_old_windowBuffer_backup()
+void Monitor::hBitmap_old_windowBuffer_backup()
 {
 	if (!isSetMemDCwindowBuffer()) return;
 	if (isBackedUpHBitmapWindowBuffer())
@@ -410,7 +410,7 @@ void Paint::hBitmap_old_windowBuffer_backup()
 			winAPI.hBitmap.windowBuffer
 		);
 }
-void Paint::hBitmap_old_windowBuffer_rollback()
+void Monitor::hBitmap_old_windowBuffer_rollback()
 {
 	if (!isBackedUpHBitmapWindowBuffer()) return;
 	SelectObject(
@@ -419,12 +419,12 @@ void Paint::hBitmap_old_windowBuffer_rollback()
 	);
 	hBitmap_old_windowBuffer_init();
 }
-void Paint::hBitmap_old_res_init()
+void Monitor::hBitmap_old_res_init()
 {
 	for (int i = 0; i < res_count; i++)
 		winAPI.hBitmap.old.res[i] = NULL;
 }
-void Paint::hBitmap_old_res_backup()
+void Monitor::hBitmap_old_res_backup()
 {
 	if (!isSetMemDCres()) return;
 	if (!isBackedUpHBitmapRes())
@@ -439,7 +439,7 @@ void Paint::hBitmap_old_res_backup()
 
 	flag.isBackedUpHBitmapRes = TRUE;
 }
-void Paint::hBitmap_old_res_rollback()
+void Monitor::hBitmap_old_res_rollback()
 {
 	if (!isBackedUpHBitmapRes()) return;
 
@@ -462,7 +462,7 @@ void Paint::hBitmap_old_res_rollback()
 *		- double buffering manage
 *
 *********************************/
-void Paint::doubleBuffering_init()
+void Monitor::doubleBuffering_init()
 {	
 	//doublebuffering이 처음 시작되었을때만 아래 작업 수행
 	//hDC.memory.windowBuffer와 hDC.mem.res를 생성하는 것과
@@ -480,7 +480,7 @@ void Paint::doubleBuffering_init()
 
 	flag.isInitDoubleBuffering = TRUE;
 }
-void Paint::doubleBuffering_start()
+void Monitor::doubleBuffering_start()
 {
 	if (isDoubleBufferingStart()) return;
 	if (!isSetHDCwindow()) return;
@@ -509,7 +509,7 @@ void Paint::doubleBuffering_start()
 
 	flag.isDoubleBufferingStart = TRUE;
 }
-void Paint::doubleBuffering_stop()
+void Monitor::doubleBuffering_stop()
 {
 	if (!isDoubleBufferingStart()) return;
 
@@ -518,7 +518,7 @@ void Paint::doubleBuffering_stop()
 
 	flag.isDoubleBufferingStart = FALSE;
 }
-void Paint::doubleBuffering_halt()
+void Monitor::doubleBuffering_halt()
 {
 	//hBitmap.windowBuffer를 hDC.mem.windowBuffer에서 롤백하고 release한다
 	hBitmap_old_windowBuffer_rollback();
@@ -549,7 +549,7 @@ void Paint::doubleBuffering_halt()
 *		- paint management
 *
 *********************************/
-void Paint::paint_background_tobuffer(Object& background)
+void Monitor::paint_background_tobuffer(Object& background)
 {
 	if (!isReadyToPaint()) return;
 
@@ -571,7 +571,7 @@ void Paint::paint_background_tobuffer(Object& background)
 				SRCCOPY
 			);
 }
-void Paint::paint_background_ruller_tobuffer()
+void Monitor::paint_background_ruller_tobuffer()
 {
 	PhysicalVector p;
 	int cm = 40;
@@ -602,7 +602,7 @@ void Paint::paint_background_ruller_tobuffer()
 	}
 }
 
-void RollingBall::Paint::paint_tobuffer(Object& object)
+void RollingBall::Monitor::paint_tobuffer(Object& object)
 {
 	if (!isReadyToPaint()) return;
 
@@ -638,19 +638,19 @@ void RollingBall::Paint::paint_tobuffer(Object& object)
 	}
 }
 
-void RollingBall::Paint::paint_info_tobuffer(Object& object, int yPos)
+void RollingBall::Monitor::paint_info_tobuffer(Object& object, int yPos)
 {
 	TCHAR buff[256];
 	_stprintf_s(buff, 256, _T("좌표(%lf, %lf)"), object.physical.pos.x, object.physical.pos.y);
 	paint_text_tobuffer(buff, 0, yPos);
 }
 
-void RollingBall::Paint::paint_text_tobuffer(LPCTSTR text, pixel x, pixel y)
+void RollingBall::Monitor::paint_text_tobuffer(LPCTSTR text, pixel x, pixel y)
 {
 	TextOut(winAPI.hDC.mem.windowBuffer, x, y, text, _tcslen(text));
 }
 
-void Paint::flush_buffer()
+void Monitor::flush_buffer()
 {
 	if (!isReadyToPaint()) return;
 

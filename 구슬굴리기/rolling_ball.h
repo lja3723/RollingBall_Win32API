@@ -20,7 +20,7 @@ namespace RollingBall
 			HWND hwnd;
 		} winAPI;
 
-		Paint paint;
+		Monitor paint;
 		Controller controller;
 		vector<Ball> ball;
 
