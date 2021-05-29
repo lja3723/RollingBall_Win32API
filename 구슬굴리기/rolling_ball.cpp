@@ -30,7 +30,7 @@ void RollingBallClass::update_window()
 
 	Background background;
 	background.physical.size = 10;
-
+	
 	paint(background);
 	for (int i = 0; i < ball.size(); i++)
 		paint.info(ball[i], i * 20),
