@@ -9,11 +9,13 @@ namespace RollingBall
 	class Device
 	{
 	public:
-		OutputDevice out;
 		InputDevice in;
+		OutputDevice out;
 
 	public:
-		void init();
+		//it must be called when program starts
+		BOOL init(HINSTANCE m_hInstance, HWND m_hwnd);
+		void translate_windowEvent(UINT m_iMsg, WPARAM m_wParam, LPARAM m_lParam);
 	};
 }
 
