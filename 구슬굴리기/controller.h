@@ -23,6 +23,7 @@ namespace RollingBall
 				BOOL down;
 				BOOL space;
 				BOOL H;
+				BOOL C;
 				BOOL control;
 			} key;
 
@@ -33,7 +34,8 @@ namespace RollingBall
 
 	public:
 		void translate_windowEvent(UINT m_iMsg, WPARAM m_wParam, LPARAM m_lParam);
-		void update_ballPos(HWND hwnd, Ball& ball);
+		void update_ballPos(Ball& ball);
+		void force_to(Ball& ball, double accel);
 
 		void initialize_ball_data(Ball& ball);
 	};

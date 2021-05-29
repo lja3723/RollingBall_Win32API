@@ -15,7 +15,15 @@ BOOL RollingBallClass::init(HINSTANCE m_hInstance, HWND m_hwnd)
 
 	Ball _ball;
 	_ball.physical.pos(0, 1);
-	_ball.physical.accel(0.015, 0.015);
+	ball.push_back(_ball);
+
+	_ball.physical.pos(-1, 0);
+	ball.push_back(_ball);
+
+	_ball.physical.pos(1, 0);
+	ball.push_back(_ball);
+
+	_ball.physical.pos(0, -1);
 	ball.push_back(_ball);
 
 	//memset(&physics, 0, sizeof(physics));
@@ -30,8 +38,9 @@ void RollingBallClass::update_window()
 	background.physical.size = 10;
 
 	paint(background);
-	paint.info(ball[0]);
-	paint(ball[0]);
+	for (int i = 0; i < ball.size(); i++)
+		paint.info(ball[i], i * 20),
+		paint(ball[i]);
 
 	paint.end();
 }
@@ -40,7 +49,10 @@ void RollingBallClass::update_state()
 {
 	if (!ball.size()) return;
 
-	controller.update_ballPos(winAPI.hwnd, ball[0]);
+	for (int i = 0; i < ball.size(); i++) {
+		controller.force_to(ball[ballSwitch], 0.015 + 0.001*ballSwitch);
+		controller.update_ballPos(ball[i]);
+	}
 }
 
 void RollingBallClass::send_windowEvent(UINT m_iMsg, WPARAM m_wParam, LPARAM m_lParam)
@@ -55,6 +67,11 @@ void RollingBallClass::send_windowEvent(UINT m_iMsg, WPARAM m_wParam, LPARAM m_l
 		InvalidateRgn(winAPI.hwnd, NULL, FALSE);
 		return;
 	default:
+		if (m_iMsg == WM_KEYDOWN && m_wParam == _T('C'))
+		{
+			ballSwitch++;
+			if (ballSwitch == ball.size()) ballSwitch = 0;
+		}
 		controller.translate_windowEvent(m_iMsg, m_wParam, m_lParam);
 		paint.translate_windowEvent(m_iMsg, m_wParam, m_lParam);
 	}

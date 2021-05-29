@@ -125,9 +125,9 @@ void RollingBall::Paint::operator()(Object& obj)
 	paint_tobuffer(obj);
 }
 
-void RollingBall::Paint::info(Object& obj)
+void RollingBall::Paint::info(Object& obj, int yPos)
 {
-	paint_info_tobuffer(obj);
+	paint_info_tobuffer(obj, yPos);
 }
 
 
@@ -633,11 +633,11 @@ void RollingBall::Paint::paint_tobuffer(Object& object)
 	}
 }
 
-void RollingBall::Paint::paint_info_tobuffer(Object& object)
+void RollingBall::Paint::paint_info_tobuffer(Object& object, int yPos)
 {
 	TCHAR buff[256];
 	_stprintf_s(buff, 256, _T("좌표(%lf, %lf)"), object.physical.pos.x, object.physical.pos.y);
-	TextOut(winAPI.hDC.mem.windowBuffer, 0, 0, buff, _tcslen(buff));
+	TextOut(winAPI.hDC.mem.windowBuffer, 0, yPos, buff, _tcslen(buff));
 }
 
 void Paint::flush_buffer()

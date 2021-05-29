@@ -39,6 +39,9 @@ void Controller::detect_keyPushed()
 	case _T('H'): case _T('h'):
 		isPushed.key.H = flag_key;
 		break;
+	case _T('C'): case _T('c'):
+		isPushed.key.C = flag_key;
+		break;
 	case VK_CONTROL:
 		isPushed.key.control = flag_key;
 		break;
@@ -51,7 +54,7 @@ void Controller::translate_windowEvent(UINT m_iMsg, WPARAM m_wParam, LPARAM m_lP
 	detect_keyPushed();
 }
 
-void Controller::update_ballPos(HWND hwnd, Ball& ball)
+void Controller::update_ballPos(Ball& ball)
 {
 	double fraction = 0.005;
 
@@ -62,41 +65,28 @@ void Controller::update_ballPos(HWND hwnd, Ball& ball)
 	cm_val& accel_x = ball.physical.accel.x;
 	cm_val& accel_y = ball.physical.accel.y;
 
-	if (isPushed.key.space)
-	{
-		fraction *= 25;
-	}
-	else if (isPushed.key.H)
-	{
-		//RECT rt;
-		//GetClientRect(hwnd, &rt);
-		pos_x = 0;
-		pos_y = 0;
-		if (isPushed.key.control)
-		{
-			initialize_ball_data(ball);
-			pos_x = 0;
-			pos_y = 0;
-		}
-	}
-	else
-	{
-
-		if (isPushed.key.left) speed_x -= accel_x;
-		if (isPushed.key.right) speed_x += accel_x;
-
-		if (isPushed.key.up) speed_y += accel_y;
-		if (isPushed.key.down) speed_y -= accel_y;
-	}	
+	speed_x += accel_x;
+	speed_y += accel_y;
 
 	pos_x += speed_x;
 	pos_y += speed_y;
 
+
+	if (-1 < speed_x && speed_x < 1 &&
+		-1 < speed_y && speed_y < 1)
+		fraction *= 5;
+	speed_x *= (1 - fraction);
+	speed_y *= (1 - fraction);
+
+	if (-0.01 < speed_x && speed_x < 0.01)
+		speed_x = 0;
+	if (-0.01 < speed_y && speed_y < 0.01)
+		speed_y = 0;
+
+	/*
 	RECT rt;
-	GetClientRect(hwnd, &rt);
 	double boundConstant = 0.7;
 	cm_val mid_ball = ball.physical.size / 2;
-	/*
 	if (mid_ball > pos_x || pos_x > (int)rt.right - mid_ball)
 	{
 		speed_x = -boundConstant * speed_x;
@@ -114,17 +104,49 @@ void Controller::update_ballPos(HWND hwnd, Ball& ball)
 			pos_y = rt.bottom - mid_ball;
 	}
 	*/
+}
 
-	if (-1 < speed_x && speed_x < 1 &&
-		-1 < speed_y && speed_y < 1)
-		fraction *= 5;
-	speed_x *= (1 - fraction);
-	speed_y *= (1 - fraction);
+void RollingBall::Controller::force_to(Ball& ball, double accel)
+{
+	double fraction = 0.005;
 
-	if (-0.01 < speed_x && speed_x < 0.01)
-		speed_x = 0;
-	if (-0.01 < speed_y && speed_y < 0.01)
-		speed_y = 0;
+	cm_val& pos_x = ball.physical.pos.x;
+	cm_val& pos_y = ball.physical.pos.y;
+	cm_val& speed_x = ball.physical.speed.x;
+	cm_val& speed_y = ball.physical.speed.y;
+	cm_val& accel_x = ball.physical.accel.x;
+	cm_val& accel_y = ball.physical.accel.y;
+
+	if (isPushed.key.space)
+	{
+		fraction = 25 * 0.005;
+
+		speed_x *= (1 - fraction);
+		speed_y *= (1 - fraction);
+	}
+	else if (isPushed.key.H)
+	{
+		//RECT rt;
+		//GetClientRect(hwnd, &rt);
+		pos_x = 0;
+		pos_y = 0;
+		if (isPushed.key.control)
+		{
+			initialize_ball_data(ball);
+			pos_x = 0;
+			pos_y = 0;
+		}
+	}
+	else
+	{
+		if (isPushed.key.left) accel_x = -accel;
+		else if (isPushed.key.right) accel_x = accel;
+		else accel_x = 0;
+
+		if (isPushed.key.up) accel_y = accel;
+		else if (isPushed.key.down) accel_y = -accel;
+		else accel_y = 0;
+	}
 }
 
 void Controller::initialize_ball_data(Ball& ball)
