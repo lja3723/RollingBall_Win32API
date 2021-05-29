@@ -4,7 +4,7 @@
 
 #include <Windows.h>
 #include <vector>
-#include "paint.h"
+#include "monitor.h"
 #include "physics.h"
 #include "controller.h"
 #include "object.h"
