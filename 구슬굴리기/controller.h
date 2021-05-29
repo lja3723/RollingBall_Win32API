@@ -18,6 +18,9 @@ namespace RollingBall
 		class _isPushed
 		{
 		private:
+			//모든 키를 일일이 하나의 변수로 만드는건 좋은 생각이 아닌듯함
+			//VK 매크로를 매개변수로 받는 단일 함수를 만들어야 할듯
+			//키 눌림 여부는 배열로 선언해보자
 			class _key
 			{
 			friend class Controller;
