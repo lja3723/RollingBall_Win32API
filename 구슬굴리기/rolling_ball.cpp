@@ -17,12 +17,6 @@ BOOL RollingBallClass::init(HINSTANCE m_hInstance, HWND m_hwnd)
 	_ball.physical.pos(0, 1);
 	ball.push_back(_ball);
 
-	_ball.physical.pos(-1, 0);
-	ball.push_back(_ball);
-
-	_ball.physical.pos(1, 0);
-	ball.push_back(_ball);
-
 	_ball.physical.pos(0, -1);
 	ball.push_back(_ball);
 
@@ -41,6 +35,15 @@ void RollingBallClass::update_window()
 	for (int i = 0; i < ball.size(); i++)
 		paint.info(ball[i], i * 20),
 		paint(ball[i]);
+
+	if (controller.isPushed.key.down())
+		paint.text(_T("↓"), 80, 200);
+	if (controller.isPushed.key.up())
+		paint.text(_T("↑"), 80, 180);
+	if (controller.isPushed.key.left())
+		paint.text(_T("←"), 60, 200);
+	if (controller.isPushed.key.right())
+		paint.text(_T("→"), 100, 200);
 
 	paint.end();
 }

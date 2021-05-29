@@ -90,6 +90,8 @@ namespace RollingBall
 
 		//오브젝트 정보를 페인트한다
 		void info(Object& obj, int yPos = 0);
+
+		void text(LPCTSTR text, pixel x, pixel y);
 	
 	
 	private:
@@ -219,6 +221,7 @@ namespace RollingBall
 
 		void paint_info_tobuffer(Object& object, int yPos = 0);
 
+		void paint_text_tobuffer(LPCTSTR text, pixel x, pixel y);
 		//버퍼에 그려진 그림을 윈도우로 출력
 		void flush_buffer();
 
