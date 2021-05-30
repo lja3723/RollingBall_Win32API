@@ -6,7 +6,7 @@ BOOL RollingBall::Device::init(HINSTANCE m_hInstance, HWND m_hwnd)
 {
 	if (!out.init(m_hInstance, m_hwnd))
 		return FALSE;
-	in.init();
+	in.init(m_hwnd);
 
 	return TRUE;
 }

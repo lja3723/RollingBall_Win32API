@@ -2,6 +2,7 @@
 #define __device_input_h__
 
 #include <Windows.h>
+#include <cmath>
 
 namespace RollingBall
 {
@@ -22,27 +23,40 @@ namespace RollingBall
 	class Mouse
 	{
 	private:
-		//0: LButton
-		//1: RButton
-		//2: MButton
+		HWND hwnd;
+
 		static const int numofButtons = 3;
+		static const int LButton = 0;
+		static const int RButton = 1;
+		static const int MButton = 2;
 		static const int notDragging = -1;
 		BOOL buttons[numofButtons];
-		struct PixelCoord {
-			int x;
-			int y;
-		};
-		PixelCoord current;
-		PixelCoord dragStart[numofButtons];
-		PixelCoord dragEnd[numofButtons];
+		POINT dragStart[numofButtons];
+		POINT prevDragging[numofButtons];
+		POINT dragging[numofButtons];
+		POINT dragEnd[numofButtons];
+
+		POINT absolute;
+		POINT relative;
+
+		POINT current;
 
 	private:
+		POINT delta(POINT* p1, POINT* p2);
+		void update_mousePos();
 		void button_down(int btn);
 		void button_up(int btn);
 		void mouse_move(LPARAM lParam);
 
+		BOOL isValid(POINT p);
+		void invalidate(LPPOINT p);
+
+		BOOL isButtonDown(int btn);
+		BOOL isButtonClicked(int btn, POINT* clicked_pos);
+		BOOL isButtonDragging(int btn, POINT* dragStart, POINT* prevDragging);
+
 	public:
-		void init();
+		void init(HWND m_hwnd);
 
 		BOOL isLButtonDown();
 		BOOL isRButtonDown();
@@ -71,7 +85,7 @@ namespace RollingBall
 
 	public:
 		//it must be called when program starts
-		void init();
+		void init(HWND hwnd);
 		void translate_windowEvent(UINT m_iMsg, WPARAM m_wParam, LPARAM m_lParam);
 	};
 }

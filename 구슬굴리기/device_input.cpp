@@ -39,49 +39,131 @@ void Keyboard::translate_windowEvent(UINT m_iMsg, WPARAM m_wParam, LPARAM m_lPar
 
 //https://is03.tistory.com/27
 
-void Mouse::init()
+void Mouse::init(HWND m_hwnd)
 {
-	for (int i = 0; i < numofButtons; i++)
+	hwnd = m_hwnd;
+	update_mousePos();
+	current = { relative.x, relative.y };
+	for (int button = LButton; button < numofButtons; button++)
 	{
-		buttons[i] = FALSE;
-		dragStart[i].x = dragStart[i].y = -1;
-		dragEnd[i].x = dragEnd[i].y = -1;
+		buttons[button] = FALSE;
+		invalidate(&dragStart[button]);
+		invalidate(&prevDragging[button]);
+		invalidate(&dragging[button]);
+		invalidate(&dragEnd[button]);
 	}
-	current.x = current.y = 0;
+}
+
+POINT Mouse::delta(POINT* p1, POINT* p2)
+{
+	POINT p;
+	p.x = p2->x - p1->x;
+	p.y = p2->y - p1->y;
+	return p;
+}
+
+void Mouse::update_mousePos()
+{
+	GetCursorPos(&absolute);
+	relative = absolute;
+	ScreenToClient(hwnd, &relative);
 }
 
 void Mouse::button_down(int btn)
 {
 	buttons[btn] = TRUE;
-	//dragStart
+	dragStart[btn] = current;
+
+	invalidate(&dragEnd[btn]);
+	prevDragging[btn] = current;
+	dragging[btn] = current;
 }
 void Mouse::button_up(int btn)
 {
 	buttons[btn] = FALSE;
+	//dragStart[btn]; 변동없음
+
+	dragEnd[btn] = dragging[btn];
+	invalidate(&prevDragging[btn]);
+	invalidate(&dragging[btn]);
 }
 
-void RollingBall::Mouse::mouse_move(LPARAM lParam)
+void Mouse::mouse_move(LPARAM lParam)
 {
-	current.x = LOWORD(lParam);
-	current.y = HIWORD(lParam);
-	for (int i = 0; i < numofButtons; i++);
+	update_mousePos();
+	current = { LOWORD(lParam), HIWORD(lParam) };
+	for (int button = 0; button < numofButtons; button++)
+		if (buttons[button])
+		{
+			prevDragging[button] = dragging[button];
+			dragging[button] = current;
+		}
+}
+
+BOOL Mouse::isValid(POINT p)
+{
+	return p.x != -1 && p.y != -1;
+}
+void Mouse::invalidate(LPPOINT p)
+{
+	p->x = p->y = -1;
+}
+
+BOOL RollingBall::Mouse::isButtonDown(int btn)
+{
+	return buttons[btn];
+}
+
+BOOL RollingBall::Mouse::isButtonClicked(int btn, POINT* clicked_pos)
+{
+	BOOL flag = TRUE;
+	//버튼이 눌린 상태면 클릭된 것이 아님
+	if (buttons[btn]) flag = FALSE;
+
+	//dragStart가 유효하지 않으면 클릭된 것이 아님
+	else if (!isValid(dragStart[btn])) flag = FALSE;
+
+	//마우스가 5픽셀 이상 움직였다면 클릭된 것이 아님
+	else {
+		POINT d = delta(&dragStart[btn], &dragEnd[btn]);
+		if (abs(d.x) > 5 || abs(d.y) > 5)
+			flag = FALSE;
+	}
+
+	//클릭됐으면 클릭된 곳을 드래그 시작한 곳으로 설정
+	if (flag)
+		*clicked_pos = dragStart[btn];
+
+	//클릭이 안됐으면 클릭 위치를 무효화
+	else
+		invalidate(clicked_pos);
+	
+	return flag;
+}
+
+BOOL RollingBall::Mouse::isButtonDragging(int btn, POINT* dragStart, POINT* prevDragging)
+{
+	if (isValid(dragging[btn]))
+	return 0;
 }
 
 BOOL Mouse::isLButtonDown()
 {
-	return buttons[0];
+	return buttons[LButton];
 }
 BOOL Mouse::isRButtonDown()
 {
-	return buttons[1];
+	return buttons[RButton];
 }
 BOOL Mouse::isMButtonDown()
 {
-	return buttons[2];
+	return buttons[MButton];
 }
 
 BOOL RollingBall::Mouse::isLButtonClicked()
 {
+
+
 	return 0;
 }
 
@@ -129,24 +211,24 @@ void RollingBall::Mouse::translate_windowEvent(UINT m_iMsg, WPARAM m_wParam, LPA
 		return;
 
 	case WM_LBUTTONDOWN:
-		button_down(0);
+		button_down(LButton);
 		return;
 	case WM_LBUTTONUP:
-		button_up(0);
+		button_up(LButton);
 		return;
 
 	case WM_RBUTTONDOWN:
-		button_down(1);
+		button_down(RButton);
 		return;
 	case WM_RBUTTONUP:
-		button_up(1);
+		button_up(RButton);
 		return;
 
 	case WM_MBUTTONDOWN:
-		button_down(2);
+		button_down(MButton);
 		return;
 	case WM_MBUTTONUP:
-		button_up(2);
+		button_up(MButton);
 		return;
 	}
 }
@@ -162,10 +244,10 @@ int RollingBall::Mouse::y()
 }
 
 
-void RollingBall::InputDevice::init()
+void RollingBall::InputDevice::init(HWND hwnd)
 {
 	keyboard.init();
-	mouse.init();
+	mouse.init(hwnd);
 }
 void RollingBall::InputDevice::translate_windowEvent(UINT m_iMsg, WPARAM m_wParam, LPARAM m_lParam)
 {
