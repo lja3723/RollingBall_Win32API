@@ -1,6 +1,6 @@
 ﻿#pragma once
-#ifndef __monitor_h__
-#define __monitor_h__
+#ifndef __paint_h__
+#define __paint_h__
 
 #include <Windows.h>
 #include <vector>
