@@ -10,11 +10,8 @@ using std::sort;
 //	KeyboardEvent class
 // 
 /////////////////////////
-void RollingBall::KeyboardEvent::init()
-{
-	for (int i = 0; i < numofKeys; i++)
-		keys[i] = FALSE;
-}
+BOOL KeyboardEvent::isInit = FALSE;
+BOOL KeyboardEvent::keys[numofKeys];
 
 void KeyboardEvent::key_down(WPARAM VK_msg)
 {
@@ -24,24 +21,19 @@ void KeyboardEvent::key_up(WPARAM VK_msg)
 {
 	keys[VK_msg] = FALSE;
 }
+RollingBall::KeyboardEvent::KeyboardEvent()
+{
+	if (!isInit)
+	{
+		for (int i = 0; i < numofKeys; i++)
+			keys[i] = FALSE;
+		isInit = TRUE;
+	}
+}
 BOOL KeyboardEvent::isKeyDown(WPARAM VK_msg)
 {
 	return keys[VK_msg];
 }
-
-void KeyboardEvent::translate_windowEvent(UINT m_iMsg, WPARAM m_wParam, LPARAM m_lParam)
-{
-	switch (m_iMsg)
-	{
-	case WM_KEYDOWN:
-		key_down(m_wParam);
-		return;
-	case WM_KEYUP:
-		key_up(m_wParam);
-		return;
-	}
-}
-
 
 
 /////////////////////////
