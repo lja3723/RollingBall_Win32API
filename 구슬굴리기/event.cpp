@@ -5,6 +5,44 @@ using namespace RollingBall;
 using std::find;
 using std::sort;
 
+/////////////////////////
+// 
+//	KeyboardEvent class
+// 
+/////////////////////////
+void RollingBall::KeyboardEvent::init()
+{
+	for (int i = 0; i < numofKeys; i++)
+		keys[i] = FALSE;
+}
+
+void KeyboardEvent::key_down(WPARAM VK_msg)
+{
+	keys[VK_msg] = TRUE;
+}
+void KeyboardEvent::key_up(WPARAM VK_msg)
+{
+	keys[VK_msg] = FALSE;
+}
+BOOL KeyboardEvent::isKeyDown(WPARAM VK_msg)
+{
+	return keys[VK_msg];
+}
+
+void KeyboardEvent::translate_windowEvent(UINT m_iMsg, WPARAM m_wParam, LPARAM m_lParam)
+{
+	switch (m_iMsg)
+	{
+	case WM_KEYDOWN:
+		key_down(m_wParam);
+		return;
+	case WM_KEYUP:
+		key_up(m_wParam);
+		return;
+	}
+}
+
+
 
 /////////////////////////
 // 
@@ -97,7 +135,6 @@ RollingBall::EventAcceptable::EventAcceptable()
 {
 	object_ref.push_back(this);
 }
-
 RollingBall::EventAcceptable::~EventAcceptable()
 {
 	auto iter = find(object_ref.begin(), object_ref.end(), this);

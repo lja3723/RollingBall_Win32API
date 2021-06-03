@@ -34,7 +34,16 @@ namespace RollingBall
 	*/
 	class KeyboardEvent : Event
 	{
+	private:
+		static const int numofKeys = 256;
+		BOOL keys[numofKeys];
 
+		void key_down(WPARAM VK_msg);
+		void key_up(WPARAM VK_msg);
+	public:
+		void init();
+		BOOL isKeyDown(WPARAM VK_msg);
+		void translate_windowEvent(UINT m_iMsg, WPARAM m_wParam, LPARAM m_lParam);
 	};
 
 
