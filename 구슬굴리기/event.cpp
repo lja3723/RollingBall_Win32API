@@ -75,6 +75,7 @@ MouseEvent RollingBall::EventProducer::produce_mouseEvent(UINT iMsg, WPARAM wPar
 KeyboardEvent RollingBall::EventProducer::produce_keyboardEvent(UINT iMsg, WPARAM wParam, LPARAM lParam)
 {
 	KeyboardEvent e;
+	memset(&e, 0, sizeof(e));
 	switch (iMsg)
 	{
 	case WM_KEYDOWN:
