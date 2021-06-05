@@ -9,6 +9,9 @@
 #include "scaler.h"
 #include "event.h"
 
+#include "paint_hdc.h"
+#include "paint_hbitmap.h"
+
 using std::vector;
 
 /*
@@ -36,6 +39,8 @@ namespace RollingBall
 			PAINTSTRUCT ps;
 			RECT windowRect;
 
+			//old code (move to class Paint_hDC)
+			/*
 			struct hDC {
 				HDC window;
 				struct _mem {
@@ -43,6 +48,11 @@ namespace RollingBall
 					vector<HDC> res;
 				} mem;
 			} hDC;
+			*/
+			//old code end
+
+			//new code
+			Paint_hDC hDC;
 
 			struct _hBitmap{
 				HBITMAP windowBuffer;
@@ -56,10 +66,17 @@ namespace RollingBall
 		
 		//여러가지 플래그를 저장하는 변수
 		struct _flag{
+
+			//old code (move to class Paint_hDC)
+			/*
 			BOOL isHDCwindowMode_GetDC;
 
 			BOOL isSetMemDCres;
+			*/
+			//old code end
 			BOOL isSetHBitmapRes;
+
+
 			BOOL isBackedUpHBitmapRes;
 
 			BOOL isDoubleBufferingStart;
@@ -113,6 +130,9 @@ namespace RollingBall
 		*	bool returns
 		*
 		*********************************/
+
+		//old code (move to class Paint_hDC)
+		/*
 		//hDC.window를 얻는 모드가 무엇인지 알려줌
 		BOOL isHDCwindowMode_GetDC();
 		BOOL isHDCwindowMode_BeginPaint();
@@ -121,6 +141,10 @@ namespace RollingBall
 		BOOL isSetHDCwindow();
 		BOOL isSetMemDCwindowBuffer();
 		BOOL isSetMemDCres();
+		*/
+		//old code end
+
+		//변수가 세팅되었는지 알려줌
 		BOOL isSetHBitmapWindowBuffer();
 		BOOL isSetHBitmapRes();
 		BOOL isBackedUpHBitmapWindowBuffer();
@@ -134,11 +158,13 @@ namespace RollingBall
 		BOOL isWindowSizeChanged();
 
 
-		/********************************
-		*
-		*	hDC.window management
-		*
-		*********************************/
+		//old code (move to class Paint_hDC)
+		/*
+		//-********************************
+		//*
+		//*	hDC.window management
+		//*
+		//*********************************
 		//hDC.window를 어떤 방식으로 얻을지 설정함
 		//BeginPaint 또는 GetDC으로 얻을 수 있음
 		void hDCwindowMode_set_BeginPaint();
@@ -155,7 +181,7 @@ namespace RollingBall
 		*
 		*	hDC.mem management
 		*
-		*********************************/
+		*********************************
 		//hDC.mem 요소를 관리함
 		void memDC_windowBuffer_init();
 		void memDC_windowBuffer_set();
@@ -167,7 +193,8 @@ namespace RollingBall
 
 		void memDC_create();
 		void memDC_delete();
-
+		*/
+		//old code end
 
 
 		/********************************
