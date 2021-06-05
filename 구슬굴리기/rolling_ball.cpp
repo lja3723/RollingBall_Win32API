@@ -12,17 +12,22 @@ void RollingBallClass::update_window()
 
 	paint(background);
 	for (int i = 0; i < ball.size(); i++)
-		paint.info(ball[i], i * 20),
+		paint.info(ball[i], i * 20);
+
+	for (int i = 0; i < ball.size(); i++)
 		paint(ball[i]);
 
+	POINT keyViewer = { 300, 100 };
+	int d_keyViewer = 18;
+
 	if (controller.isPushed.key.down())
-		paint.text(_T("↓"), 80, 200);
+		paint.text(_T("↓"), keyViewer.x, keyViewer.y);
 	if (controller.isPushed.key.up())
-		paint.text(_T("↑"), 80, 180);
+		paint.text(_T("↑"), keyViewer.x, keyViewer.y - d_keyViewer);
 	if (controller.isPushed.key.left())
-		paint.text(_T("←"), 60, 200);
+		paint.text(_T("←"), keyViewer.x - d_keyViewer, keyViewer.y);
 	if (controller.isPushed.key.right())
-		paint.text(_T("→"), 100, 200);
+		paint.text(_T("→"), keyViewer.x + d_keyViewer, keyViewer.y);
 
 	paint.end();
 }
@@ -48,11 +53,13 @@ BOOL RollingBallClass::init(HINSTANCE m_hInstance, HWND m_hwnd, UINT frame_updat
 	if (!paint.init(winAPI.hInstance, winAPI.hwnd)) return FALSE;
 
 	Ball _ball;
-	_ball.physical.pos(0, 1);
-	ball.push_back(_ball);
 
-	_ball.physical.pos(0, -1);
-	ball.push_back(_ball);
+	for (int y = 5; y >= 0; y--)
+		for (int x = 0; x <= 4; x++)
+		{
+			_ball.physical.pos(x, y);
+			ball.push_back(_ball);
+		}
 
 	//memset(&physics, 0, sizeof(physics));
 
@@ -65,10 +72,16 @@ void RollingBall::RollingBallClass::set_frame_update_interval(UINT millisecond)
 
 void RollingBall::RollingBallClass::event_keyboard(KeyboardEvent e)
 {
-	if (e.winmsg.iMsg == WM_KEYDOWN && e.winmsg.wParam == 'C') {
+	static BOOL isProcessed = FALSE;
+	if (!isProcessed && e.isKeyDown('C'))
+	{
+		ball[ballSwitch].physical.accel = { 0, 0 };
 		ballSwitch++;
 		if (ballSwitch == ball.size()) ballSwitch = 0;
+		isProcessed = TRUE;
 	}
+	else if (!e.isKeyDown('C'))
+		isProcessed = FALSE;
 }
 void RollingBall::RollingBallClass::event_all(Event e)
 {
