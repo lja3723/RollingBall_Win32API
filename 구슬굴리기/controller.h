@@ -3,17 +3,13 @@
 #define __controller_h__
 #include <Windows.h>
 #include "object.h"
+#include "event.h"
 
 namespace RollingBall
 {
-	class Controller
+	class Controller : public EventAcceptable
 	{
 	private:
-		struct {
-			UINT iMsg;
-			WPARAM wParam;
-			LPARAM lParam;
-		} windowEvent;
 
 		class _isPushed
 		{
@@ -64,13 +60,11 @@ namespace RollingBall
 			_mouse mouse;
 		};
 
-		void set_windowEvent(UINT m_iMsg, WPARAM m_wParam, LPARAM m_lParam);
-		void detect_keyPushed();
+		virtual void event_keyboard(KeyboardEvent e);
 
 	public:
 		_isPushed isPushed;
 
-		void translate_windowEvent(UINT m_iMsg, WPARAM m_wParam, LPARAM m_lParam);
 		void update_ballPos(Ball& ball);
 		void force_to(Ball& ball, double accel);
 

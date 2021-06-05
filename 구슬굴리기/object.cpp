@@ -1,6 +1,6 @@
 ﻿#include "object.h"
 #include "file.h"
-#include "debugger.h"
+//#include "debugger.h"
 
 using namespace RollingBall;
 

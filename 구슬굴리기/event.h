@@ -22,9 +22,10 @@ namespace RollingBall
 			WPARAM wParam;
 			LPARAM lParam;
 		} winmsg;
-		Event(UINT m_iMsg = 0, WPARAM m_wParam = 0, LPARAM m_lParam = 0)
+		Event() = delete;
+		Event(UINT m_iMsg, WPARAM m_wParam, LPARAM m_lParam)
 		{ 
-			isValid = FALSE;
+			isValid = TRUE;
 			winmsg.iMsg = m_iMsg;
 			winmsg.wParam = m_wParam;
 			winmsg.lParam = m_lParam;
@@ -89,6 +90,7 @@ namespace RollingBall
 	private:
 		static MouseEvent produce_mouseEvent(UINT iMsg, WPARAM wParam, LPARAM lParam);
 		static KeyboardEvent produce_keyboardEvent(UINT iMsg, WPARAM wParam, LPARAM lParam);
+		static Event produce_Event(UINT iMsg, WPARAM wParam, LPARAM lParam);
 	public:
 		static void translate_windowEvent(UINT iMsg, WPARAM wParam, LPARAM lParam);
 	};
@@ -105,22 +107,27 @@ namespace RollingBall
 	private:
 		static int object_count;
 		static vector<EventAcceptable*> object_ref;
+
 	protected:
+		//마우스 이벤트를 받아들이기 위해 오버로딩 필요
+		virtual void event_mouse(MouseEvent e) {}
 
-	public:
-		EventAcceptable();
-		~EventAcceptable();
+		//키보드 이벤트를 받아들이기 위해 오버로딩 필요
+		virtual void event_keyboard(KeyboardEvent e) {}
 
-		void event_mouse(MouseEvent e) {}
-		void event_keyboard(KeyboardEvent e) {}
-		void event_all(Event e) {}
+		//기타 이벤트를 받아들이기 위해 오버로딩 필요
+		virtual void event_all(Event e) {}
 
-		BOOL isObjectArea(POINT& pos) { return FALSE; }
+		virtual BOOL isObjectArea(POINT& pos) { return FALSE; }
 
 		//이벤트 우선순위를 결정해주는 함수
 		//this가 우선순위이면 음수, 동일 우선순위이면 0, 
 		//object가 우선순위이면 양수를 반환
-		BOOL event_priority(EventAcceptable& object) { return FALSE; }
+		virtual BOOL event_priority(EventAcceptable& object) { return FALSE; }
+
+	public:
+		EventAcceptable();
+		~EventAcceptable();
 	};
 }
 

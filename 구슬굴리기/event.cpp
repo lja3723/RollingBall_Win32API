@@ -1,5 +1,6 @@
 ﻿#include "event.h"
 #include <algorithm>
+#include "debugger.h"
 
 using namespace RollingBall;
 using std::find;
@@ -38,47 +39,30 @@ MouseEvent RollingBall::EventProducer::produce_mouseEvent(UINT iMsg, WPARAM wPar
 	switch (iMsg)
 	{
 	case WM_LBUTTONDOWN:
-		e.isValid = TRUE;
 		break;
 	case WM_LBUTTONUP:
-
-		e.isValid = TRUE;
 		break;
 	case WM_LBUTTONDBLCLK:
-
-		e.isValid = TRUE;
 		break;
 	case WM_MOUSEMOVE:
-
-		e.isValid = TRUE;
 		break;
 	case WM_RBUTTONDOWN:
-
-		e.isValid = TRUE;
 		break;
 	case WM_RBUTTONUP:
-
-		e.isValid = TRUE;
 		break;
 	case WM_RBUTTONDBLCLK:
-
-		e.isValid = TRUE;
 		break;
 	case WM_MBUTTONDOWN:
-
-		e.isValid = TRUE;
 		break;
 	case WM_MBUTTONUP:
-
-		e.isValid = TRUE;
 		break;
 	case WM_MBUTTONDBLCLK:
-
-		e.isValid = TRUE;
 		break;
 	case WM_MOUSEWHEEL:
 		e.scroll = (short)HIWORD(wParam);
-		e.isValid = TRUE;
+		break;
+	default:
+		e.isValid = FALSE;
 		break;
 	}
 
@@ -92,15 +76,19 @@ KeyboardEvent RollingBall::EventProducer::produce_keyboardEvent(UINT iMsg, WPARA
 	{
 	case WM_KEYDOWN:
 		e.key_down(wParam);
-		e.isValid = TRUE;
 		break;
 	case WM_KEYUP:
 		e.key_up(wParam);
-		e.isValid = TRUE;
 		break;
+	default:
+		e.isValid = FALSE;
 	}
 
 	return e;
+}
+Event RollingBall::EventProducer::produce_Event(UINT iMsg, WPARAM wParam, LPARAM lParam)
+{
+	return Event(iMsg, wParam, lParam);
 }
 void RollingBall::EventProducer::translate_windowEvent(UINT iMsg, WPARAM wParam, LPARAM lParam)
 {
@@ -112,25 +100,21 @@ void RollingBall::EventProducer::translate_windowEvent(UINT iMsg, WPARAM wParam,
 		for (int i = 0; i < EventAcceptable::object_ref.size(); i++)
 			if (EventAcceptable::object_ref[i]->isObjectArea(em.pos))
 				EventAcceptable::object_ref[i]->event_mouse(em);
-	}
-	else
-	{
-		KeyboardEvent ek = produce_keyboardEvent(iMsg, wParam, lParam);
-		if (ek.isValid)
-		{
-			//모든 EventAcceptable 객체에 키보드 이벤트를 보낸다
-			for (int i = 0; i < EventAcceptable::object_ref.size(); i++)
-				EventAcceptable::object_ref[i]->event_keyboard(ek);
-		}
+		return;
 	}
 
-	if (!em.isValid && !em.isValid)
+	KeyboardEvent ek = produce_keyboardEvent(iMsg, wParam, lParam);
+	if (ek.isValid)
 	{
-		Event e;
-		e.isValid = TRUE;
+		//모든 EventAcceptable 객체에 키보드 이벤트를 보낸다
+		for (int i = 0; i < EventAcceptable::object_ref.size(); i++)
+			EventAcceptable::object_ref[i]->event_keyboard(ek);
+		return;
+	}
+
+	Event e = produce_Event(iMsg, wParam, lParam);
 		for (int i = 0; i < EventAcceptable::object_ref.size(); i++)
 			EventAcceptable::object_ref[i]->event_all(e);
-	}
 }
 
 

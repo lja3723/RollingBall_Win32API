@@ -3,23 +3,16 @@
 
 using namespace RollingBall;
 
-void Controller::set_windowEvent(UINT m_iMsg, WPARAM m_wParam, LPARAM m_lParam)
-{
-	windowEvent.iMsg = m_iMsg;
-	windowEvent.wParam = m_wParam;
-	windowEvent.lParam = m_lParam;
-}
-
-void Controller::detect_keyPushed()
+void Controller::event_keyboard(KeyboardEvent e)
 {
 	BOOL flag_key = FALSE;
-	if (windowEvent.iMsg == WM_KEYDOWN)
+	if (e.winmsg.iMsg == WM_KEYDOWN)
 		flag_key = TRUE;
-	else if (windowEvent.iMsg == WM_KEYUP)
+	else if (e.winmsg.iMsg == WM_KEYUP)
 		flag_key = FALSE;
 	else return;
 
-	switch (windowEvent.wParam)
+	switch (e.winmsg.wParam)
 	{
 	case VK_LEFT:
 		isPushed.key._left = flag_key;
@@ -46,12 +39,6 @@ void Controller::detect_keyPushed()
 		isPushed.key._control = flag_key;
 		break;
 	}
-}
-
-void Controller::translate_windowEvent(UINT m_iMsg, WPARAM m_wParam, LPARAM m_lParam)
-{
-	set_windowEvent(m_iMsg, m_wParam, m_lParam); 
-	detect_keyPushed();
 }
 
 void Controller::update_ballPos(Ball& ball)

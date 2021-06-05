@@ -7,19 +7,20 @@
 #include "bitmap.h"
 #include "object.h"
 #include "scaler.h"
+#include "event.h"
 
 using std::vector;
 
 /*
 *
-* Monitor:
+* Paint:
 * 프로그램의 시각적 표현을 전담하는 클래스를 정의
 *
 */
 
 namespace RollingBall
 {
-	class Monitor
+	class Paint : public EventAcceptable
 	{
 	private:
 		Bitmap bmp;
@@ -67,12 +68,11 @@ namespace RollingBall
 		} flag;
 	
 	public:
-		~Monitor();
+		~Paint();
 
 		//PrantManager 클래스 변수를 사용하기 전 반드시 수행해야 한다
 		BOOL init(HINSTANCE m_hInstance, HWND m_hwnd);
-		void translate_windowEvent(UINT m_iMsg, WPARAM m_wParam, LPARAM m_lParam);
-
+	
 		//scaler의 px_rate를 설정한다
 		void scale_set(pixel px_rate);
 
@@ -101,7 +101,7 @@ namespace RollingBall
 		*
 		*********************************/
 		//클래스의 각종 플래그변수를 초기화
-		//Monitor::init()에서만 호출되어야 함
+		//Paint::init()에서만 호출되어야 함
 		void init_flags();
 		void init_res_count();
 		void init_res_vectors();
@@ -230,9 +230,14 @@ namespace RollingBall
 
 		/********************************
 		*
-		*	etc
+		*	event 처리
 		*
 		*********************************/
+		//키보드 이벤트 처리
+		virtual void event_keyboard(KeyboardEvent e);
+
+		//기타 이벤트 처리
+		virtual void event_all(Event e);
 	};
 }
 

@@ -44,7 +44,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLi
 	);
 
 	//RollingBallClass를 초기화한다
-	if (!rollingBall.init(hInstance, hwnd))
+	if (!rollingBall.init(hInstance, hwnd, 5))
 	{
 		MessageBox(hwnd, _T("프로그램을 시작할 수 없습니다."), _T("오류"), MB_OK);
 		return 0;
@@ -74,11 +74,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 	switch (iMsg) 
 	{
 	case WM_CREATE:
-		SetTimer(hwnd, 1, 5, NULL);
 		hInstance = ((LPCREATESTRUCT)lParam)->hInstance;
 		debugger.init(hInstance, hwnd);
 		return 0;
-
 	case WM_COMMAND:
 		switch (LOWORD(wParam))
 		{
@@ -109,7 +107,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 		break;
 
 	case WM_DESTROY:
-		KillTimer(hwnd, 1);
 		PostQuitMessage(0);
 		return 0;
 
