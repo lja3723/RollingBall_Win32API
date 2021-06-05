@@ -21,15 +21,6 @@ void KeyboardEvent::key_up(WPARAM VK_msg)
 {
 	keys[VK_msg] = FALSE;
 }
-RollingBall::KeyboardEvent::KeyboardEvent()
-{
-	if (!isInit)
-	{
-		for (int i = 0; i < numofKeys; i++)
-			keys[i] = FALSE;
-		isInit = TRUE;
-	}
-}
 BOOL KeyboardEvent::isKeyDown(WPARAM VK_msg)
 {
 	return keys[VK_msg];
@@ -43,22 +34,51 @@ BOOL KeyboardEvent::isKeyDown(WPARAM VK_msg)
 /////////////////////////
 MouseEvent RollingBall::EventProducer::produce_mouseEvent(UINT iMsg, WPARAM wParam, LPARAM lParam)
 {
-	MouseEvent e;
-	memset(&e, 0, sizeof(e));
-
+	MouseEvent e(iMsg, wParam, lParam);
 	switch (iMsg)
 	{
 	case WM_LBUTTONDOWN:
+		e.isValid = TRUE;
+		break;
 	case WM_LBUTTONUP:
+
+		e.isValid = TRUE;
+		break;
 	case WM_LBUTTONDBLCLK:
+
+		e.isValid = TRUE;
+		break;
 	case WM_MOUSEMOVE:
+
+		e.isValid = TRUE;
+		break;
 	case WM_RBUTTONDOWN:
+
+		e.isValid = TRUE;
+		break;
 	case WM_RBUTTONUP:
+
+		e.isValid = TRUE;
+		break;
 	case WM_RBUTTONDBLCLK:
+
+		e.isValid = TRUE;
+		break;
 	case WM_MBUTTONDOWN:
+
+		e.isValid = TRUE;
+		break;
 	case WM_MBUTTONUP:
+
+		e.isValid = TRUE;
+		break;
 	case WM_MBUTTONDBLCLK:
+
+		e.isValid = TRUE;
+		break;
 	case WM_MOUSEWHEEL:
+		e.scroll = (short)HIWORD(wParam);
+		e.isValid = TRUE;
 		break;
 	}
 
@@ -66,12 +86,17 @@ MouseEvent RollingBall::EventProducer::produce_mouseEvent(UINT iMsg, WPARAM wPar
 }
 KeyboardEvent RollingBall::EventProducer::produce_keyboardEvent(UINT iMsg, WPARAM wParam, LPARAM lParam)
 {
-	KeyboardEvent e;
-	memset(&e, 0, sizeof(e));
+	KeyboardEvent e(iMsg, wParam, lParam);
+
 	switch (iMsg)
 	{
 	case WM_KEYDOWN:
+		e.key_down(wParam);
+		e.isValid = TRUE;
+		break;
 	case WM_KEYUP:
+		e.key_up(wParam);
+		e.isValid = TRUE;
 		break;
 	}
 
@@ -79,39 +104,32 @@ KeyboardEvent RollingBall::EventProducer::produce_keyboardEvent(UINT iMsg, WPARA
 }
 void RollingBall::EventProducer::translate_windowEvent(UINT iMsg, WPARAM wParam, LPARAM lParam)
 {
-	switch (iMsg)
+	MouseEvent em = produce_mouseEvent(iMsg, wParam, lParam);
+	if (em.isValid)
 	{
-	case WM_LBUTTONDOWN:
-	case WM_LBUTTONUP:
-	case WM_LBUTTONDBLCLK:
-	case WM_MOUSEMOVE:
-	case WM_RBUTTONDOWN:
-	case WM_RBUTTONUP:
-	case WM_RBUTTONDBLCLK:
-	case WM_MBUTTONDOWN:
-	case WM_MBUTTONUP:
-	case WM_MBUTTONDBLCLK:
-	case WM_MOUSEWHEEL:
+		//마우스 좌표에 존재하는 모든 EventAcceptable 객체에 마우스 이벤트를 보낸다
+		// -> 나중에 우선순위를 참고해 하나의 객체에 이벤트를 보내게 수정할 것임
+		for (int i = 0; i < EventAcceptable::object_ref.size(); i++)
+			if (EventAcceptable::object_ref[i]->isObjectArea(em.pos))
+				EventAcceptable::object_ref[i]->event_mouse(em);
+	}
+	else
+	{
+		KeyboardEvent ek = produce_keyboardEvent(iMsg, wParam, lParam);
+		if (ek.isValid)
 		{
-			MouseEvent e = produce_mouseEvent(iMsg, wParam, lParam);
-
-			//마우스 좌표에 존재하는 모든 EventAcceptable 객체에 마우스 이벤트를 보낸다
-			// -> 나중에 우선순위를 참고해 하나의 객체에 이벤트를 보내게 수정할 것임
-			for (int i = 0; i < EventAcceptable::object_ref.size(); i++)
-				if (EventAcceptable::object_ref[i]->isObjectArea(e.pos))
-					EventAcceptable::object_ref[i]->event_mouse(e);
-		}
-		return; 
-
-	case WM_KEYDOWN:
-	case WM_KEYUP:
-		{
-			KeyboardEvent e = produce_keyboardEvent(iMsg, wParam, lParam);
 			//모든 EventAcceptable 객체에 키보드 이벤트를 보낸다
 			for (int i = 0; i < EventAcceptable::object_ref.size(); i++)
-				EventAcceptable::object_ref[i]->event_keyboard(e);
+				EventAcceptable::object_ref[i]->event_keyboard(ek);
 		}
-		return;
+	}
+
+	if (!em.isValid && !em.isValid)
+	{
+		Event e;
+		e.isValid = TRUE;
+		for (int i = 0; i < EventAcceptable::object_ref.size(); i++)
+			EventAcceptable::object_ref[i]->event_all(e);
 	}
 }
 
