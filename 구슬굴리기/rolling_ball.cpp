@@ -60,7 +60,23 @@ void RollingBallClass::update_state()
 
 void RollingBallClass::send_windowEvent(UINT m_iMsg, WPARAM m_wParam, LPARAM m_lParam)
 {
-	switch (m_iMsg)
+	controller.translate_windowEvent(m_iMsg, m_wParam, m_lParam);
+	paint.translate_windowEvent(m_iMsg, m_wParam, m_lParam);
+}
+
+void RollingBall::RollingBallClass::event_keyboard(KeyboardEvent e)
+{
+	if (e.winmsg.iMsg == WM_KEYDOWN && e.winmsg.wParam == 'C') {
+		ballSwitch++;
+		if (ballSwitch == ball.size()) ballSwitch = 0;
+	}
+	//controller.translate_windowEvent(e.winmsg.iMsg, e.winmsg.wParam, e.winmsg.lParam);
+	//paint.translate_windowEvent(e.winmsg.iMsg, e.winmsg.wParam, e.winmsg.lParam);
+}
+
+void RollingBall::RollingBallClass::event_all(Event e)
+{
+	switch (e.winmsg.iMsg)
 	{
 	case WM_PAINT:
 		update_window();
@@ -70,12 +86,8 @@ void RollingBallClass::send_windowEvent(UINT m_iMsg, WPARAM m_wParam, LPARAM m_l
 		InvalidateRgn(winAPI.hwnd, NULL, FALSE);
 		return;
 	default:
-		if (m_iMsg == WM_KEYDOWN && m_wParam == _T('C'))
-		{
-			ballSwitch++;
-			if (ballSwitch == ball.size()) ballSwitch = 0;
-		}
-		controller.translate_windowEvent(m_iMsg, m_wParam, m_lParam);
-		paint.translate_windowEvent(m_iMsg, m_wParam, m_lParam);
+		//controller.translate_windowEvent(e.winmsg.iMsg, e.winmsg.wParam, e.winmsg.lParam);
+		//paint.translate_windowEvent(e.winmsg.iMsg, e.winmsg.wParam, e.winmsg.lParam);
+		return;
 	}
 }

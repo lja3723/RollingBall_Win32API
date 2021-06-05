@@ -8,11 +8,12 @@
 #include "physics.h"
 #include "controller.h"
 #include "object.h"
+#include "event.h"
 
 
 namespace RollingBall
 {
-	class RollingBallClass
+	class RollingBallClass : public EventAcceptable
 	{
 	private:
 		struct {
@@ -34,6 +35,9 @@ namespace RollingBall
 
 		//윈도우 이벤트를 rollingBall프로그램이 받아들임
 		void send_windowEvent(UINT m_iMsg, WPARAM m_wParam, LPARAM m_lParam);
+
+		void event_all(Event e);
+		void event_keyboard(KeyboardEvent e);
 	};
 }
 

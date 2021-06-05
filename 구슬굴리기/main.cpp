@@ -3,6 +3,7 @@
 #include "resource.h"
 #include "rolling_ball.h"
 #include "debugger.h"
+#include "event.h"
 #define PROGRAM_NAME _T("구슬 굴리기")
 #define PROGRAM_VER	_T("1.1")
 
@@ -113,7 +114,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 		return 0;
 
 	default:
-		rollingBall.send_windowEvent(iMsg, wParam, lParam);
+		EventProducer::translate_windowEvent(iMsg, wParam, lParam);
+		//rollingBall.event
+		//rollingBall.send_windowEvent(iMsg, wParam, lParam);
 	}
 
 	return DefWindowProc(hwnd, iMsg, wParam, lParam);
