@@ -39,19 +39,6 @@ namespace RollingBall
 			PAINTSTRUCT ps;
 			RECT windowRect;
 
-			//old code (move to class Paint_hDC)
-			/*
-			struct hDC {
-				HDC window;
-				struct _mem {
-					HDC windowBuffer;
-					vector<HDC> res;
-				} mem;
-			} hDC;
-			*/
-			//old code end
-
-			//new code
 			Paint_hDC hDC;
 
 			struct _hBitmap{
@@ -66,14 +53,6 @@ namespace RollingBall
 		
 		//여러가지 플래그를 저장하는 변수
 		struct _flag{
-
-			//old code (move to class Paint_hDC)
-			/*
-			BOOL isHDCwindowMode_GetDC;
-
-			BOOL isSetMemDCres;
-			*/
-			//old code end
 			BOOL isSetHBitmapRes;
 
 
@@ -130,20 +109,6 @@ namespace RollingBall
 		*	bool returns
 		*
 		*********************************/
-
-		//old code (move to class Paint_hDC)
-		/*
-		//hDC.window를 얻는 모드가 무엇인지 알려줌
-		BOOL isHDCwindowMode_GetDC();
-		BOOL isHDCwindowMode_BeginPaint();
-
-		//변수가 세팅되었는지 알려줌
-		BOOL isSetHDCwindow();
-		BOOL isSetMemDCwindowBuffer();
-		BOOL isSetMemDCres();
-		*/
-		//old code end
-
 		//변수가 세팅되었는지 알려줌
 		BOOL isSetHBitmapWindowBuffer();
 		BOOL isSetHBitmapRes();
@@ -157,44 +122,6 @@ namespace RollingBall
 		BOOL isInitDoubleBuffering();
 		BOOL isWindowSizeChanged();
 
-
-		//old code (move to class Paint_hDC)
-		/*
-		//-********************************
-		//*
-		//*	hDC.window management
-		//*
-		//*********************************
-		//hDC.window를 어떤 방식으로 얻을지 설정함
-		//BeginPaint 또는 GetDC으로 얻을 수 있음
-		void hDCwindowMode_set_BeginPaint();
-		void hDCwindowMode_set_GetDC();
-	
-		//hDC.window를 관리함
-		void hDCwindow_init();
-		void hDCwindow_set();
-		void hDCwindow_release();
-		
-
-
-		/********************************
-		*
-		*	hDC.mem management
-		*
-		*********************************
-		//hDC.mem 요소를 관리함
-		void memDC_windowBuffer_init();
-		void memDC_windowBuffer_set();
-		void memDC_windowBuffer_release();
-
-		void memDC_res_init();
-		void memDC_res_set();
-		void memDC_res_release();
-
-		void memDC_create();
-		void memDC_delete();
-		*/
-		//old code end
 
 
 		/********************************
