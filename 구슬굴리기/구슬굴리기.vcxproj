@@ -175,6 +175,8 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="object.cpp" />
     <ClCompile Include="paint.cpp" />
+    <ClCompile Include="paint_hbitmap.cpp" />
+    <ClCompile Include="paint_hdc.cpp" />
     <ClCompile Include="physics.cpp" />
     <ClCompile Include="rolling_ball.cpp" />
     <ClCompile Include="scaler.cpp" />
@@ -187,6 +189,8 @@
     <ClInclude Include="file.h" />
     <ClInclude Include="object.h" />
     <ClInclude Include="paint.h" />
+    <ClInclude Include="paint_hbitmap.h" />
+    <ClInclude Include="paint_hdc.h" />
     <ClInclude Include="physics.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="rolling_ball.h" />

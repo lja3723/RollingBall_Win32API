@@ -120,6 +120,12 @@
     <ClCompile Include="event.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="paint_hdc.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="paint_hbitmap.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bitmap.h">
@@ -153,6 +159,12 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="event.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="paint_hdc.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="paint_hbitmap.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
