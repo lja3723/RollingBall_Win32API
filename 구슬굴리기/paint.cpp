@@ -26,18 +26,18 @@ BOOL Paint::init(HINSTANCE m_hInstance, HWND m_hwnd)
 {
 	if (isInit()) return TRUE;
 
-	winAPI.hInstance = m_hInstance;
-	winAPI.hwnd = m_hwnd;
-	if (!bmp.init(winAPI.hInstance)) return FALSE;
+	hInstance = m_hInstance;
+	hwnd = m_hwnd;
+	if (!bmp.init(hInstance)) return FALSE;
 
 	init_flags();
 	init_res_count();
 	scale_set(32);
 
-	memset(&winAPI.windowRect, 0, sizeof(winAPI.windowRect));
+	memset(&windowRect, 0, sizeof(windowRect));
 
-	winAPI.hDC.init(m_hwnd);
-	winAPI.hBitmap.init(winAPI.hwnd, &bmp, &winAPI.hDC);
+	hDC.init(m_hwnd);
+	hBitmap.init(hwnd, &bmp, &hDC);
 
 	return TRUE;
 }
@@ -45,19 +45,19 @@ void RollingBall::Paint::scale_set(pixel px_rate)
 {
 	scale.px_rate(px_rate);
 	scale.fix_point_physical(PhysicalVector(5, 5));
-	GetClientRect(winAPI.hwnd, &winAPI.windowRect);
-	scale.fix_point_pixel(PixelCoord(winAPI.windowRect.right / 2, winAPI.windowRect.bottom / 2));
+	GetClientRect(hwnd, &windowRect);
+	scale.fix_point_pixel(PixelCoord(windowRect.right / 2, windowRect.bottom / 2));
 }
 void Paint::begin()
 {
-	winAPI.hDC.window.mode.set_BeginPaint();
-	winAPI.hDC.window.set();
+	hDC.window.mode.set_BeginPaint();
+	hDC.window.set();
 	doubleBuffering_start();
 }
 void Paint::end()
 {
 	flush_buffer();
-	winAPI.hDC.window.release();
+	hDC.window.release();
 	doubleBuffering_stop();
 }
 void Paint::background(Object& background)
@@ -65,17 +65,14 @@ void Paint::background(Object& background)
 	paint_background_tobuffer(background);
 	paint_background_ruller_tobuffer();
 }
-
 void RollingBall::Paint::operator()(Object& obj)
 {
 	paint_tobuffer(obj);
 }
-
 void RollingBall::Paint::info(Object& obj, int yPos)
 {
 	paint_info_tobuffer(obj, yPos);
 }
-
 void RollingBall::Paint::text(LPCTSTR text, pixel x, pixel y)
 {
 	paint_text_tobuffer(text, x, y);
@@ -92,7 +89,7 @@ void RollingBall::Paint::text(LPCTSTR text, pixel x, pixel y)
 //처음 init 될 때 한 번만 호출되는 함수
 void Paint::init_flags()
 {
-	winAPI.hDC.window.mode.set_BeginPaint();
+	hDC.window.mode.set_BeginPaint();
 
 	flag.isDoubleBufferingStart = FALSE;
 	flag.isInitDoubleBuffering = FALSE;
@@ -106,9 +103,9 @@ void Paint::init_res_count()
 }
 void Paint::init_res_vectors()
 {
-	winAPI.hDC.mem.res.resize(res_count);
-	winAPI.hBitmap.res.resize(res_count);
-	winAPI.hBitmap.res.old.resize(res_count);
+	hDC.mem.res.resize(res_count);
+	hBitmap.res.resize(res_count);
+	hBitmap.res.old.resize(res_count);
 }
 
 
@@ -121,10 +118,8 @@ void Paint::init_res_vectors()
 *********************************/
 BOOL Paint::isInit()
 {
-	return winAPI.hInstance != NULL;
+	return hInstance != NULL;
 }
-
-
 BOOL Paint::isDoubleBufferingStart()
 {
 	return flag.isDoubleBufferingStart;
@@ -158,19 +153,19 @@ void Paint::doubleBuffering_init()
 
 	//hDC.mem.window와 hDC.mem.res를 생성하고 
 	//hBitmap.res를 hDC.mem.res에 선택시킨다
-	winAPI.hDC.mem.create();
-	winAPI.hBitmap.res.old.backup();
+	hDC.mem.create();
+	hBitmap.res.old.backup();
 
 	//hBitmap.windowBuffer를 생성한 뒤 그것을 hDC.mem.windowBuffer에 선택시킨다
-	winAPI.hBitmap.windowBuffer.set();
-	winAPI.hBitmap.windowBuffer.old.backup();
+	hBitmap.windowBuffer.set();
+	hBitmap.windowBuffer.old.backup();
 
 	flag.isInitDoubleBuffering = TRUE;
 }
 void Paint::doubleBuffering_start()
 {
 	if (isDoubleBufferingStart()) return;
-	if (!winAPI.hDC.window.isSet()) return;
+	if (!hDC.window.isSet()) return;
 
 	//더블버퍼링 초기작업이 안됐으면 우선 수행하도록 한다
 	if (!isInitDoubleBuffering())
@@ -179,16 +174,16 @@ void Paint::doubleBuffering_start()
 	//윈도우 크기가 변경되었으면 변경된 크기에 맞는 hBitmap_windowBuffer를 등록한다
 	if (isWindowSizeChanged())
 	{
-		GetClientRect(winAPI.hwnd, &winAPI.windowRect);
+		GetClientRect(hwnd, &windowRect);
 		//hBitmap.windowBuffer를 hDC.mem.windowBuffer에서 롤백하고 release한다
-		winAPI.hBitmap.windowBuffer.old.rollback();
-		winAPI.hBitmap.windowBuffer.release();
+		hBitmap.windowBuffer.old.rollback();
+		hBitmap.windowBuffer.release();
 
 		//hBitmap.windowBuffer를 생성한 뒤 그것을 hDC.mem.windowBuffer에 선택시킨다
-		winAPI.hBitmap.windowBuffer.set();
-		winAPI.hBitmap.windowBuffer.old.backup();
+		hBitmap.windowBuffer.set();
+		hBitmap.windowBuffer.old.backup();
 
-		PixelCoord p(winAPI.windowRect.right / 2, winAPI.windowRect.bottom / 2);
+		PixelCoord p(windowRect.right / 2, windowRect.bottom / 2);
 		scale.fix_point_pixel(p);
 
 		flag.isWindowSizeChanged = FALSE;
@@ -208,13 +203,13 @@ void Paint::doubleBuffering_stop()
 void Paint::doubleBuffering_halt()
 {
 	//hBitmap.windowBuffer를 hDC.mem.windowBuffer에서 롤백하고 release한다
-	winAPI.hBitmap.windowBuffer.old.rollback();
-	winAPI.hBitmap.windowBuffer.release();
+	hBitmap.windowBuffer.old.rollback();
+	hBitmap.windowBuffer.release();
 
 	//doublebuffering을 끝내고 프로그램을 종료할 때 마지막으로 아래 작업 수행
 	//hDC.mem.windowBuffer와 hDC.mem.res를 삭제함
-	winAPI.hBitmap.res.old.rollback();
-	winAPI.hDC.mem.del();
+	hBitmap.res.old.rollback();
+	hDC.mem.del();
 }
 
 
@@ -229,7 +224,7 @@ void Paint::paint_background_tobuffer(Object& background)
 {
 	if (!isReadyToPaint()) return;
 
-	GetClientRect(winAPI.hwnd, &winAPI.windowRect);
+	GetClientRect(hwnd, &windowRect);
 
 	pixel px_size = scale.px(background.physical.size);
 	pixel tsize = background.texture_size(scale);
@@ -237,13 +232,13 @@ void Paint::paint_background_tobuffer(Object& background)
 	px_pos.x %= px_size;
 	px_pos.y %= px_size;
 
-	SetStretchBltMode(winAPI.hDC.mem.windowBuffer(), COLORONCOLOR);
-	for (int i = -1; i * px_size + px_pos.x < winAPI.windowRect.right; i++)
-		for (int j = -1; j * px_size + px_pos.y < winAPI.windowRect.bottom; j++)
+	SetStretchBltMode(hDC.mem.windowBuffer(), COLORONCOLOR);
+	for (int i = -1; i * px_size + px_pos.x < windowRect.right; i++)
+		for (int j = -1; j * px_size + px_pos.y < windowRect.bottom; j++)
 			StretchBlt(
-				winAPI.hDC.mem.windowBuffer(),
+				hDC.mem.windowBuffer(),
 				i * px_size + px_pos.x, j * px_size + px_pos.y, px_size, px_size,
-				winAPI.hDC.mem.res(bmp.idx(background, scale)), 0, 0, tsize, tsize,
+				hDC.mem.res(bmp.idx(background, scale)), 0, 0, tsize, tsize,
 				SRCCOPY
 			);
 }
@@ -251,7 +246,7 @@ void Paint::paint_background_ruller_tobuffer()
 {
 	PhysicalVector p;
 	int cm = 40;
-	auto winBuff = winAPI.hDC.mem.windowBuffer();
+	auto winBuff = hDC.mem.windowBuffer();
 
 	p(-cm, 0);
 	MoveToEx(winBuff, scale.transform(p).x, scale.transform(p).y, NULL);
@@ -279,7 +274,6 @@ void Paint::paint_background_ruller_tobuffer()
 		LineTo(winBuff, scale.transform(p).x, scale.transform(p).y);
 	}
 }
-
 void RollingBall::Paint::paint_tobuffer(Object& object)
 {
 	if (!isReadyToPaint()) return;
@@ -305,37 +299,34 @@ void RollingBall::Paint::paint_tobuffer(Object& object)
 			pixel px_size = scale.px(object.physical.size);
 			pixel tsize = object.texture_size(scale);
 			PixelCoord px_pos = scale.transform(object.physical.pos);
-			SetStretchBltMode(winAPI.hDC.mem.windowBuffer(), COLORONCOLOR);
+			SetStretchBltMode(hDC.mem.windowBuffer(), COLORONCOLOR);
 			StretchBlt(
-				winAPI.hDC.mem.windowBuffer(),
+				hDC.mem.windowBuffer(),
 				px_pos.x - px_size / 2, px_pos.y - px_size / 2, px_size, px_size,
-				winAPI.hDC.mem.res(bmp.idx(object, scale, mask)), 0, 0, tsize, tsize,
+				hDC.mem.res(bmp.idx(object, scale, mask)), 0, 0, tsize, tsize,
 				paintmode
 			);
 		}
 	}
 }
-
 void RollingBall::Paint::paint_info_tobuffer(Object& object, int yPos)
 {
 	TCHAR buff[256];
 	_stprintf_s(buff, 256, _T("좌표(%lf, %lf)"), object.physical.pos.x, object.physical.pos.y);
 	paint_text_tobuffer(buff, 0, yPos);
 }
-
 void RollingBall::Paint::paint_text_tobuffer(LPCTSTR text, pixel x, pixel y)
 {
-	TextOut(winAPI.hDC.mem.windowBuffer(), x, y, text, (int)_tcslen(text));
+	TextOut(hDC.mem.windowBuffer(), x, y, text, (int)_tcslen(text));
 }
-
 void Paint::flush_buffer()
 {
 	if (!isReadyToPaint()) return;
 
 	BitBlt(
-		winAPI.hDC.window(), 
-		0, 0, winAPI.windowRect.right, winAPI.windowRect.bottom,
-		winAPI.hDC.mem.windowBuffer(), 0, 0,
+		hDC.window(), 
+		0, 0, windowRect.right, windowRect.bottom,
+		hDC.mem.windowBuffer(), 0, 0,
 		SRCCOPY
 	);
 }
