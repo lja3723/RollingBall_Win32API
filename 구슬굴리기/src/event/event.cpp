@@ -1,6 +1,6 @@
 ﻿#include "event.h"
 #include <algorithm>
-#include "debugger.h"
+#include "../tool/debugger.h"
 
 using namespace RollingBall;
 using std::find;
