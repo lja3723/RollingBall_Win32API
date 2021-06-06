@@ -1,5 +1,5 @@
 ﻿#include "rolling_ball.h"
-#include "debugger.h"
+#include "../tool/debugger.h"
 
 using namespace RollingBall;
 

@@ -1,5 +1,5 @@
 ﻿#include "paint.h"
-#include "debugger.h"
+#include "../tool/debugger.h"
 using namespace RollingBall;
 
 

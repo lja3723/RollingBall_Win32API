@@ -4,9 +4,9 @@
 
 #include <Windows.h>
 #include <tchar.h>
-#include "resource.h"
-#include "object.h"
-#include "scaler.h"
+#include "../../resource.h"
+#include "../object/object.h"
+#include "../calc/scaler.h"
 
 /*
 * 

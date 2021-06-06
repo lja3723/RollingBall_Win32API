@@ -4,7 +4,7 @@
 
 #include <Windows.h>
 #include <tchar.h>
-#include "resource.h"
+#include "../../resource.h"
 
 #define debuggerMessage(Format, ...) \
 	debugger.clearBuff(), \

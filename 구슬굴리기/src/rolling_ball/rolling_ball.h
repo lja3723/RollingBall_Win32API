@@ -4,11 +4,11 @@
 
 #include <Windows.h>
 #include <vector>
-#include "paint.h"
-#include "physics.h"
-#include "controller.h"
-#include "object.h"
-#include "event.h"
+#include "../display/paint.h"
+#include "../calc/physics.h"
+#include "../../controller.h"
+#include "../object/object.h"
+#include "../event/event.h"
 
 
 namespace RollingBall

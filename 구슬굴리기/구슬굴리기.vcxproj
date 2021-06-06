@@ -167,34 +167,34 @@
     <Text Include="..\res\bmp\object_info.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="bitmap.cpp" />
     <ClCompile Include="controller.cpp" />
-    <ClCompile Include="debugger.cpp" />
-    <ClCompile Include="event.cpp" />
-    <ClCompile Include="file.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="object.cpp" />
-    <ClCompile Include="paint.cpp" />
-    <ClCompile Include="paint_hbitmap.cpp" />
-    <ClCompile Include="paint_hdc.cpp" />
-    <ClCompile Include="physics.cpp" />
-    <ClCompile Include="rolling_ball.cpp" />
-    <ClCompile Include="scaler.cpp" />
+    <ClCompile Include="src\calc\physics.cpp" />
+    <ClCompile Include="src\calc\scaler.cpp" />
+    <ClCompile Include="src\display\bitmap.cpp" />
+    <ClCompile Include="src\display\paint.cpp" />
+    <ClCompile Include="src\display\paint_hbitmap.cpp" />
+    <ClCompile Include="src\display\paint_hdc.cpp" />
+    <ClCompile Include="src\event\event.cpp" />
+    <ClCompile Include="src\rolling_ball\rolling_ball.cpp" />
+    <ClCompile Include="src\object\object.cpp" />
+    <ClCompile Include="src\tool\debugger.cpp" />
+    <ClCompile Include="src\tool\file.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="bitmap.h" />
     <ClInclude Include="controller.h" />
-    <ClInclude Include="debugger.h" />
-    <ClInclude Include="event.h" />
-    <ClInclude Include="file.h" />
-    <ClInclude Include="object.h" />
-    <ClInclude Include="paint.h" />
-    <ClInclude Include="paint_hbitmap.h" />
-    <ClInclude Include="paint_hdc.h" />
-    <ClInclude Include="physics.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="rolling_ball.h" />
-    <ClInclude Include="scaler.h" />
+    <ClInclude Include="src\calc\physics.h" />
+    <ClInclude Include="src\calc\scaler.h" />
+    <ClInclude Include="src\display\bitmap.h" />
+    <ClInclude Include="src\display\paint.h" />
+    <ClInclude Include="src\display\paint_hbitmap.h" />
+    <ClInclude Include="src\display\paint_hdc.h" />
+    <ClInclude Include="src\event\event.h" />
+    <ClInclude Include="src\rolling_ball\rolling_ball.h" />
+    <ClInclude Include="src\object\object.h" />
+    <ClInclude Include="src\tool\debugger.h" />
+    <ClInclude Include="src\tool\file.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

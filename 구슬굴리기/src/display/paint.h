@@ -5,9 +5,9 @@
 #include <Windows.h>
 #include <vector>
 #include "bitmap.h"
-#include "object.h"
-#include "scaler.h"
-#include "event.h"
+#include "../object/object.h"
+#include "../calc/scaler.h"
+#include "../event/event.h"
 
 #include "paint_hdc.h"
 #include "paint_hbitmap.h"
