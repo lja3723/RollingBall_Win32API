@@ -4,83 +4,64 @@ using namespace RollingBall;
 
 
 
-
-
-/********************************
-*
-*		private functions
-*		- BOOL returns
-*
-*********************************/
-BOOL Paint_hDC::_isWindowMode::GetDC()
-{
-	return flag_GetDC;
-}
-BOOL Paint_hDC::_isWindowMode::BeginPaint()
-{
-	return !GetDC();
-}
-
-BOOL Paint_hDC::_isSet::window()
-{
-	return hDC->m_window != NULL;
-}
-BOOL Paint_hDC::_isSet::memWindowBuffer()
-{
-	return hDC->mem.m_mem.windowBuffer != NULL;
-}
-BOOL Paint_hDC::_isSet::memRes()
-{
-	return flag_MemDCres;
-}
-
-
 /********************************
 *
 *		private functions
 *		- hDCwindow Management
 *
 *********************************/
-void Paint_hDC::_windowMode::set_BeginPaint()
-{
-	hDC->isWindowMode.flag_GetDC = FALSE;
-}
-void Paint_hDC::_windowMode::set_GetDC()
-{
-	hDC->isWindowMode.flag_GetDC = TRUE;
-}
 
-void Paint_hDC::_window::init()
+void Paint_hDC::_window::init(HWND hwnd)
 {
-	hDC->m_window = NULL;
+	m_window = NULL;
+	m_hwnd = hwnd;
 }
 void Paint_hDC::_window::set()
 {
-	if (hDC->isSet.window())
+	if (isSet())
 		release();
 
-	if (hDC->isWindowMode.GetDC())
-		hDC->m_window = GetDC(hDC->hwnd);
+	if (mode.isGetDC())
+		m_window = GetDC(m_hwnd);
 	else
-		hDC->m_window = BeginPaint(hDC->hwnd, &hDC->ps);
+		m_window = BeginPaint(m_hwnd, &m_ps);
 }
-HDC& RollingBall::Paint_hDC::_window::get()
+HDC& Paint_hDC::_window::operator()()
 {
-	return hDC->m_window;
+	return m_window;
 }
 void Paint_hDC::_window::release()
 {
-	if (!hDC->isSet.window()) return;
+	if (!isSet()) return;
 
-	if (hDC->isWindowMode.GetDC())
-		ReleaseDC(hDC->hwnd, hDC->m_window);
+	if (mode.isGetDC())
+		ReleaseDC(m_hwnd, m_window);
 	else
-		EndPaint(hDC->hwnd, &hDC->ps);
+		EndPaint(m_hwnd, &m_ps);
 
-	init();
+	init(m_hwnd);
+}
+BOOL Paint_hDC::_window::isSet()
+{
+	return m_window != NULL;
 }
 
-
+void Paint_hDC::_window::_mode::set_BeginPaint()
+{
+	flag_isGetDC = FALSE;
+}
+void Paint_hDC::_window::_mode::set_GetDC()
+{
+	flag_isGetDC = TRUE;
+}
+BOOL Paint_hDC::_window::_mode::isGetDC()
+{
+	return flag_isGetDC;
+}
+BOOL Paint_hDC::_window::_mode::isBeginPaint()
+{
+	return !isGetDC();
+}
 
 
 /********************************
@@ -91,63 +72,78 @@ void Paint_hDC::_window::release()
 *********************************/
 void Paint_hDC::_mem::_windowBuffer::init()
 {
-	memDC->m_mem.windowBuffer = NULL;
+	m_windowBuffer = NULL;
 }
 void Paint_hDC::_mem::_windowBuffer::set()
 {
-	if (hDC->isSet.memWindowBuffer())
+	if (isSet())
 		release();
 
 	//화면 DC와 호환이 되는 memDC를 생성
-	memDC->m_mem.windowBuffer = CreateCompatibleDC(hDC->m_window);
+	m_windowBuffer = CreateCompatibleDC(m_hDC->window());
 }
-HDC& RollingBall::Paint_hDC::_mem::_windowBuffer::get()
+HDC& Paint_hDC::_mem::_windowBuffer::operator()()
 {
-	return memDC->m_mem.windowBuffer;
+	return m_windowBuffer;
 }
 void Paint_hDC::_mem::_windowBuffer::release()
 {
-	if (!hDC->isSet.memWindowBuffer()) return;
+	if (!isSet()) return;
 
-	DeleteDC(memDC->m_mem.windowBuffer);
+	DeleteDC(m_windowBuffer);
 	init();
+}
+BOOL Paint_hDC::_mem::_windowBuffer::isSet()
+{
+	return m_windowBuffer != NULL;
 }
 
 void Paint_hDC::_mem::_res::init()
 {
-	for (int i = 0; i < hDC->res_count; i++)
-		memDC->m_mem.res[i] = NULL;
+	for (int i = 0; i < m_res.size(); i++)
+		m_res[i] = NULL;
 }
 void Paint_hDC::_mem::_res::set()
 {
-	if (hDC->isSet.memRes())
+	if (isSet())
 		release();
 
 	//화면 DC화 호환되는 memDC와 호환되는 memory DC 생성
-	for (int i = 0; i < hDC->res_count; i++)
-		memDC->m_mem.res[i] = CreateCompatibleDC(memDC->m_mem.windowBuffer);
+	for (int i = 0; i < m_res.size(); i++)
+		m_res[i] = CreateCompatibleDC(m_hDC->mem.windowBuffer());
 
-	hDC->isSet.flag_MemDCres = TRUE;
+	flag_isSet = TRUE;
 }
-vector<HDC>& RollingBall::Paint_hDC::_mem::_res::get()
+HDC Paint_hDC::_mem::_res::operator()(int idx)
 {
-	return hDC->mem.m_mem.res;
+	if (0 <= idx && idx < m_res.size())
+		return m_res[idx];
+	else
+		return NULL;
+}
+void Paint_hDC::_mem::_res::operator()(int idx, HDC m_hdc)
+{
+	if (0 <= idx && idx < m_res.size())
+		m_res[idx] = m_hdc;
 }
 void Paint_hDC::_mem::_res::release()
 {
-	if (!hDC->isSet.memRes()) return;
+	if (!isSet()) return;
 
-	for (int i = 0; i < hDC->res_count; i++)
-		DeleteDC(memDC->m_mem.res[i]);
+	for (int i = 0; i < m_res.size(); i++)
+		DeleteDC(m_res[i]);
 
 	init();
 
-	hDC->isSet.flag_MemDCres = FALSE;
+	flag_isSet = FALSE;
 }
-
-void RollingBall::Paint_hDC::_mem::_res::resize(size_t newSize)
+void Paint_hDC::_mem::_res::resize(size_t newSize)
 {
-	memDC->m_mem.res.resize(newSize);
+	m_res.resize(newSize);
+}
+BOOL Paint_hDC::_mem::_res::isSet()
+{
+	return flag_isSet;
 }
 
 void Paint_hDC::_mem::create()
@@ -161,11 +157,9 @@ void Paint_hDC::_mem::del()
 	res.release();
 }
 
-void RollingBall::Paint_hDC::init(HWND m_hwnd, int m_res_count)
+void Paint_hDC::init(HWND hwnd)
 {
-	hwnd = m_hwnd;
-	res_count = m_res_count;
-	window.init();
+	window.init(hwnd);
 	mem.windowBuffer.init();
 	mem.res.init();
 }
