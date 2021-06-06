@@ -472,30 +472,6 @@ void Paint::flush_buffer()
 	);
 }
 
-void RollingBall::Paint::event_keyboard(KeyboardEvent e)
-{
-	//controller에서 키 입력 여부를 구하고 부드럽게 화면을 변하게 만들자.
-	PhysicalVector ppos = scale.fix_point_physical();
-	double zoom_in_out_rate = 0.03;
-	cm_val move_distance = 0.2;
-
-	if (e.isKeyDown('O'))
-		if (scale.px_rate() > 20)
-			scale.px_rate(scale.px_rate() * (1 - zoom_in_out_rate));
-	if (e.isKeyDown('P'))
-		if (scale.px_rate() < 720)
-			scale.px_rate(scale.px_rate() * (1 + zoom_in_out_rate));
-
-	if (e.isKeyDown('W'))
-		scale.fix_point_physical(ppos(ppos.x, ppos.y + move_distance));
-	if (e.isKeyDown('A'))
-		scale.fix_point_physical(ppos(ppos.x - move_distance, ppos.y));
-	if (e.isKeyDown('S'))
-		scale.fix_point_physical(ppos(ppos.x, ppos.y - move_distance));
-	if (e.isKeyDown('D'))
-		scale.fix_point_physical(ppos(ppos.x + move_distance, ppos.y));
-}
-
 void RollingBall::Paint::event_all(Event e)
 {
 
@@ -513,7 +489,28 @@ void RollingBall::Paint::event_all(Event e)
 
 	if (e.winmsg.iMsg == WM_TIMER)
 	{
-		event_keyboard(e);
+		KeyboardEvent ek = e;
+
+		//controller에서 키 입력 여부를 구하고 부드럽게 화면을 변하게 만들자.
+		PhysicalVector ppos = scale.fix_point_physical();
+		double zoom_in_out_rate = 0.03;
+		cm_val move_distance = 0.2;
+
+		if (ek.isKeyDown('O'))
+			if (scale.px_rate() > 20)
+				scale.px_rate(scale.px_rate() * (1 - zoom_in_out_rate));
+		if (ek.isKeyDown('P'))
+			if (scale.px_rate() < 720)
+				scale.px_rate(scale.px_rate() * (1 + zoom_in_out_rate));
+
+		if (ek.isKeyDown('W'))
+			scale.fix_point_physical(ppos(ppos.x, ppos.y + move_distance));
+		if (ek.isKeyDown('A'))
+			scale.fix_point_physical(ppos(ppos.x - move_distance, ppos.y));
+		if (ek.isKeyDown('S'))
+			scale.fix_point_physical(ppos(ppos.x, ppos.y - move_distance));
+		if (ek.isKeyDown('D'))
+			scale.fix_point_physical(ppos(ppos.x + move_distance, ppos.y));
 	}
 }
 

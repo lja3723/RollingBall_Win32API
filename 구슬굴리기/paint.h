@@ -186,9 +186,6 @@ namespace RollingBall
 		*	event 처리
 		*
 		*********************************/
-		//키보드 이벤트 처리
-		virtual void event_keyboard(KeyboardEvent e);
-
 		//기타 이벤트 처리
 		virtual void event_all(Event e);
 	};
