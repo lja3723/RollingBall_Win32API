@@ -491,7 +491,6 @@ void RollingBall::Paint::event_all(Event e)
 	{
 		KeyboardEvent ek = e;
 
-		//controller에서 키 입력 여부를 구하고 부드럽게 화면을 변하게 만들자.
 		PhysicalVector ppos = scale.fix_point_physical();
 		double zoom_in_out_rate = 0.03;
 		cm_val move_distance = 0.2;
