@@ -71,7 +71,7 @@ namespace RollingBall
 			: Event(m_iMsg, m_wParam, m_lParam)
 		{ init(); }
 		KeyboardEvent(const Event& e)
-			: Event(e.winmsg.iMsg, e.winmsg.wParam, e.winmsg.lParam)
+			: Event(e)
 		{ init(); }
 		BOOL isKeyDown(WPARAM VK_msg);
 	};
