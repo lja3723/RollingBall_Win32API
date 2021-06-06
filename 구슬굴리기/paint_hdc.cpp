@@ -158,8 +158,7 @@ void Paint_hDC::_mem::del()
 	windowBuffer.release();
 	res.release();
 }
-
-void RollingBall::Paint_hDC::_mem::init(Paint_hDC* hDC)
+void Paint_hDC::_mem::init(Paint_hDC* hDC)
 {
 	windowBuffer.init(hDC);
 	res.init(hDC);
