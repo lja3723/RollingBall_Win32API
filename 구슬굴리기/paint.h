@@ -36,7 +36,6 @@ namespace RollingBall
 		struct _winAPI{
 			HINSTANCE hInstance;
 			HWND hwnd;
-			PAINTSTRUCT ps;
 			RECT windowRect;
 
 			Paint_hDC hDC;

@@ -34,7 +34,6 @@ BOOL Paint::init(HINSTANCE m_hInstance, HWND m_hwnd)
 	init_res_count();
 	scale_set(32);
 
-	memset(&winAPI.ps, 0, sizeof(winAPI.ps));
 	memset(&winAPI.windowRect, 0, sizeof(winAPI.windowRect));
 
 	winAPI.hDC.init(m_hwnd);
@@ -352,17 +351,6 @@ void Paint::doubleBuffering_halt()
 
 
 
-
-/********************************
-*
-*		private functions
-*		- variable management
-*
-*********************************/
-
-
-
-
 /********************************
 *
 *		private functions
@@ -486,36 +474,26 @@ void Paint::flush_buffer()
 
 void RollingBall::Paint::event_keyboard(KeyboardEvent e)
 {
-	if (e.winmsg.iMsg == WM_KEYDOWN)
-	{
-		//controller에서 키 입력 여부를 구하고 부드럽게 화면을 변하게 만들자.
-		PhysicalVector ppos = scale.fix_point_physical();
-		double zoom_in_out_rate = 0.03;
-		cm_val move_distance = 0.2;
-		switch (e.winmsg.wParam)
-		{
-		case 'O':
-			if (scale.px_rate() > 20)
-				scale.px_rate(scale.px_rate() * (1 - zoom_in_out_rate));
-			break;
-		case 'P':
-			if (scale.px_rate() < 720)
-				scale.px_rate(scale.px_rate() * (1 + zoom_in_out_rate));
-			break;
-		case 'W':
-			scale.fix_point_physical(ppos(ppos.x, ppos.y + move_distance));
-			break;
-		case 'A':
-			scale.fix_point_physical(ppos(ppos.x - move_distance, ppos.y));
-			break;
-		case 'S':
-			scale.fix_point_physical(ppos(ppos.x, ppos.y - move_distance));
-			break;
-		case 'D':
-			scale.fix_point_physical(ppos(ppos.x + move_distance, ppos.y));
-			break;
-		}
-	}
+	//controller에서 키 입력 여부를 구하고 부드럽게 화면을 변하게 만들자.
+	PhysicalVector ppos = scale.fix_point_physical();
+	double zoom_in_out_rate = 0.03;
+	cm_val move_distance = 0.2;
+
+	if (e.isKeyDown('O'))
+		if (scale.px_rate() > 20)
+			scale.px_rate(scale.px_rate() * (1 - zoom_in_out_rate));
+	if (e.isKeyDown('P'))
+		if (scale.px_rate() < 720)
+			scale.px_rate(scale.px_rate() * (1 + zoom_in_out_rate));
+
+	if (e.isKeyDown('W'))
+		scale.fix_point_physical(ppos(ppos.x, ppos.y + move_distance));
+	if (e.isKeyDown('A'))
+		scale.fix_point_physical(ppos(ppos.x - move_distance, ppos.y));
+	if (e.isKeyDown('S'))
+		scale.fix_point_physical(ppos(ppos.x, ppos.y - move_distance));
+	if (e.isKeyDown('D'))
+		scale.fix_point_physical(ppos(ppos.x + move_distance, ppos.y));
 }
 
 void RollingBall::Paint::event_all(Event e)
@@ -531,6 +509,11 @@ void RollingBall::Paint::event_all(Event e)
 			flag.isWindowSizeChanged = TRUE;
 			break;
 		}
+	}
+
+	if (e.winmsg.iMsg == WM_TIMER)
+	{
+		event_keyboard(e);
 	}
 }
 

@@ -65,17 +65,14 @@ namespace RollingBall
 
 		void key_down(WPARAM VK_msg);
 		void key_up(WPARAM VK_msg);
+		void init();
 	public:
 		KeyboardEvent(UINT m_iMsg = 0, WPARAM m_wParam = 0, LPARAM m_lParam = 0)
 			: Event(m_iMsg, m_wParam, m_lParam)
-		{
-			if (!isInit)
-			{
-				for (int i = 0; i < numofKeys; i++)
-					keys[i] = FALSE;
-				isInit = TRUE;
-			}
-		}
+		{ init(); }
+		KeyboardEvent(const Event& e)
+			: Event(e.winmsg.iMsg, e.winmsg.wParam, e.winmsg.lParam)
+		{ init(); }
 		BOOL isKeyDown(WPARAM VK_msg);
 	};
 

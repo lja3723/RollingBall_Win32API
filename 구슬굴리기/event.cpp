@@ -22,6 +22,15 @@ void KeyboardEvent::key_up(WPARAM VK_msg)
 {
 	keys[VK_msg] = FALSE;
 }
+void RollingBall::KeyboardEvent::init()
+{
+	if (!isInit)
+	{
+		for (int i = 0; i < numofKeys; i++)
+			keys[i] = FALSE;
+		isInit = TRUE;
+	}
+}
 BOOL KeyboardEvent::isKeyDown(WPARAM VK_msg)
 {
 	return keys[VK_msg];
