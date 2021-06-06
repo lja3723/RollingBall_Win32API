@@ -70,8 +70,9 @@ BOOL Paint_hDC::_window::_mode::isBeginPaint()
 *		- mem management
 *
 *********************************/
-void Paint_hDC::_mem::_windowBuffer::init()
+void Paint_hDC::_mem::_windowBuffer::init(Paint_hDC* hDC)
 {
+	m_hDC = hDC;
 	m_windowBuffer = NULL;
 }
 void Paint_hDC::_mem::_windowBuffer::set()
@@ -91,15 +92,16 @@ void Paint_hDC::_mem::_windowBuffer::release()
 	if (!isSet()) return;
 
 	DeleteDC(m_windowBuffer);
-	init();
+	init(m_hDC);
 }
 BOOL Paint_hDC::_mem::_windowBuffer::isSet()
 {
 	return m_windowBuffer != NULL;
 }
 
-void Paint_hDC::_mem::_res::init()
+void Paint_hDC::_mem::_res::init(Paint_hDC* hDC)
 {
+	m_hDC = hDC;
 	for (int i = 0; i < m_res.size(); i++)
 		m_res[i] = NULL;
 }
@@ -133,7 +135,7 @@ void Paint_hDC::_mem::_res::release()
 	for (int i = 0; i < m_res.size(); i++)
 		DeleteDC(m_res[i]);
 
-	init();
+	init(m_hDC);
 
 	flag_isSet = FALSE;
 }
@@ -157,9 +159,14 @@ void Paint_hDC::_mem::del()
 	res.release();
 }
 
+void RollingBall::Paint_hDC::_mem::init(Paint_hDC* hDC)
+{
+	windowBuffer.init(hDC);
+	res.init(hDC);
+}
+
 void Paint_hDC::init(HWND hwnd)
 {
 	window.init(hwnd);
-	mem.windowBuffer.init();
-	mem.res.init();
+	mem.init(this);
 }

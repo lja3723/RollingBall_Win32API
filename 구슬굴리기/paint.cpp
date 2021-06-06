@@ -37,14 +37,7 @@ BOOL Paint::init(HINSTANCE m_hInstance, HWND m_hwnd)
 	memset(&winAPI.windowRect, 0, sizeof(winAPI.windowRect));
 
 	winAPI.hDC.init(m_hwnd);
-
-	hBitmap_windowBuffer_init();
-	hBitmap_res_init();
-
-	hBitmap_old_windowBuffer_init();
-	hBitmap_old_res_init();
-
-	hBitmap_res_set();
+	winAPI.hBitmap.init(winAPI.hwnd, &bmp, &winAPI.hDC);
 
 	return TRUE;
 }
@@ -101,9 +94,6 @@ void Paint::init_flags()
 {
 	winAPI.hDC.window.mode.set_BeginPaint();
 
-	flag.isSetHBitmapRes = FALSE;
-	flag.isBackedUpHBitmapRes = FALSE;
-
 	flag.isDoubleBufferingStart = FALSE;
 	flag.isInitDoubleBuffering = FALSE;
 	flag.isWindowSizeChanged = FALSE;
@@ -118,7 +108,7 @@ void Paint::init_res_vectors()
 {
 	winAPI.hDC.mem.res.resize(res_count);
 	winAPI.hBitmap.res.resize(res_count);
-	winAPI.hBitmap.old.res.resize(res_count);
+	winAPI.hBitmap.res.old.resize(res_count);
 }
 
 
@@ -134,23 +124,6 @@ BOOL Paint::isInit()
 	return winAPI.hInstance != NULL;
 }
 
-
-BOOL Paint::isSetHBitmapWindowBuffer()
-{
-	return winAPI.hBitmap.windowBuffer != NULL;
-}
-BOOL Paint::isSetHBitmapRes()
-{
-	return flag.isSetHBitmapRes;
-}
-BOOL Paint::isBackedUpHBitmapWindowBuffer()
-{
-	return winAPI.hBitmap.old.windowBuffer != NULL;
-}
-BOOL Paint::isBackedUpHBitmapRes()
-{
-	return flag.isBackedUpHBitmapRes;
-}
 
 BOOL Paint::isDoubleBufferingStart()
 {
@@ -173,111 +146,6 @@ BOOL Paint::isWindowSizeChanged()
 /********************************
 *
 *		private functions
-*		- hBitmap management
-*
-*********************************/
-void Paint::hBitmap_windowBuffer_init()
-{
-	winAPI.hBitmap.windowBuffer = NULL;
-}
-void Paint::hBitmap_windowBuffer_set()
-{
-	if (isSetHBitmapWindowBuffer())
-		hBitmap_windowBuffer_release();
-
-	//화면 DC와 호환되는 hBitmap을 로드한다
-	GetClientRect(winAPI.hwnd, &winAPI.windowRect);
-	winAPI.hBitmap.windowBuffer = bmp.create_hDC_compatible(winAPI.hDC.window(), winAPI.windowRect);
-}
-void Paint::hBitmap_windowBuffer_release()
-{
-	if (!isSetHBitmapWindowBuffer()) return;
-	//hBitmap을 삭제함
-	bmp.delete_hDC_compatible(winAPI.hBitmap.windowBuffer);
-	hBitmap_windowBuffer_init();
-}
-void Paint::hBitmap_res_init()
-{
-	for (int i = 0; i < res_count; i++)
-		winAPI.hBitmap.res[i] = NULL;
-
-	//아래 플래그 변수는 삭제할 수 있을 것 같다 
-	//(winAPI.hBitmap.resource.size() != 0)
-	flag.isSetHBitmapRes = FALSE;
-}
-void Paint::hBitmap_res_set()
-{
-	for (int i = 0; i < res_count; i++)
-		winAPI.hBitmap.res[i] = bmp(i);
-
-	flag.isSetHBitmapRes = TRUE;
-}
-
-void Paint::hBitmap_old_windowBuffer_init()
-{
-	winAPI.hBitmap.old.windowBuffer = NULL;
-}
-void Paint::hBitmap_old_windowBuffer_backup()
-{
-	if (!winAPI.hDC.mem.windowBuffer.isSet()) return;
-	if (isBackedUpHBitmapWindowBuffer())
-		hBitmap_old_res_rollback();
-
-	winAPI.hBitmap.old.windowBuffer
-		= (HBITMAP)SelectObject(
-			winAPI.hDC.mem.windowBuffer(),
-			winAPI.hBitmap.windowBuffer
-		);
-}
-void Paint::hBitmap_old_windowBuffer_rollback()
-{
-	if (!isBackedUpHBitmapWindowBuffer()) return;
-	SelectObject(
-		winAPI.hDC.mem.windowBuffer(), 
-		winAPI.hBitmap.old.windowBuffer
-	);
-	hBitmap_old_windowBuffer_init();
-}
-void Paint::hBitmap_old_res_init()
-{
-	for (int i = 0; i < res_count; i++)
-		winAPI.hBitmap.old.res[i] = NULL;
-}
-void Paint::hBitmap_old_res_backup()
-{
-	if (!winAPI.hDC.mem.res.isSet()) return;
-	if (!isBackedUpHBitmapRes())
-		hBitmap_old_res_rollback();
-
-	for (int i = 0; i < res_count; i++)
-		winAPI.hBitmap.old.res[i]
-		= (HBITMAP)SelectObject(
-			winAPI.hDC.mem.res(i), 
-			winAPI.hBitmap.res[i]
-		);
-
-	flag.isBackedUpHBitmapRes = TRUE;
-}
-void Paint::hBitmap_old_res_rollback()
-{
-	if (!isBackedUpHBitmapRes()) return;
-
-	for (int i = 0; i < res_count; i++)
-		SelectObject(
-			winAPI.hDC.mem.res(i), 
-			winAPI.hBitmap.old.res[i]
-		);
-
-	hBitmap_old_res_init();
-
-	flag.isBackedUpHBitmapRes = FALSE;
-}
-
-
-
-/********************************
-*
-*		private functions
 *		- double buffering manage
 *
 *********************************/
@@ -291,11 +159,11 @@ void Paint::doubleBuffering_init()
 	//hDC.mem.window와 hDC.mem.res를 생성하고 
 	//hBitmap.res를 hDC.mem.res에 선택시킨다
 	winAPI.hDC.mem.create();
-	hBitmap_old_res_backup();
+	winAPI.hBitmap.res.old.backup();
 
 	//hBitmap.windowBuffer를 생성한 뒤 그것을 hDC.mem.windowBuffer에 선택시킨다
-	hBitmap_windowBuffer_set();
-	hBitmap_old_windowBuffer_backup();
+	winAPI.hBitmap.windowBuffer.set();
+	winAPI.hBitmap.windowBuffer.old.backup();
 
 	flag.isInitDoubleBuffering = TRUE;
 }
@@ -313,12 +181,12 @@ void Paint::doubleBuffering_start()
 	{
 		GetClientRect(winAPI.hwnd, &winAPI.windowRect);
 		//hBitmap.windowBuffer를 hDC.mem.windowBuffer에서 롤백하고 release한다
-		hBitmap_old_windowBuffer_rollback();
-		hBitmap_windowBuffer_release();
+		winAPI.hBitmap.windowBuffer.old.rollback();
+		winAPI.hBitmap.windowBuffer.release();
 
 		//hBitmap.windowBuffer를 생성한 뒤 그것을 hDC.mem.windowBuffer에 선택시킨다
-		hBitmap_windowBuffer_set();
-		hBitmap_old_windowBuffer_backup();
+		winAPI.hBitmap.windowBuffer.set();
+		winAPI.hBitmap.windowBuffer.old.backup();
 
 		PixelCoord p(winAPI.windowRect.right / 2, winAPI.windowRect.bottom / 2);
 		scale.fix_point_pixel(p);
@@ -340,12 +208,12 @@ void Paint::doubleBuffering_stop()
 void Paint::doubleBuffering_halt()
 {
 	//hBitmap.windowBuffer를 hDC.mem.windowBuffer에서 롤백하고 release한다
-	hBitmap_old_windowBuffer_rollback();
-	hBitmap_windowBuffer_release();
+	winAPI.hBitmap.windowBuffer.old.rollback();
+	winAPI.hBitmap.windowBuffer.release();
 
 	//doublebuffering을 끝내고 프로그램을 종료할 때 마지막으로 아래 작업 수행
 	//hDC.mem.windowBuffer와 hDC.mem.res를 삭제함
-	hBitmap_old_res_rollback();
+	winAPI.hBitmap.res.old.rollback();
 	winAPI.hDC.mem.del();
 }
 
@@ -495,12 +363,12 @@ void RollingBall::Paint::event_all(Event e)
 		double zoom_in_out_rate = 0.03;
 		cm_val move_distance = 0.2;
 
-		if (ek.isKeyDown('O'))
-			if (scale.px_rate() > 20)
-				scale.px_rate(scale.px_rate() * (1 - zoom_in_out_rate));
 		if (ek.isKeyDown('P'))
-			if (scale.px_rate() < 720)
+			if (scale.px_rate() < 480)
 				scale.px_rate(scale.px_rate() * (1 + zoom_in_out_rate));
+		if (ek.isKeyDown('O'))
+			if (scale.px_rate() > 3)
+				scale.px_rate(scale.px_rate() * (1 - zoom_in_out_rate));
 
 		if (ek.isKeyDown('W'))
 			scale.fix_point_physical(ppos(ppos.x, ppos.y + move_distance));
