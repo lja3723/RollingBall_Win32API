@@ -37,10 +37,10 @@ namespace RollingBall
 			}mode;
 
 		public:
-			_window()
+			_window(HWND hwnd)
 			{
 				m_window = NULL;
-				m_hwnd = NULL;
+				m_hwnd = hwnd;
 				memset(&m_ps, 0, sizeof(m_ps));
 			}
 			void init(HWND hwnd);
@@ -61,12 +61,10 @@ namespace RollingBall
 				Paint_hDC* m_hDC;
 				HDC m_windowBuffer;
 			public:
-				_windowBuffer()	{ 
-					m_windowBuffer = NULL;
-					m_hDC = NULL;
-				}
+				_windowBuffer(Paint_hDC * hDC)
+				{ m_hDC = hDC; m_windowBuffer = NULL; }
 
-				void init(Paint_hDC* hDC);
+				void init();
 				void set();
 				HDC& operator()();
 				void release();
@@ -80,12 +78,9 @@ namespace RollingBall
 				vector<HDC> m_res;
 				BOOL flag_isSet;
 			public:
-				_res() { 
-					flag_isSet = FALSE; 
-					m_hDC = NULL;
-				}
+				_res(Paint_hDC* hDC) { m_hDC = hDC; flag_isSet = FALSE; }
 
-				void init(Paint_hDC* hDC);
+				void init();
 				void set();
 				HDC operator()(int idx);
 				void operator()(int idx, HDC m_hdc);
@@ -95,13 +90,14 @@ namespace RollingBall
 			} res;
 
 		public:
+			_mem(Paint_hDC* hDC) : windowBuffer(hDC), res(hDC) {	}
 			void create();
 			void del();
-			void init(Paint_hDC* hDC);
 		} mem;
 
 	//public function
 	public:
+		Paint_hDC(HWND hwnd = NULL) : window(hwnd), mem(this) {}
 		void init(HWND hwnd);
 	};
 }

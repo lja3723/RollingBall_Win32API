@@ -39,11 +39,24 @@ namespace RollingBall
 			RECT windowRect;
 
 			Paint_hDC hDC;
-			Paint_hBitmap hBitmap;
+
+			struct _hBitmap{
+				HBITMAP windowBuffer;
+				vector<HBITMAP> res;
+				struct _old{
+					HBITMAP windowBuffer;
+					vector<HBITMAP> res;
+				} old;
+			} hBitmap;
 		} winAPI;
 		
 		//여러가지 플래그를 저장하는 변수
 		struct _flag{
+			BOOL isSetHBitmapRes;
+
+
+			BOOL isBackedUpHBitmapRes;
+
 			BOOL isDoubleBufferingStart;
 			BOOL isInitDoubleBuffering;
 			BOOL isWindowSizeChanged;
@@ -95,6 +108,11 @@ namespace RollingBall
 		*	bool returns
 		*
 		*********************************/
+		//변수가 세팅되었는지 알려줌
+		BOOL isSetHBitmapWindowBuffer();
+		BOOL isSetHBitmapRes();
+		BOOL isBackedUpHBitmapWindowBuffer();
+		BOOL isBackedUpHBitmapRes();
 
 		//기타 정보를 알려줌
 		BOOL isInit();
@@ -102,6 +120,28 @@ namespace RollingBall
 		BOOL isReadyToPaint();
 		BOOL isInitDoubleBuffering();
 		BOOL isWindowSizeChanged();
+
+
+
+		/********************************
+		*
+		*	hBitmap management
+		*
+		*********************************/
+		//hBitmap 변수를 관리함
+		void hBitmap_windowBuffer_init();
+		void hBitmap_windowBuffer_set();
+		void hBitmap_windowBuffer_release();
+		void hBitmap_res_init();
+		void hBitmap_res_set();
+
+		//hBitmap.old 변수를 관리함
+		void hBitmap_old_windowBuffer_init();
+		void hBitmap_old_windowBuffer_backup();
+		void hBitmap_old_windowBuffer_rollback();
+		void hBitmap_old_res_init();
+		void hBitmap_old_res_backup();
+		void hBitmap_old_res_rollback();
 
 
 
