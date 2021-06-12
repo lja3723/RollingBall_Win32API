@@ -162,6 +162,25 @@
     <Image Include="..\res\bmp\floor\wood1_0256.bmp" />
     <Image Include="..\res\bmp\floor\wood1_0512.bmp" />
     <Image Include="..\res\bmp\floor\wood1_512.bmp" />
+    <Image Include="res\bmp\ball\iron1_0032.bmp" />
+    <Image Include="res\bmp\ball\iron1_0064.bmp" />
+    <Image Include="res\bmp\ball\iron1_0128.bmp" />
+    <Image Include="res\bmp\ball\iron1_0256.bmp" />
+    <Image Include="res\bmp\ball\iron2_0032.bmp" />
+    <Image Include="res\bmp\ball\iron2_0064.bmp" />
+    <Image Include="res\bmp\ball\iron2_0128.bmp" />
+    <Image Include="res\bmp\ball\iron2_0256.bmp" />
+    <Image Include="res\bmp\ball\mask\iron1_0032.bmp" />
+    <Image Include="res\bmp\ball\mask\iron1_0064.bmp" />
+    <Image Include="res\bmp\ball\mask\iron1_0128.bmp" />
+    <Image Include="res\bmp\ball\mask\iron1_0256.bmp" />
+    <Image Include="res\bmp\ball\mask\iron2_0032.bmp" />
+    <Image Include="res\bmp\ball\mask\iron2_0064.bmp" />
+    <Image Include="res\bmp\ball\mask\iron2_0128.bmp" />
+    <Image Include="res\bmp\ball\mask\iron2_0256.bmp" />
+    <Image Include="res\bmp\floor\wood1_0256.bmp" />
+    <Image Include="res\bmp\floor\wood1_0512.bmp" />
+    <Image Include="res\bmp\floor\wood1_1024.bmp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\res\bmp\object_info.txt" />
