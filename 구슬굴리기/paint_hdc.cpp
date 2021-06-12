@@ -26,7 +26,7 @@ void Paint_hDC::_window::set()
 	else
 		m_window = BeginPaint(m_hwnd, &m_ps);
 }
-const HDC& Paint_hDC::_window::operator()()
+HDC& Paint_hDC::_window::operator()()
 {
 	return m_window;
 }
@@ -83,7 +83,7 @@ void Paint_hDC::_mem::_windowBuffer::set()
 	//화면 DC와 호환이 되는 memDC를 생성
 	m_windowBuffer = CreateCompatibleDC(m_hDC->window());
 }
-const HDC& Paint_hDC::_mem::_windowBuffer::operator()()
+HDC& Paint_hDC::_mem::_windowBuffer::operator()()
 {
 	return m_windowBuffer;
 }
@@ -116,7 +116,7 @@ void Paint_hDC::_mem::_res::set()
 
 	flag_isSet = TRUE;
 }
-const HDC Paint_hDC::_mem::_res::operator()(int idx)
+HDC Paint_hDC::_mem::_res::operator()(int idx)
 {
 	if (0 <= idx && idx < m_res.size())
 		return m_res[idx];

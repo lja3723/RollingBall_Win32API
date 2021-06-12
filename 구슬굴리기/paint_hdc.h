@@ -45,7 +45,7 @@ namespace RollingBall
 			}
 			void init(HWND hwnd);
 			void set();
-			const HDC& operator()();
+			HDC& operator()();
 			void release();
 			BOOL isSet();
 
@@ -68,7 +68,7 @@ namespace RollingBall
 
 				void init(Paint_hDC* hDC);
 				void set();
-				const HDC& operator()();
+				HDC& operator()();
 				void release();
 				BOOL isSet();
 
@@ -87,7 +87,7 @@ namespace RollingBall
 
 				void init(Paint_hDC* hDC);
 				void set();
-				const HDC operator()(int idx);
+				HDC operator()(int idx);
 				void operator()(int idx, HDC m_hdc);
 				void release();
 				void resize(size_t newSize);
