@@ -102,10 +102,12 @@ namespace RollingBall
 	{
 		friend class EventProducer;
 	private:
-		static int object_count;
+		//static int object_count;
 		static vector<EventAcceptable*> object_ref;
 
 	protected:
+		static size_t object_ref_size() {	return object_ref.size(); }
+
 		//마우스 이벤트를 받아들이기 위해 오버로딩 필요
 		virtual void event_mouse(MouseEvent e) {}
 

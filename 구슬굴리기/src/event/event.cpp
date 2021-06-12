@@ -4,7 +4,6 @@
 
 using namespace RollingBall;
 using std::find;
-using std::sort;
 
 /////////////////////////
 // 
@@ -107,7 +106,7 @@ void RollingBall::EventProducer::translate_windowEvent(UINT iMsg, WPARAM wParam,
 
 		//마우스 좌표에 존재하는 모든 EventAcceptable 객체에 마우스 이벤트를 보낸다
 		// -> 나중에 우선순위를 참고해 하나의 객체에 이벤트를 보내게 수정할 것임
-		for (int i = 0; i < EventAcceptable::object_ref.size(); i++)
+		for (int i = 0; i < EventAcceptable::object_ref_size(); i++)
 			if (EventAcceptable::object_ref[i]->isObjectArea(em.pos))
 				EventAcceptable::object_ref[i]->event_mouse(em);
 		return;
@@ -117,13 +116,13 @@ void RollingBall::EventProducer::translate_windowEvent(UINT iMsg, WPARAM wParam,
 	if (ek.isValid)
 	{
 		//모든 EventAcceptable 객체에 키보드 이벤트를 보낸다
-		for (int i = 0; i < EventAcceptable::object_ref.size(); i++)
+		for (int i = 0; i < EventAcceptable::object_ref_size(); i++)
 			EventAcceptable::object_ref[i]->event_keyboard(ek);
 		return;
 	}
 
 	Event e = produce_Event(iMsg, wParam, lParam);
-	for (int i = 0; i < EventAcceptable::object_ref.size(); i++)
+	for (int i = 0; i < EventAcceptable::object_ref_size(); i++)
 	{
 		EventAcceptable::object_ref[i]->event_all(e);
 	}
@@ -135,7 +134,6 @@ void RollingBall::EventProducer::translate_windowEvent(UINT iMsg, WPARAM wParam,
 //	EventAcceptable class
 // 
 /////////////////////////////
-int EventAcceptable::object_count = 0;
 vector<EventAcceptable*> EventAcceptable::object_ref = vector<EventAcceptable*>();
 
 RollingBall::EventAcceptable::EventAcceptable()

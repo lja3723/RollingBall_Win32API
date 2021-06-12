@@ -61,8 +61,6 @@ BOOL RollingBallClass::init(HINSTANCE m_hInstance, HWND m_hwnd, UINT frame_updat
 			ball.push_back(_ball);
 		}
 
-	//memset(&physics, 0, sizeof(physics));
-
 	return TRUE;
 }
 void RollingBall::RollingBallClass::set_frame_update_interval(UINT millisecond)

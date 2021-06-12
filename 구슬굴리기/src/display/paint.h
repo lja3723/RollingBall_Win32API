@@ -4,11 +4,11 @@
 
 #include <Windows.h>
 #include <vector>
-#include "bitmap.h"
 #include "../object/object.h"
 #include "../calc/scaler.h"
 #include "../event/event.h"
 
+#include "bitmap.h"
 #include "paint_hdc.h"
 #include "paint_hbitmap.h"
 

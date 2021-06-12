@@ -10,6 +10,8 @@
 #include "../object/object.h"
 #include "../event/event.h"
 
+#include "../tool/debugger.h"
+
 
 namespace RollingBall
 {

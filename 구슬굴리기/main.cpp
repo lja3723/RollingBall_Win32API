@@ -3,7 +3,7 @@
 #include "resource.h"
 #include "src/rolling_ball/rolling_ball.h"
 #include "src/tool/debugger.h"
-#include "src/event/event.h"
+//#include "src/event/event.h"
 #define PROGRAM_NAME _T("구슬 굴리기")
 #define PROGRAM_VER	_T("1.1")
 
@@ -22,6 +22,7 @@ static RollingBallClass rollingBall;
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLine, int nCmdShow)
 {
 	HWND hwnd;
+
 	MSG msg;
 	WNDCLASS WndClass;
 	WndClass.style = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS;
