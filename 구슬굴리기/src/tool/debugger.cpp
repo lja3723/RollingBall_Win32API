@@ -7,10 +7,9 @@ using namespace RollingBall;
 /*****************************
 *	static variables
 ******************************/
-BOOL Debugger::isCmdShow = FALSE;
 HINSTANCE Debugger::hInstance = NULL;
 HWND Debugger::hwnd = NULL;
-TCHAR Debugger::buff[1024] = { 0, };
+HWND Debugger::hDebugDlg = NULL;
 
 
 
@@ -23,24 +22,26 @@ void Debugger::init(HINSTANCE m_hInstance, HWND m_hwnd)
 	hwnd = m_hwnd;
 }
 
-void RollingBall::Debugger::showCmd()
+BOOL Debugger::isInit()
 {
-	if (isCmdShow) return;
-
-	if (AllocConsole())
-	{
-		//SetConsoleTitle(_T("Debugging Console"));
-
-		isCmdShow = TRUE;
-	}
+	return hInstance != NULL;
 }
-
-void RollingBall::Debugger::hideCmd()
+BOOL Debugger::isSetHDebugDlg()
 {
-	if (!isCmdShow) return;
-
-	if (FreeConsole)
-		isCmdShow = FALSE;
+	return hDebugDlg != NULL;
+}
+void Debugger::set_hDebugDlg(HWND m_hDebugDlg)
+{
+	hDebugDlg = m_hDebugDlg;
+}
+void Debugger::set_hDebugDlgText(int text_num, LPCTSTR text)
+{
+	if (!isSetHDebugDlg()) return;
+	SetDlgItemText(hDebugDlg, IDC_TEXT_DEBUG1 + text_num - 1, text);
+}
+void Debugger::release_hDebugDlg()
+{
+	hDebugDlg = NULL;
 }
 
 void Debugger::clearBuff()

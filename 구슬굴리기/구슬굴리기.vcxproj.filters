@@ -116,63 +116,6 @@
     <Image Include="..\res\bmp\ball\iron2_0256.bmp">
       <Filter>리소스 파일</Filter>
     </Image>
-    <Image Include="res\bmp\floor\wood1_0256.bmp">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="res\bmp\ball\iron1_0032.bmp">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="res\bmp\ball\mask\iron1_0032.bmp">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="res\bmp\ball\iron1_0064.bmp">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="res\bmp\ball\mask\iron1_0064.bmp">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="res\bmp\ball\iron1_0128.bmp">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="res\bmp\ball\mask\iron1_0128.bmp">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="res\bmp\ball\iron1_0256.bmp">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="res\bmp\ball\mask\iron1_0256.bmp">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="res\bmp\floor\wood1_0512.bmp">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="res\bmp\floor\wood1_1024.bmp">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="res\bmp\ball\mask\iron2_0032.bmp">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="res\bmp\ball\mask\iron2_0064.bmp">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="res\bmp\ball\mask\iron2_0128.bmp">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="res\bmp\ball\mask\iron2_0256.bmp">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="res\bmp\ball\iron2_0032.bmp">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="res\bmp\ball\iron2_0064.bmp">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="res\bmp\ball\iron2_0128.bmp">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="res\bmp\ball\iron2_0256.bmp">
-      <Filter>리소스 파일</Filter>
-    </Image>
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\res\bmp\object_info.txt">

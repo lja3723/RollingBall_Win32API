@@ -4,9 +4,17 @@
 //
 #define IDR_MENU                        101
 #define IDR_ACCELERATOR                 102
+#define IDD_DIALOG_DEBUGGING            103
 #define IDD_DIALOG_PROGRAM_INFO         104
 #define IDC_TEXT_PROGRAM_NAME           1002
 #define IDC_TEXT_PROGRAM_VER            1003
+#define IDC_TEXT_DEBUG1                 1004
+#define IDC_TEXT_DEBUG2                 1005
+#define IDC_TEXT_DEBUG3                 1006
+#define IDC_TEXT_DEBUG4                 1007
+#define IDC_TEXT_DEBUG5                 1008
+#define IDC_TEXT_DEBUG6                 1009
+
 #define IDB_BALL_IRON1_0032             10001
 #define IDB_BALL_IRON1_0032M            10002
 #define IDB_BALL_IRON1_0064             10003
@@ -15,6 +23,7 @@
 #define IDB_BALL_IRON1_0128M            10006
 #define IDB_BALL_IRON1_0256             10007
 #define IDB_BALL_IRON1_0256M            10008
+
 #define IDB_BALL_IRON2_0032             10009
 #define IDB_BALL_IRON2_0032M            10010
 #define IDB_BALL_IRON2_0064             10011
@@ -23,9 +32,12 @@
 #define IDB_BALL_IRON2_0128M            10014
 #define IDB_BALL_IRON2_0256             10015
 #define IDB_BALL_IRON2_0256M            10016
+
+
 #define IDB_FLOOR_WOOD1_0256            10017
 #define IDB_FLOOR_WOOD1_0512            10018
 #define IDB_FLOOR_WOOD1_1024            10019
+
 #define ID_DEBUGGING                    40001
 #define ID_MENU                         40002
 #define ID_40003                        40003
