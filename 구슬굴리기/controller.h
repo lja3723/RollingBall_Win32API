@@ -2,8 +2,8 @@
 #ifndef __controller_h__
 #define __controller_h__
 #include <Windows.h>
-#include "src/object/object.h"
-#include "src/event/event.h"
+#include "object.h"
+#include "event.h"
 
 namespace RollingBall
 {

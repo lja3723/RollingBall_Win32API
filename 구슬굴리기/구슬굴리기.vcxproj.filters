@@ -13,42 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="소스 파일\calc">
-      <UniqueIdentifier>{782381fa-05c3-4edd-ac52-6e184942e6d0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\display">
-      <UniqueIdentifier>{19d8365c-27a1-48c4-abd4-3cf8e272a0ab}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\event">
-      <UniqueIdentifier>{a6d206c9-0ee4-46aa-8bc4-456e1232fb85}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\object">
-      <UniqueIdentifier>{cf83eaa8-d246-43f2-8884-90bfa42e743f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="헤더 파일\calc">
-      <UniqueIdentifier>{59d2341d-3907-4fc6-8473-d1c9b3e03de6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="헤더 파일\display">
-      <UniqueIdentifier>{8d22fd67-b7ff-4979-9c50-e8da6269f52c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="헤더 파일\event">
-      <UniqueIdentifier>{dc894719-46e0-49c1-b34a-c92e4c3df28b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="헤더 파일\tool">
-      <UniqueIdentifier>{0e239899-9b77-485e-9b24-3b9bb6cadf55}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="헤더 파일\object">
-      <UniqueIdentifier>{11766a9f-3b84-41d4-a015-8ba826e08ad9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\tool">
-      <UniqueIdentifier>{2dfd7c72-cd69-418d-ba29-58356b028140}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\rolling_ball">
-      <UniqueIdentifier>{906ec533-5174-408d-b66f-bd2123abba13}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="헤더 파일\rolling_ball">
-      <UniqueIdentifier>{a718fbba-6814-4383-936f-a23648cdb1f8}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="구슬굴리기.rc">
@@ -123,85 +87,85 @@
     </Text>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="bitmap.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
     <ClCompile Include="controller.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="src\calc\physics.cpp">
-      <Filter>소스 파일\calc</Filter>
+    <ClCompile Include="debugger.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="src\calc\scaler.cpp">
-      <Filter>소스 파일\calc</Filter>
-    </ClCompile>
-    <ClCompile Include="src\display\bitmap.cpp">
-      <Filter>소스 파일\display</Filter>
-    </ClCompile>
-    <ClCompile Include="src\display\paint.cpp">
-      <Filter>소스 파일\display</Filter>
-    </ClCompile>
-    <ClCompile Include="src\display\paint_hbitmap.cpp">
-      <Filter>소스 파일\display</Filter>
-    </ClCompile>
-    <ClCompile Include="src\display\paint_hdc.cpp">
-      <Filter>소스 파일\display</Filter>
-    </ClCompile>
-    <ClCompile Include="src\event\event.cpp">
-      <Filter>소스 파일\event</Filter>
-    </ClCompile>
-    <ClCompile Include="src\rolling_ball\rolling_ball.cpp">
-      <Filter>소스 파일\rolling_ball</Filter>
-    </ClCompile>
-    <ClCompile Include="src\object\object.cpp">
-      <Filter>소스 파일\object</Filter>
-    </ClCompile>
-    <ClCompile Include="src\tool\file.cpp">
-      <Filter>소스 파일\tool</Filter>
-    </ClCompile>
-    <ClCompile Include="src\tool\debugger.cpp">
-      <Filter>소스 파일\tool</Filter>
+    <ClCompile Include="file.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="object.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="paint.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="physics.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="rolling_ball.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="scaler.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="event.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="paint_hdc.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="paint_hbitmap.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="bitmap.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
     <ClInclude Include="controller.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="debugger.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="file.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="object.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="paint.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="physics.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="src\calc\physics.h">
-      <Filter>헤더 파일\calc</Filter>
+    <ClInclude Include="rolling_ball.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="src\calc\scaler.h">
-      <Filter>헤더 파일\calc</Filter>
+    <ClInclude Include="scaler.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="src\display\bitmap.h">
-      <Filter>헤더 파일\display</Filter>
+    <ClInclude Include="event.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="src\display\paint.h">
-      <Filter>헤더 파일\display</Filter>
+    <ClInclude Include="paint_hdc.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="src\display\paint_hbitmap.h">
-      <Filter>헤더 파일\display</Filter>
-    </ClInclude>
-    <ClInclude Include="src\display\paint_hdc.h">
-      <Filter>헤더 파일\display</Filter>
-    </ClInclude>
-    <ClInclude Include="src\event\event.h">
-      <Filter>헤더 파일\event</Filter>
-    </ClInclude>
-    <ClInclude Include="src\rolling_ball\rolling_ball.h">
-      <Filter>헤더 파일\rolling_ball</Filter>
-    </ClInclude>
-    <ClInclude Include="src\object\object.h">
-      <Filter>헤더 파일\object</Filter>
-    </ClInclude>
-    <ClInclude Include="src\tool\debugger.h">
-      <Filter>헤더 파일\tool</Filter>
-    </ClInclude>
-    <ClInclude Include="src\tool\file.h">
-      <Filter>헤더 파일\tool</Filter>
+    <ClInclude Include="paint_hbitmap.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

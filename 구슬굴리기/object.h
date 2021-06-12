@@ -6,8 +6,8 @@
 #include <string>
 #include <vector>
 #include <tchar.h>
-#include "../calc/physics.h"
-#include "../calc/scaler.h"
+#include "physics.h"
+#include "scaler.h"
 
 using std::vector;
 typedef std::basic_string<TCHAR> tstring;
