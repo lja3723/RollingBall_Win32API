@@ -41,7 +41,7 @@ BOOL Paint::init(HINSTANCE m_hInstance, HWND m_hwnd)
 
 	return TRUE;
 }
-void Paint::scale_set(pixel px_rate)
+void RollingBall::Paint::scale_set(pixel px_rate)
 {
 	scale.px_rate(px_rate);
 	scale.fix_point_physical(PhysicalVector(5, 5));
@@ -65,15 +65,15 @@ void Paint::background(Object& background)
 	paint_background_tobuffer(background);
 	paint_background_ruller_tobuffer();
 }
-void Paint::operator()(Object& obj)
+void RollingBall::Paint::operator()(Object& obj)
 {
 	paint_tobuffer(obj);
 }
-void Paint::info(Object& obj, int yPos)
+void RollingBall::Paint::info(Object& obj, int yPos)
 {
 	paint_info_tobuffer(obj, yPos);
 }
-void Paint::text(LPCTSTR text, pixel x, pixel y)
+void RollingBall::Paint::text(LPCTSTR text, pixel x, pixel y)
 {
 	paint_text_tobuffer(text, x, y);
 }
@@ -274,7 +274,7 @@ void Paint::paint_background_ruller_tobuffer()
 		LineTo(winBuff, scale.transform(p).x, scale.transform(p).y);
 	}
 }
-void Paint::paint_tobuffer(Object& object)
+void RollingBall::Paint::paint_tobuffer(Object& object)
 {
 	if (!isReadyToPaint()) return;
 
@@ -309,13 +309,13 @@ void Paint::paint_tobuffer(Object& object)
 		}
 	}
 }
-void Paint::paint_info_tobuffer(Object& object, int yPos)
+void RollingBall::Paint::paint_info_tobuffer(Object& object, int yPos)
 {
 	TCHAR buff[256];
 	_stprintf_s(buff, 256, _T("좌표(%lf, %lf)"), object.physical.pos.x, object.physical.pos.y);
 	paint_text_tobuffer(buff, 0, yPos);
 }
-void Paint::paint_text_tobuffer(LPCTSTR text, pixel x, pixel y)
+void RollingBall::Paint::paint_text_tobuffer(LPCTSTR text, pixel x, pixel y)
 {
 	TextOut(hDC.mem.windowBuffer(), x, y, text, (int)_tcslen(text));
 }
@@ -331,7 +331,7 @@ void Paint::flush_buffer()
 	);
 }
 
-void Paint::event_all(Event e)
+void RollingBall::Paint::event_all(Event e)
 {
 
 	if (e.winmsg.iMsg == WM_SIZE)

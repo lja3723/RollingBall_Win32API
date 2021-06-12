@@ -28,12 +28,14 @@ void Paint_hBitmap::_windowBuffer::_old::rollback()
 	);
 	init(m_hDC, m_hBitmap);
 }
+
 void Paint_hBitmap::_windowBuffer::_old::init(Paint_hDC* hDC, Paint_hBitmap* hBitmap)
 {
 	m_windowBuffer = NULL;
 	m_hDC = hDC;
 	m_hBitmap = hBitmap;
 }
+
 
 
 BOOL Paint_hBitmap::_windowBuffer::isSet()
@@ -108,6 +110,7 @@ void Paint_hBitmap::_res::_old::resize(size_t newSize)
 {
 	m_res.resize(newSize);
 }
+
 void Paint_hBitmap::_res::_old::init(_res* res_outer, Paint_hDC* hDC)
 {
 	m_res_outer = res_outer;
@@ -128,6 +131,7 @@ void Paint_hBitmap::_res::set()
 
 	flag_isSet = TRUE;
 }
+
 void Paint_hBitmap::_res::init(Paint_hDC* hDC, Bitmap* bmp)
 {
 	for (int i = 0; i < m_res.size(); i++)
@@ -137,13 +141,13 @@ void Paint_hBitmap::_res::init(Paint_hDC* hDC, Bitmap* bmp)
 	//(winAPI.hBitmap.resource.size() != 0)
 	flag_isSet = FALSE;
 }
-void Paint_hBitmap::_res::resize(size_t newSize)
+
+void RollingBall::Paint_hBitmap::_res::resize(size_t newSize)
 {
 	m_res.resize(newSize);
 }
 
-
-void Paint_hBitmap::init(HWND hwnd, Bitmap* bmp, Paint_hDC* hDC)
+void RollingBall::Paint_hBitmap::init(HWND hwnd, Bitmap* bmp, Paint_hDC* hDC)
 {
 	if (flag_isInit) return;
 
@@ -157,7 +161,8 @@ void Paint_hBitmap::init(HWND hwnd, Bitmap* bmp, Paint_hDC* hDC)
 
 	flag_isInit = TRUE;
 }
-BOOL Paint_hBitmap::isInit()
+
+BOOL RollingBall::Paint_hBitmap::isInit()
 {
 	return flag_isInit;
 }
