@@ -104,7 +104,6 @@ void RollingBall::EventProducer::translate_windowEvent(UINT iMsg, WPARAM wParam,
 	MouseEvent em = produce_mouseEvent(iMsg, wParam, lParam);
 	if (em.isValid)
 	{
-
 		//마우스 좌표에 존재하는 모든 EventAcceptable 객체에 마우스 이벤트를 보낸다
 		// -> 나중에 우선순위를 참고해 하나의 객체에 이벤트를 보내게 수정할 것임
 		for (int i = 0; i < EventAcceptable::object_ref.size(); i++)
@@ -123,10 +122,8 @@ void RollingBall::EventProducer::translate_windowEvent(UINT iMsg, WPARAM wParam,
 	}
 
 	Event e = produce_Event(iMsg, wParam, lParam);
-	for (int i = 0; i < EventAcceptable::object_ref.size(); i++)
-	{
-		EventAcceptable::object_ref[i]->event_all(e);
-	}
+		for (int i = 0; i < EventAcceptable::object_ref.size(); i++)
+			EventAcceptable::object_ref[i]->event_all(e);
 }
 
 
