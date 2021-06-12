@@ -85,7 +85,6 @@ void RollingBall::RollingBallClass::event_keyboard(KeyboardEvent e)
 }
 void RollingBall::RollingBallClass::event_all(Event e)
 {
-	static int k = 1;
 	switch (e.winmsg.iMsg)
 	{
 	case WM_PAINT:
