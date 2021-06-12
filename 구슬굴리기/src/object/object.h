@@ -8,7 +8,6 @@
 #include <tchar.h>
 #include "../calc/physics.h"
 #include "../calc/scaler.h"
-#include "../event/event.h"
 
 using std::vector;
 typedef std::basic_string<TCHAR> tstring;
