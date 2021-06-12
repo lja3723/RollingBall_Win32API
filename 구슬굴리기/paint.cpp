@@ -36,7 +36,7 @@ BOOL Paint::init(HINSTANCE m_hInstance, HWND m_hwnd)
 
 	memset(&winAPI.windowRect, 0, sizeof(winAPI.windowRect));
 
-	winAPI.hDC.init(m_hwnd);
+	winAPI.hDC.init();
 
 	hBitmap_windowBuffer_init();
 	hBitmap_res_init();
@@ -58,13 +58,13 @@ void RollingBall::Paint::scale_set(pixel px_rate)
 void Paint::begin()
 {
 	winAPI.hDC.window.mode.set_BeginPaint();
-	winAPI.hDC.window.set();
+	winAPI.hDC.window.set(winAPI.hwnd);
 	doubleBuffering_start();
 }
 void Paint::end()
 {
 	flush_buffer();
-	winAPI.hDC.window.release();
+	winAPI.hDC.window.release(winAPI.hwnd);
 	doubleBuffering_stop();
 }
 void Paint::background(Object& background)
@@ -290,7 +290,7 @@ void Paint::doubleBuffering_init()
 
 	//hDC.mem.window와 hDC.mem.res를 생성하고 
 	//hBitmap.res를 hDC.mem.res에 선택시킨다
-	winAPI.hDC.mem.create();
+	winAPI.hDC.mem.create(winAPI.hDC.window(), winAPI.hDC.mem.windowBuffer());
 	hBitmap_old_res_backup();
 
 	//hBitmap.windowBuffer를 생성한 뒤 그것을 hDC.mem.windowBuffer에 선택시킨다

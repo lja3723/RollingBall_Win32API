@@ -10,36 +10,30 @@ using namespace RollingBall;
 *		- hDCwindow Management
 *
 *********************************/
-
-void Paint_hDC::_window::init(HWND hwnd)
-{
-	m_window = NULL;
-	m_hwnd = hwnd;
-}
-void Paint_hDC::_window::set()
+void Paint_hDC::_window::set(HWND hwnd)
 {
 	if (isSet())
-		release();
+		release(hwnd);
 
 	if (mode.isGetDC())
-		m_window = GetDC(m_hwnd);
+		m_window = GetDC(hwnd);
 	else
-		m_window = BeginPaint(m_hwnd, &m_ps);
+		m_window = BeginPaint(hwnd, &m_ps);
 }
 HDC& Paint_hDC::_window::operator()()
 {
 	return m_window;
 }
-void Paint_hDC::_window::release()
+void Paint_hDC::_window::release(HWND hwnd)
 {
 	if (!isSet()) return;
 
 	if (mode.isGetDC())
-		ReleaseDC(m_hwnd, m_window);
+		ReleaseDC(hwnd, m_window);
 	else
-		EndPaint(m_hwnd, &m_ps);
+		EndPaint(hwnd, &m_ps);
 
-	init(m_hwnd);
+	init();
 }
 BOOL Paint_hDC::_window::isSet()
 {
@@ -74,13 +68,13 @@ void Paint_hDC::_mem::_windowBuffer::init()
 {
 	m_windowBuffer = NULL;
 }
-void Paint_hDC::_mem::_windowBuffer::set()
+void Paint_hDC::_mem::_windowBuffer::set(HDC window)
 {
 	if (isSet())
 		release();
 
 	//화면 DC와 호환이 되는 memDC를 생성
-	m_windowBuffer = CreateCompatibleDC(m_hDC->window());
+	m_windowBuffer = CreateCompatibleDC(window);
 }
 HDC& Paint_hDC::_mem::_windowBuffer::operator()()
 {
@@ -100,17 +94,18 @@ BOOL Paint_hDC::_mem::_windowBuffer::isSet()
 
 void Paint_hDC::_mem::_res::init()
 {
+	flag_isSet = NULL;
 	for (int i = 0; i < m_res.size(); i++)
 		m_res[i] = NULL;
 }
-void Paint_hDC::_mem::_res::set()
+void Paint_hDC::_mem::_res::set(HDC mem_windowBuffer)
 {
 	if (isSet())
 		release();
 
 	//화면 DC화 호환되는 memDC와 호환되는 memory DC 생성
 	for (int i = 0; i < m_res.size(); i++)
-		m_res[i] = CreateCompatibleDC(m_hDC->mem.windowBuffer());
+		m_res[i] = CreateCompatibleDC(mem_windowBuffer);
 
 	flag_isSet = TRUE;
 }
@@ -146,10 +141,10 @@ BOOL Paint_hDC::_mem::_res::isSet()
 	return flag_isSet;
 }
 
-void Paint_hDC::_mem::create()
+void Paint_hDC::_mem::create(HDC window, HDC mem_windowBuffer)
 {
-	windowBuffer.set();
-	res.set();
+	windowBuffer.set(window);
+	res.set(mem_windowBuffer);
 }
 void Paint_hDC::_mem::del()
 {
@@ -157,9 +152,9 @@ void Paint_hDC::_mem::del()
 	res.release();
 }
 
-void Paint_hDC::init(HWND hwnd)
+void Paint_hDC::init()
 {
-	window.init(hwnd);
+	window.init();
 	mem.windowBuffer.init();
 	mem.res.init();
 }
