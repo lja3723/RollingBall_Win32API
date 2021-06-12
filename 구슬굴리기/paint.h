@@ -31,11 +31,16 @@ namespace RollingBall
 
 		//리소스 개수를 저장함
 		static int res_count;
-		HINSTANCE hInstance;
-		HWND hwnd;
-		RECT windowRect;
-		Paint_hDC hDC;
-		Paint_hBitmap hBitmap;
+
+		//Win32API에서 사용되는 변수들의 집합체
+		struct _winAPI{
+			HINSTANCE hInstance;
+			HWND hwnd;
+			RECT windowRect;
+
+			Paint_hDC hDC;
+			Paint_hBitmap hBitmap;
+		} winAPI;
 		
 		//여러가지 플래그를 저장하는 변수
 		struct _flag{
@@ -71,7 +76,6 @@ namespace RollingBall
 		void text(LPCTSTR text, pixel x, pixel y);
 	
 	
-
 	private:
 		/********************************
 		*
@@ -116,6 +120,7 @@ namespace RollingBall
 
 
 
+
 		/********************************
 		*
 		*	paint management
@@ -132,6 +137,7 @@ namespace RollingBall
 		void paint_text_tobuffer(LPCTSTR text, pixel x, pixel y);
 		//버퍼에 그려진 그림을 윈도우로 출력
 		void flush_buffer();
+
 
 
 
