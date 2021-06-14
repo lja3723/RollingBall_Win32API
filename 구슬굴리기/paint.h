@@ -32,23 +32,20 @@ namespace RollingBall
 		//리소스 개수를 저장함
 		static int res_count;
 
-		//Win32API에서 사용되는 변수들의 집합체
-		struct _winAPI{
-			HINSTANCE hInstance;
-			HWND hwnd;
-			RECT windowRect;
+		HINSTANCE hInstance;
+		HWND hwnd;
+		RECT windowRect;
 
-			Paint_hDC hDC;
+		Paint_hDC hDC;
 
-			struct _hBitmap{
+		struct _hBitmap {
+			HBITMAP windowBuffer;
+			vector<HBITMAP> res;
+			struct _old {
 				HBITMAP windowBuffer;
 				vector<HBITMAP> res;
-				struct _old{
-					HBITMAP windowBuffer;
-					vector<HBITMAP> res;
-				} old;
-			} hBitmap;
-		} winAPI;
+			} old;
+		} hBitmap;
 		
 		//여러가지 플래그를 저장하는 변수
 		struct _flag{
