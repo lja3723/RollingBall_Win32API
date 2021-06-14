@@ -4,12 +4,18 @@ using namespace RollingBall;
 
 
 
+
 /********************************
 *
 *		private functions
 *		- hDCwindow Management
 *
 *********************************/
+void Paint_hDC::_window::init()
+{
+	m_window = NULL;
+	memset(&m_ps, 0, sizeof(m_ps));
+}
 void Paint_hDC::_window::set(HWND hwnd)
 {
 	if (isSet())
@@ -20,11 +26,11 @@ void Paint_hDC::_window::set(HWND hwnd)
 	else
 		m_window = BeginPaint(hwnd, &m_ps);
 }
-HDC& Paint_hDC::_window::operator()()
+RollingBall::Paint_hDC::_window::operator const HDC&()
 {
 	return m_window;
 }
-void Paint_hDC::_window::release(HWND hwnd)
+void Paint_hDC::_window::release(const HWND& hwnd)
 {
 	if (!isSet()) return;
 
@@ -68,7 +74,7 @@ void Paint_hDC::_mem::_windowBuffer::init()
 {
 	m_windowBuffer = NULL;
 }
-void Paint_hDC::_mem::_windowBuffer::set(HDC window)
+void Paint_hDC::_mem::_windowBuffer::set(const HDC& window)
 {
 	if (isSet())
 		release();
@@ -76,7 +82,7 @@ void Paint_hDC::_mem::_windowBuffer::set(HDC window)
 	//화면 DC와 호환이 되는 memDC를 생성
 	m_windowBuffer = CreateCompatibleDC(window);
 }
-HDC& Paint_hDC::_mem::_windowBuffer::operator()()
+RollingBall::Paint_hDC::_mem::_windowBuffer::operator const HDC& ()
 {
 	return m_windowBuffer;
 }
@@ -98,7 +104,7 @@ void Paint_hDC::_mem::_res::init()
 	for (int i = 0; i < m_res.size(); i++)
 		m_res[i] = NULL;
 }
-void Paint_hDC::_mem::_res::set(HDC mem_windowBuffer)
+void Paint_hDC::_mem::_res::set(const HDC& mem_windowBuffer)
 {
 	if (isSet())
 		release();
@@ -109,17 +115,12 @@ void Paint_hDC::_mem::_res::set(HDC mem_windowBuffer)
 
 	flag_isSet = TRUE;
 }
-HDC Paint_hDC::_mem::_res::operator()(int idx)
+const HDC& Paint_hDC::_mem::_res::operator[](int idx)
 {
 	if (0 <= idx && idx < m_res.size())
 		return m_res[idx];
 	else
-		return NULL;
-}
-void Paint_hDC::_mem::_res::operator()(int idx, HDC m_hdc)
-{
-	if (0 <= idx && idx < m_res.size())
-		m_res[idx] = m_hdc;
+		return m_res[0];
 }
 void Paint_hDC::_mem::_res::release()
 {
@@ -132,7 +133,7 @@ void Paint_hDC::_mem::_res::release()
 
 	flag_isSet = FALSE;
 }
-void Paint_hDC::_mem::_res::resize(size_t newSize)
+void Paint_hDC::_mem::_res::resize(const size_t& newSize)
 {
 	m_res.resize(newSize);
 }
@@ -141,7 +142,7 @@ BOOL Paint_hDC::_mem::_res::isSet()
 	return flag_isSet;
 }
 
-void Paint_hDC::_mem::create(HDC window, HDC mem_windowBuffer)
+void Paint_hDC::_mem::create(const HDC& window, const HDC& mem_windowBuffer)
 {
 	windowBuffer.set(window);
 	res.set(mem_windowBuffer);
@@ -150,11 +151,4 @@ void Paint_hDC::_mem::del()
 {
 	windowBuffer.release();
 	res.release();
-}
-
-void Paint_hDC::init()
-{
-	window.init();
-	mem.windowBuffer.init();
-	mem.res.init();
 }

@@ -36,8 +36,6 @@ BOOL Paint::init(HINSTANCE m_hInstance, HWND m_hwnd)
 
 	memset(&winAPI.windowRect, 0, sizeof(winAPI.windowRect));
 
-	winAPI.hDC.init();
-
 	hBitmap_windowBuffer_init();
 	hBitmap_res_init();
 
@@ -187,7 +185,7 @@ void Paint::hBitmap_windowBuffer_set()
 
 	//화면 DC와 호환되는 hBitmap을 로드한다
 	GetClientRect(winAPI.hwnd, &winAPI.windowRect);
-	winAPI.hBitmap.windowBuffer = bmp.create_hDC_compatible(winAPI.hDC.window(), winAPI.windowRect);
+	winAPI.hBitmap.windowBuffer = bmp.create_hDC_compatible(winAPI.hDC.window, winAPI.windowRect);
 }
 void Paint::hBitmap_windowBuffer_release()
 {
@@ -225,7 +223,7 @@ void Paint::hBitmap_old_windowBuffer_backup()
 
 	winAPI.hBitmap.old.windowBuffer
 		= (HBITMAP)SelectObject(
-			winAPI.hDC.mem.windowBuffer(),
+			winAPI.hDC.mem.windowBuffer,
 			winAPI.hBitmap.windowBuffer
 		);
 }
@@ -233,7 +231,7 @@ void Paint::hBitmap_old_windowBuffer_rollback()
 {
 	if (!isBackedUpHBitmapWindowBuffer()) return;
 	SelectObject(
-		winAPI.hDC.mem.windowBuffer(), 
+		winAPI.hDC.mem.windowBuffer, 
 		winAPI.hBitmap.old.windowBuffer
 	);
 	hBitmap_old_windowBuffer_init();
@@ -252,7 +250,7 @@ void Paint::hBitmap_old_res_backup()
 	for (int i = 0; i < res_count; i++)
 		winAPI.hBitmap.old.res[i]
 		= (HBITMAP)SelectObject(
-			winAPI.hDC.mem.res(i), 
+			winAPI.hDC.mem.res[i], 
 			winAPI.hBitmap.res[i]
 		);
 
@@ -264,7 +262,7 @@ void Paint::hBitmap_old_res_rollback()
 
 	for (int i = 0; i < res_count; i++)
 		SelectObject(
-			winAPI.hDC.mem.res(i), 
+			winAPI.hDC.mem.res[i], 
 			winAPI.hBitmap.old.res[i]
 		);
 
@@ -290,7 +288,7 @@ void Paint::doubleBuffering_init()
 
 	//hDC.mem.window와 hDC.mem.res를 생성하고 
 	//hBitmap.res를 hDC.mem.res에 선택시킨다
-	winAPI.hDC.mem.create(winAPI.hDC.window(), winAPI.hDC.mem.windowBuffer());
+	winAPI.hDC.mem.create(winAPI.hDC.window, winAPI.hDC.mem.windowBuffer);
 	hBitmap_old_res_backup();
 
 	//hBitmap.windowBuffer를 생성한 뒤 그것을 hDC.mem.windowBuffer에 선택시킨다
@@ -369,13 +367,13 @@ void Paint::paint_background_tobuffer(Object& background)
 	px_pos.x %= px_size;
 	px_pos.y %= px_size;
 
-	SetStretchBltMode(winAPI.hDC.mem.windowBuffer(), COLORONCOLOR);
+	SetStretchBltMode(winAPI.hDC.mem.windowBuffer, COLORONCOLOR);
 	for (int i = -1; i * px_size + px_pos.x < winAPI.windowRect.right; i++)
 		for (int j = -1; j * px_size + px_pos.y < winAPI.windowRect.bottom; j++)
 			StretchBlt(
-				winAPI.hDC.mem.windowBuffer(),
+				winAPI.hDC.mem.windowBuffer,
 				i * px_size + px_pos.x, j * px_size + px_pos.y, px_size, px_size,
-				winAPI.hDC.mem.res(bmp.idx(background, scale)), 0, 0, tsize, tsize,
+				winAPI.hDC.mem.res[bmp.idx(background, scale)], 0, 0, tsize, tsize,
 				SRCCOPY
 			);
 }
@@ -383,7 +381,7 @@ void Paint::paint_background_ruller_tobuffer()
 {
 	PhysicalVector p;
 	int cm = 40;
-	auto winBuff = winAPI.hDC.mem.windowBuffer();
+	auto winBuff = winAPI.hDC.mem.windowBuffer;
 
 	p(-cm, 0);
 	MoveToEx(winBuff, scale.transform(p).x, scale.transform(p).y, NULL);
@@ -437,11 +435,11 @@ void RollingBall::Paint::paint_tobuffer(Object& object)
 			pixel px_size = scale.px(object.physical.size);
 			pixel tsize = object.texture_size(scale);
 			PixelCoord px_pos = scale.transform(object.physical.pos);
-			SetStretchBltMode(winAPI.hDC.mem.windowBuffer(), COLORONCOLOR);
+			SetStretchBltMode(winAPI.hDC.mem.windowBuffer, COLORONCOLOR);
 			StretchBlt(
-				winAPI.hDC.mem.windowBuffer(),
+				winAPI.hDC.mem.windowBuffer,
 				px_pos.x - px_size / 2, px_pos.y - px_size / 2, px_size, px_size,
-				winAPI.hDC.mem.res(bmp.idx(object, scale, mask)), 0, 0, tsize, tsize,
+				winAPI.hDC.mem.res[bmp.idx(object, scale, mask)], 0, 0, tsize, tsize,
 				paintmode
 			);
 		}
@@ -457,7 +455,7 @@ void RollingBall::Paint::paint_info_tobuffer(Object& object, int yPos)
 
 void RollingBall::Paint::paint_text_tobuffer(LPCTSTR text, pixel x, pixel y)
 {
-	TextOut(winAPI.hDC.mem.windowBuffer(), x, y, text, (int)_tcslen(text));
+	TextOut(winAPI.hDC.mem.windowBuffer, x, y, text, (int)_tcslen(text));
 }
 
 void Paint::flush_buffer()
@@ -465,9 +463,9 @@ void Paint::flush_buffer()
 	if (!isReadyToPaint()) return;
 
 	BitBlt(
-		winAPI.hDC.window(), 
+		winAPI.hDC.window, 
 		0, 0, winAPI.windowRect.right, winAPI.windowRect.bottom,
-		winAPI.hDC.mem.windowBuffer(), 0, 0,
+		winAPI.hDC.mem.windowBuffer, 0, 0,
 		SRCCOPY
 	);
 }

@@ -34,17 +34,14 @@ namespace RollingBall
 				BOOL isBeginPaint();
 
 			}mode;
+		private:
+			void init();
 
 		public:
 			_window() { init(); }
-			void init()
-			{
-				m_window = NULL;
-				memset(&m_ps, 0, sizeof(m_ps));
-			}
 			void set(HWND hwnd);
-			HDC& operator()();
-			void release(HWND hwnd);
+			operator const HDC&();
+			void release(const HWND& hwnd);
 			BOOL isSet();
 
 		}window;
@@ -58,13 +55,16 @@ namespace RollingBall
 			private:
 				//Paint_hDC* m_hDC;
 				HDC m_windowBuffer;
+
+			private:
+				void init();
+
 			public:
 				_windowBuffer()
 				{ init(); }
 
-				void init();
-				void set(HDC window);
-				HDC& operator()();
+				void set(const HDC& window);
+				operator const HDC&();				
 				void release();
 				BOOL isSet();
 
@@ -74,31 +74,24 @@ namespace RollingBall
 			private:
 				vector<HDC> m_res;
 				BOOL flag_isSet;
+
+			private:
+				void init();
+
 			public:
 				_res() { init(); }
 
-				void init();
-				void set(HDC mem_windowBuffer);
-				HDC operator()(int idx);
-				void operator()(int idx, HDC m_hdc);
+				void set(const HDC& mem_windowBuffer);
+				const HDC& operator[](int idx);
 				void release();
-				void resize(size_t newSize);
+				void resize(const size_t& newSize);
 				BOOL isSet();
 			} res;
 
 		public:
-			_mem()
-			{
-
-			}
-			void create(HDC window, HDC mem_windowBuffer);
+			void create(const HDC& window, const HDC& mem_windowBuffer);
 			void del();
 		} mem;
-
-	//public function
-	public:
-		Paint_hDC() { init(); }
-		void init();
 	};
 }
 
