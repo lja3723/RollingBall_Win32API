@@ -9,6 +9,8 @@ namespace RollingBall
 {
 	class Paint_hBitmap
 	{
+	private:
+		static Bitmap m_bmp;
 	public:
 		class _windowBuffer
 		{
@@ -17,8 +19,8 @@ namespace RollingBall
 		public:
 			BOOL isSet();
 			void init();
-			void set(const HWND& hwnd, Bitmap& bmp, const HDC& hDC_window);
-			void release(Bitmap& bmp);
+			void set(const HWND& hwnd, const HDC& hDC_window);
+			void release();
 
 			class _old
 			{
@@ -41,7 +43,7 @@ namespace RollingBall
 		public:
 			BOOL isSet();
 			void init();
-			void set(Bitmap& bmp);
+			void set();
 			void resize(const size_t& newSize);
 
 			class _old
@@ -57,6 +59,12 @@ namespace RollingBall
 				void resize(const size_t& newSize);
 			} old;
 		} res;
+
+	public:
+		BOOL init(HINSTANCE hInstance);
+		BOOL isInit();
+		int bmpidx(Object& object, Scaler& scale, BOOL mask_texture = FALSE);
+		int res_count();
 	};
 }
 

@@ -3,16 +3,6 @@
 using namespace RollingBall;
 
 
-
-/********************************
-*
-*		static variables
-*		initialization
-*
-*********************************/
-int Paint::res_count = 0;
-
-
 /********************************
 * 
 *		public functions
@@ -28,10 +18,9 @@ BOOL Paint::init(HINSTANCE m_hInstance, HWND m_hwnd)
 
 	hInstance = m_hInstance;
 	hwnd = m_hwnd;
-	if (!bmp.init(hInstance)) return FALSE;
+	if (!hBitmap.init(hInstance)) return FALSE;
 
 	init_flags();
-	init_res_count();
 	scale_set(32);
 
 	memset(&windowRect, 0, sizeof(windowRect));
@@ -42,7 +31,7 @@ BOOL Paint::init(HINSTANCE m_hInstance, HWND m_hwnd)
 	hBitmap.windowBuffer.old.init();
 	hBitmap.res.old.init();
 
-	hBitmap.res.set(bmp);
+	hBitmap.res.set();
 
 	return TRUE;
 }
@@ -102,18 +91,15 @@ void Paint::init_flags()
 	flag.isDoubleBufferingStart = FALSE;
 	flag.isInitDoubleBuffering = FALSE;
 	flag.isWindowSizeChanged = FALSE;
-}
-void Paint::init_res_count()
-{
-	if (!bmp.isInit()) return;
-	res_count = bmp.file_count();
-	init_res_vectors();
+	flag.isInitResVectors = FALSE;
 }
 void Paint::init_res_vectors()
 {
-	hDC.mem.res.resize(res_count);
-	hBitmap.res.resize(res_count);
-	hBitmap.res.old.resize(res_count);
+	if (!hBitmap.isInit()) return;
+	hDC.mem.res.resize(hBitmap.res_count());
+	hBitmap.res.resize(hBitmap.res_count());
+	hBitmap.res.old.resize(hBitmap.res_count());
+	flag.isInitResVectors = TRUE;
 }
 
 
@@ -127,6 +113,11 @@ void Paint::init_res_vectors()
 BOOL Paint::isInit()
 {
 	return hInstance != NULL;
+}
+
+BOOL RollingBall::Paint::isInitResVectors()
+{
+	return flag.isInitResVectors;
 }
 
 
@@ -167,7 +158,7 @@ void Paint::doubleBuffering_init()
 	hBitmap.res.old.backup(hDC);
 
 	//hBitmap.windowBuffer를 생성한 뒤 그것을 hDC.mem.windowBuffer에 선택시킨다
-	hBitmap.windowBuffer.set(hwnd, bmp, hDC.window);
+	hBitmap.windowBuffer.set(hwnd, hDC.window);
 	hBitmap.windowBuffer.old.backup(hDC);
 
 	flag.isInitDoubleBuffering = TRUE;
@@ -187,10 +178,10 @@ void Paint::doubleBuffering_start()
 		GetClientRect(hwnd, &windowRect);
 		//hBitmap.windowBuffer를 hDC.mem.windowBuffer에서 롤백하고 release한다
 		hBitmap.windowBuffer.old.rollback(hDC);
-		hBitmap.windowBuffer.release(bmp);
+		hBitmap.windowBuffer.release();
 
 		//hBitmap.windowBuffer를 생성한 뒤 그것을 hDC.mem.windowBuffer에 선택시킨다
-		hBitmap.windowBuffer.set(hwnd, bmp, hDC.window);
+		hBitmap.windowBuffer.set(hwnd, hDC.window);
 		hBitmap.windowBuffer.old.backup(hDC);
 
 		PixelCoord p(windowRect.right / 2, windowRect.bottom / 2);
@@ -214,7 +205,7 @@ void Paint::doubleBuffering_halt()
 {
 	//hBitmap.windowBuffer를 hDC.mem.windowBuffer에서 롤백하고 release한다
 	hBitmap.windowBuffer.old.rollback(hDC);
-	hBitmap.windowBuffer.release(bmp);
+	hBitmap.windowBuffer.release();
 
 	//doublebuffering을 끝내고 프로그램을 종료할 때 마지막으로 아래 작업 수행
 	//hDC.mem.windowBuffer와 hDC.mem.res를 삭제함
@@ -248,7 +239,7 @@ void Paint::paint_background_tobuffer(Object& background)
 			StretchBlt(
 				hDC.mem.windowBuffer,
 				i * px_size + px_pos.x, j * px_size + px_pos.y, px_size, px_size,
-				hDC.mem.res[bmp.idx(background, scale)], 0, 0, tsize, tsize,
+				hDC.mem.res[hBitmap.bmpidx(background, scale)], 0, 0, tsize, tsize,
 				SRCCOPY
 			);
 }
@@ -288,6 +279,8 @@ void Paint::paint_background_ruller_tobuffer()
 void RollingBall::Paint::paint_tobuffer(Object& object)
 {
 	if (!isReadyToPaint()) return;
+	if (!isInitResVectors()) return;
+	debuggerMessage("이메세지가 한번이라도 보여라~~~[Paint::paint_tobugger()의 메세지]");
 
 	if (_tcscmp(object.bitmap_name(), _T("floor")) == 0)
 	{
@@ -314,7 +307,7 @@ void RollingBall::Paint::paint_tobuffer(Object& object)
 			StretchBlt(
 				hDC.mem.windowBuffer,
 				px_pos.x - px_size / 2, px_pos.y - px_size / 2, px_size, px_size,
-				hDC.mem.res[bmp.idx(object, scale, mask)], 0, 0, tsize, tsize,
+				hDC.mem.res[hBitmap.bmpidx(object, scale, mask)], 0, 0, tsize, tsize,
 				paintmode
 			);
 		}
