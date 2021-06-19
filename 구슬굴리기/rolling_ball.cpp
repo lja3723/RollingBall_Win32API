@@ -54,12 +54,10 @@ BOOL RollingBallClass::init(HINSTANCE m_hInstance, HWND m_hwnd, UINT frame_updat
 
 	Ball _ball;
 
-	for (int y = 5; y >= 0; y--)
-		for (int x = 0; x <= 4; x++)
-		{
-			_ball.physical.pos(x, y);
-			ball.push_back(_ball);
-		}
+	_ball.physical.pos(0, 0);
+	ball.push_back(_ball);
+	_ball.physical.pos(0, -1);
+	ball.push_back(_ball);
 
 	//memset(&physics, 0, sizeof(physics));
 
