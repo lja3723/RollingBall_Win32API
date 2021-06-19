@@ -91,16 +91,11 @@ BOOL Paint_hBitmap::_res::_old::isBackedUp()
 {
 	return flag_isBackedUp;
 }
-void Paint_hBitmap::_res::_old::resize(const size_t& newSize)
-{
-	m_res.resize(newSize);
-}
 void Paint_hBitmap::_res::_old::init()
 {
 	for (int i = 0; i < m_res.size(); i++)
 		m_res[i] = NULL;
 }
-
 //틀린코드 수정필요
 void Paint_hBitmap::_res::_old::backup(Paint_hDC& hDC)
 {
@@ -131,6 +126,10 @@ void Paint_hBitmap::_res::_old::rollback(Paint_hDC& hDC)
 	init();
 
 	flag_isBackedUp = FALSE;
+}
+void Paint_hBitmap::_res::_old::resize(const size_t& newSize)
+{
+	m_res.resize(newSize);
 }
 
 BOOL RollingBall::Paint_hBitmap::init(HINSTANCE hInstance)

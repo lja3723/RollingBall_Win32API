@@ -60,22 +60,7 @@ void Paint::_oldcode_hBitmap_windowBuffer_release()
 	_oldcode_bmp.delete_hDC_compatible(_oldcode_hBitmap.windowBuffer);
 	_oldcode_hBitmap_windowBuffer_init();
 }
-void Paint::_oldcode_hBitmap_res_init()
-{
-	for (int i = 0; i < hBitmap.res_count(); i++)
-		_oldcode_hBitmap.res[i] = NULL;
 
-	//아래 플래그 변수는 삭제할 수 있을 것 같다 
-	//(hBitmap.resource.size() != 0)
-	_oldcode_flag_isSetHBitmapRes = FALSE;
-}
-void Paint::_oldcode_hBitmap_res_set()
-{
-	for (int i = 0; i < hBitmap.res_count(); i++)
-		_oldcode_hBitmap.res[i] = _oldcode_bmp(i);
-
-	_oldcode_flag_isSetHBitmapRes = TRUE;
-}
 
 void Paint::_oldcode_hBitmap_old_windowBuffer_init()
 {
@@ -103,6 +88,27 @@ void Paint::_oldcode_hBitmap_old_windowBuffer_rollback()
 	);
 	_oldcode_hBitmap_old_windowBuffer_init();
 }
+
+
+
+void Paint::_oldcode_hBitmap_res_init()
+{
+	for (int i = 0; i < hBitmap.res_count(); i++)
+		_oldcode_hBitmap.res[i] = NULL;
+
+	//아래 플래그 변수는 삭제할 수 있을 것 같다 
+	//(hBitmap.resource.size() != 0)
+	_oldcode_flag_isSetHBitmapRes = FALSE;
+}
+void Paint::_oldcode_hBitmap_res_set()
+{
+	for (int i = 0; i < hBitmap.res_count(); i++)
+		_oldcode_hBitmap.res[i] = _oldcode_bmp(i);
+
+	_oldcode_flag_isSetHBitmapRes = TRUE;
+}
+
+
 void Paint::_oldcode_hBitmap_old_res_init()
 {
 	for (int i = 0; i < hBitmap.res_count(); i++)
