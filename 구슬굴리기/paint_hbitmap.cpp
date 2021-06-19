@@ -12,19 +12,23 @@ void Paint_hBitmap::_windowBuffer::init()
 {
 	m_windowBuffer = NULL;
 }
-void RollingBall::Paint_hBitmap::_windowBuffer::set(const HWND& hwnd, const HDC& hDC_window)
+void RollingBall::Paint_hBitmap::_windowBuffer::set(const HWND& hwnd, Paint_hDC& hDC)
 {
 	if (isSet())
-		release();
+		release(hDC);
 
 	RECT windowRect;
 	//화면 DC와 호환되는 hBitmap을 로드한다
 	GetClientRect(hwnd, &windowRect);
-	m_windowBuffer = m_bmp.create_hDC_compatible(hDC_window, windowRect);
+	m_windowBuffer = m_bmp.create_hDC_compatible(hDC.window, windowRect);
+
+	backup(hDC);
 }
-void RollingBall::Paint_hBitmap::_windowBuffer::release()
+void RollingBall::Paint_hBitmap::_windowBuffer::release(Paint_hDC& hDC)
 {
 	if (!isSet()) return;
+
+	rollback(hDC);
 	//hBitmap을 삭제함
 	m_bmp.delete_hDC_compatible(m_windowBuffer);
 	init();
@@ -59,7 +63,7 @@ void Paint_hBitmap::_windowBuffer::rollback(Paint_hDC& hDC)
 		hDC.mem.windowBuffer,
 		old.m_windowBuffer
 	);
-	init();
+	//init();
 }
 
 BOOL Paint_hBitmap::_res::isSet()
@@ -75,11 +79,24 @@ void Paint_hBitmap::_res::init()
 	//(resource.size() != 0)
 	flag_isSet = FALSE;
 }
-void RollingBall::Paint_hBitmap::_res::set()
+void RollingBall::Paint_hBitmap::_res::set(Paint_hDC& hDC)
 {
+	if (isSet())
+		release(hDC);
+
 	for (int i = 0; i < m_res.size(); i++)
 		m_res[i] = m_bmp(i);
+
+	backup(hDC);
+
 	flag_isSet = TRUE;
+}
+void RollingBall::Paint_hBitmap::_res::release(Paint_hDC& hDC) //작성필요
+{
+	if (!isSet()) return;
+
+	rollback(hDC);
+	init();
 }
 void Paint_hBitmap::_res::resize(const size_t& newSize)
 {
@@ -123,7 +140,7 @@ void Paint_hBitmap::_res::rollback(Paint_hDC& hDC)
 			old.m_res[i]
 		);
 
-	init();
+	//init();
 
 	old.flag_isBackedUp = FALSE;
 }

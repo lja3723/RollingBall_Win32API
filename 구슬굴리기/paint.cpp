@@ -187,10 +187,10 @@ BOOL Paint::init(HINSTANCE m_hInstance, HWND m_hwnd)
 	_oldcode_hBitmap_res_init();
 	_oldcode_hBitmap_old_res_init();
 
-	//아래 코드만 새코드로 코딩하면됨
-	_oldcode_hBitmap_res_set();
+	////아래 코드만 새코드로 코딩하면됨
+	//_oldcode_hBitmap_res_set();
 	//~oldcode//newcode
-	hBitmap.res.set();
+	//hBitmap.res.set(hDC);
 	//~newcode
 
 	return TRUE;
@@ -317,11 +317,11 @@ void Paint::doubleBuffering_init()
 	
 	
 	//newcode
-	hBitmap.res.backup(hDC);
+	hBitmap.res.set(hDC);
 
 	//hBitmap.windowBuffer를 생성한 뒤 그것을 hDC.mem.windowBuffer에 선택시킨다
-	hBitmap.windowBuffer.set(hwnd, hDC.window);
-	hBitmap.windowBuffer.backup(hDC);
+	hBitmap.windowBuffer.set(hwnd, hDC);
+	//hBitmap.windowBuffer.backup(hDC);
 	//~newcode
 
 	flag.isInitDoubleBuffering = TRUE;
@@ -349,11 +349,11 @@ void Paint::doubleBuffering_start()
 		//_oldcode_hBitmap_old_windowBuffer_backup();
 		//~oldcode//newcode
 		//hBitmap.windowBuffer를 hDC.mem.windowBuffer에서 롤백하고 release한다
-		hBitmap.windowBuffer.rollback(hDC);
-		hBitmap.windowBuffer.release();
+		//hBitmap.windowBuffer.rollback(hDC);
+		hBitmap.windowBuffer.release(hDC);
 		//hBitmap.windowBuffer를 생성한 뒤 그것을 hDC.mem.windowBuffer에 선택시킨다
-		hBitmap.windowBuffer.set(hwnd, hDC.window);
-		hBitmap.windowBuffer.backup(hDC);
+		hBitmap.windowBuffer.set(hwnd, hDC);
+		//hBitmap.windowBuffer.backup(hDC);
 		//~newcode
 
 
@@ -386,12 +386,13 @@ void Paint::doubleBuffering_halt()
 	//_oldcode_hBitmap_old_res_rollback();
 	//~oldcode//newcode
 	//hBitmap.windowBuffer를 hDC.mem.windowBuffer에서 롤백하고 release한다
-	hBitmap.windowBuffer.rollback(hDC);
-	hBitmap.windowBuffer.release();
+	//hBitmap.windowBuffer.rollback(hDC);
+	hBitmap.windowBuffer.release(hDC);
 
 	//doublebuffering을 끝내고 프로그램을 종료할 때 마지막으로 아래 작업 수행
 	//hDC.mem.windowBuffer와 hDC.mem.res를 삭제함
-	hBitmap.res.rollback(hDC);
+	//hBitmap.res.rollback(hDC);
+	hBitmap.res.release(hDC);
 	//~newcode
 
 	hDC.mem.del();

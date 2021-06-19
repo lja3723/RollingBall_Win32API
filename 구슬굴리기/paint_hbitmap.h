@@ -27,8 +27,6 @@ namespace RollingBall
 				void init();
 			} old;
 
-		public:
-		//private:
 			void backup(Paint_hDC& hDC);
 			void rollback(Paint_hDC& hDC);
 
@@ -37,11 +35,11 @@ namespace RollingBall
 			BOOL isSet();
 			void init();
 
-			//set 수행후 backup함수 실행하기
-			void set(const HWND& hwnd, const HDC& hDC_window);
+			//set 수행후 backup함수 실행하기 (완료)
+			void set(const HWND& hwnd, Paint_hDC& hDC);
 
-			//release 수행전 rollback 함수 실행하기
-			void release();
+			//release 수행전 rollback 함수 실행하기 (완료)
+			void release(Paint_hDC& hDC);
 
 		} windowBuffer;
 
@@ -67,8 +65,6 @@ namespace RollingBall
 				void resize(const size_t& newSize);
 			} old;
 
-		//private:
-		public:
 			void backup(Paint_hDC& hDC);
 			void rollback(Paint_hDC& hDC);
 
@@ -80,11 +76,11 @@ namespace RollingBall
 			BOOL isSet();
 			void init();
 
-			//set 수행후 backup함수 실행하기
-			void set();
+			//set 수행후 backup함수 실행하기 (완료)
+			void set(Paint_hDC& hDC);
 
-			//release 수행전 rollback 함수 실행하기
-			void release();
+			//release 수행전 rollback 함수 실행하기 (완료)
+			void release(Paint_hDC& hDC);
 
 			void resize(const size_t& newSize);
 		} res;
