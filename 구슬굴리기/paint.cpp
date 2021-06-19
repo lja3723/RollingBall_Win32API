@@ -84,7 +84,7 @@ void RollingBall::Paint::text(LPCTSTR text, pixel x, pixel y)
 void Paint::init_res_vectors(int res_count)
 {
 	hBitmap.resize_res_vector(res_count);
-	hDC.mem.res.resize(res_count); //이부분도 hDC.resize_res_vector로 호출하게 수정하자
+	hDC.resize_res_vector(res_count);
 }
 
 

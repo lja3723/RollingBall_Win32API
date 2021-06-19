@@ -152,3 +152,8 @@ void Paint_hDC::_mem::del()
 	windowBuffer.release();
 	res.release();
 }
+
+void RollingBall::Paint_hDC::resize_res_vector(const size_t& newSize)
+{
+	mem.res.resize(newSize);
+}
