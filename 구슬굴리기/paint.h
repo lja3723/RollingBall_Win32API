@@ -34,9 +34,6 @@ namespace RollingBall
 		Paint_hDC hDC;
 		Paint_hBitmap hBitmap;
 
-
-
-
 		//여러가지 플래그를 저장하는 변수
 		class _flag{
 		public:
@@ -57,11 +54,6 @@ namespace RollingBall
 			hInstance = NULL;
 			hwnd = NULL;
 			memset(&windowRect, 0, sizeof(windowRect));
-
-			//oldcode
-			//_oldcode_flag_isSetHBitmapRes = FALSE;
-			//_oldcode_flag_isBackedUpHBitmapRes = FALSE;
-			//~oldcode
 		}
 		~Paint();
 
@@ -89,53 +81,6 @@ namespace RollingBall
 		void info(Object& obj, int yPos = 0);
 
 		void text(LPCTSTR text, pixel x, pixel y);
-	
-		//////////////////////////////////
-		//oldcode
-		//////////////////////////////////
-		/*
-	private:
-		Bitmap _oldcode_bmp;
-		//리소스 개수를 저장함
-		//static int _oldcode_res_count;
-
-		struct __oldcode_hBitmap {
-			HBITMAP windowBuffer;
-			vector<HBITMAP> res;
-			struct _old {
-				HBITMAP windowBuffer;
-				vector<HBITMAP> res;
-			} old;
-		} _oldcode_hBitmap;
-
-		BOOL _oldcode_flag_isSetHBitmapRes;
-		BOOL _oldcode_flag_isBackedUpHBitmapRes;
-
-		//void _oldcode_init_res_count();
-		//변수가 세팅되었는지 알려줌
-		BOOL _oldcode_isSetHBitmapWindowBuffer();
-		BOOL _oldcode_isSetHBitmapRes();
-		BOOL _oldcode_isBackedUpHBitmapWindowBuffer();
-		BOOL _oldcode_isBackedUpHBitmapRes();
-
-		//hBitmap 변수를 관리함
-		void _oldcode_hBitmap_windowBuffer_init();
-		void _oldcode_hBitmap_windowBuffer_set________2();
-		void _oldcode_hBitmap_windowBuffer_release();
-		void _oldcode_hBitmap_res_init();
-		void _oldcode_hBitmap_res_set();
-
-		//hBitmap.old 변수를 관리함
-		void _oldcode_hBitmap_old_windowBuffer_init();
-		void _oldcode_hBitmap_old_windowBuffer_backup________3();
-		void _oldcode_hBitmap_old_windowBuffer_rollback();
-		void _oldcode_hBitmap_old_res_init();
-		void _oldcode_hBitmap_old_res_backup______1();
-		void _oldcode_hBitmap_old_res_rollback();
-		*/
-		//////////////////////////////////
-		//~oldcode
-		//////////////////////////////////
 	
 
 	private:
@@ -171,10 +116,11 @@ namespace RollingBall
 		*********************************/
 		//더블버퍼링을 처음으로 시작하기 위한 준비를 함
 		void doubleBuffering_init();
-		//더블버퍼링을 시작하고 종료함
+		//더블버퍼링을 시작함
 		void doubleBuffering_start();
+		//더블버퍼링을 종료함
 		void doubleBuffering_stop();
-		//프로그램을 종료할 때 진행함
+		//프로그램을 종료할 때 진행함(소멸자가 호출)
 		void doubleBuffering_halt();
 
 
@@ -187,7 +133,6 @@ namespace RollingBall
 		//오브젝트를 버퍼에 그림
 		void paint_background_tobuffer(Object& background);
 		void paint_background_ruller_tobuffer();
-		//void paint_ball_tobuffer(int x, int y, int ballsize = 64);
 		void paint_tobuffer(Object& object);
 
 		void paint_info_tobuffer(Object& object, int yPos = 0);
