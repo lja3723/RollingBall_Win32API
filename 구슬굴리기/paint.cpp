@@ -20,7 +20,6 @@ BOOL Paint::init(HINSTANCE m_hInstance, HWND m_hwnd)
 	hwnd = m_hwnd;
 	if (!hBitmap.init(hInstance)) return FALSE;
 
-	init_res_vectors();
 	init_flags();
 	scale_set(32);
 
@@ -341,6 +340,7 @@ void Paint::flush_buffer()
 
 void RollingBall::Paint::event_all(Event e)
 {
+
 	if (e.winmsg.iMsg == WM_SIZE)
 	{
 		switch (e.winmsg.wParam)
