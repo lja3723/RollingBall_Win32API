@@ -252,7 +252,7 @@ void Paint::init_res_vectors(int res_count)
 	_oldcode_hBitmap.res.resize(res_count);
 	_oldcode_hBitmap.old.res.resize(res_count);
 	//~oldcode//newcode
-	hBitmap.resize_vectors(res_count);
+	hBitmap.resize_res_vector(res_count);
 	//~newcode
 	hDC.mem.res.resize(res_count);
 }

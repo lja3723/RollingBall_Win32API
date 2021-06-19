@@ -38,26 +38,26 @@ void Paint_hBitmap::_windowBuffer::_old::init()
 {
 	m_windowBuffer = NULL;
 }
-//틀린코드 수정필요
-void Paint_hBitmap::_windowBuffer::_old::backup(Paint_hDC& hDC)
+//틀린코드 수정필요 (수정완료)
+void Paint_hBitmap::_windowBuffer::backup(Paint_hDC& hDC)
 {
 	if (!hDC.mem.windowBuffer.isSet()) return;
-	if (isBackedUp())
+	if (old.isBackedUp())
 		rollback(hDC);
 
-	m_windowBuffer
+	old.m_windowBuffer
 		= (HBITMAP)SelectObject(
 			hDC.mem.windowBuffer,
-			//잘못된 코드(_res의 m_windowBuffer를 인자로 줘야함)
+			//잘못된 코드(_windowBuffer의 m_windowBuffer를 인자로 줘야함) (수정완료)
 			m_windowBuffer
 		);
 }
-void Paint_hBitmap::_windowBuffer::_old::rollback(Paint_hDC& hDC)
+void Paint_hBitmap::_windowBuffer::rollback(Paint_hDC& hDC)
 {
-	if (!isBackedUp()) return;
+	if (!old.isBackedUp()) return;
 	SelectObject(
 		hDC.mem.windowBuffer,
-		m_windowBuffer
+		old.m_windowBuffer
 	);
 	init();
 }
@@ -84,6 +84,7 @@ void RollingBall::Paint_hBitmap::_res::set()
 void Paint_hBitmap::_res::resize(const size_t& newSize)
 {
 	m_res.resize(newSize);
+	old.m_res.resize(newSize);
 }
 
 BOOL Paint_hBitmap::_res::_old::isBackedUp()
@@ -95,36 +96,36 @@ void Paint_hBitmap::_res::_old::init()
 	for (int i = 0; i < m_res.size(); i++)
 		m_res[i] = NULL;
 }
-//틀린코드 수정필요
-void Paint_hBitmap::_res::_old::backup(Paint_hDC& hDC)
+//틀린코드 수정필요 (수정완료)
+void Paint_hBitmap::_res::backup(Paint_hDC& hDC)
 {
 	if (!hDC.mem.res.isSet()) return;
-	if (!isBackedUp())
+	if (!old.isBackedUp())
 		rollback(hDC);
 
-	for (int i = 0; i < m_res.size(); i++)
-		m_res[i]
+	for (int i = 0; i < old.m_res.size(); i++)
+		old.m_res[i]
 		= (HBITMAP)SelectObject(
 			hDC.mem.res[i],
-			//아래 코드는 틀렸음(_res의 m_res를 인자로줘야함)
+			//잘못된 코드(_res의 m_res를 인자로줘야함) (수정완료)
 			m_res[i]
 		);
 
-	flag_isBackedUp = TRUE;
+	old.flag_isBackedUp = TRUE;
 }
-void Paint_hBitmap::_res::_old::rollback(Paint_hDC& hDC)
+void Paint_hBitmap::_res::rollback(Paint_hDC& hDC)
 {
-	if (!isBackedUp()) return;
+	if (!old.isBackedUp()) return;
 
 	for (int i = 0; i < m_res.size(); i++)
 		SelectObject(
 			hDC.mem.res[i],
-			m_res[i]
+			old.m_res[i]
 		);
 
 	init();
 
-	flag_isBackedUp = FALSE;
+	old.flag_isBackedUp = FALSE;
 }
 void Paint_hBitmap::_res::_old::resize(const size_t& newSize)
 {
@@ -148,8 +149,7 @@ int RollingBall::Paint_hBitmap::res_count()
 	if (!m_bmp.isInit()) return 0;
 	return m_bmp.file_count();
 }
-void RollingBall::Paint_hBitmap::resize_vectors(const size_t& newSize)
+void RollingBall::Paint_hBitmap::resize_res_vector(const size_t& newSize)
 {
 	res.resize(newSize);
-	res.old.resize(newSize);
 }

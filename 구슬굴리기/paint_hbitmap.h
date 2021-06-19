@@ -14,24 +14,27 @@ namespace RollingBall
 	public:
 		class _windowBuffer
 		{
-		//private:
-		public:
+		private:
+		//public:
 			HBITMAP m_windowBuffer;
 			class _old
 			{
 			public:
 				HBITMAP m_windowBuffer;
-			public:
+
 				_old() { init(); }
 				BOOL isBackedUp();
 				void init();
-				void backup(Paint_hDC& hDC);
-				void rollback(Paint_hDC& hDC);
 			} old;
+
+			void backup(Paint_hDC& hDC);
+			void rollback(Paint_hDC& hDC);
+
 		public:
 			_windowBuffer() { init(); }
 			BOOL isSet();
 			void init();
+
 			//set 수행후 backup함수 실행하기
 			void set(const HWND& hwnd, const HDC& hDC_window);
 
@@ -45,21 +48,13 @@ namespace RollingBall
 		private:
 			vector<HBITMAP> m_res;
 			BOOL flag_isSet;
-		public:
-			_res() {
-				m_res = vector<HBITMAP>();
-				init();
-			}
-			BOOL isSet();
-			void init();
-			void set();
-			void resize(const size_t& newSize);
 
 			class _old
 			{
-			private:
+			public:
 				vector<HBITMAP> m_res;
 				BOOL flag_isBackedUp;
+
 			public:
 				_old() {
 					m_res = vector<HBITMAP>();
@@ -67,10 +62,28 @@ namespace RollingBall
 				}
 				BOOL isBackedUp();
 				void init();
-				void backup(Paint_hDC& hDC);
-				void rollback(Paint_hDC& hDC);
 				void resize(const size_t& newSize);
 			} old;
+
+
+			void backup(Paint_hDC& hDC);
+			void rollback(Paint_hDC& hDC);
+
+		public:
+			_res() {
+				m_res = vector<HBITMAP>();
+				init();
+			}
+			BOOL isSet();
+			void init();
+
+			//set 수행후 backup함수 실행하기
+			void set();
+
+			//release 수행전 rollback 함수 실행하기
+			void release();
+
+			void resize(const size_t& newSize);
 		} res;
 
 	public:
@@ -79,7 +92,7 @@ namespace RollingBall
 		BOOL isInit();
 		int bmpidx(Object& object, Scaler& scale, BOOL mask_texture = FALSE);
 		int res_count();
-		void resize_vectors(const size_t& newSize);
+		void resize_res_vector(const size_t& newSize);
 	};
 }
 
