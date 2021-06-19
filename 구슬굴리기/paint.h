@@ -65,8 +65,10 @@ namespace RollingBall
 		//PrantManager 클래스 변수를 사용하기 전 반드시 수행해야 한다
 		BOOL init(HINSTANCE m_hInstance, HWND m_hwnd);
 	
-		//scaler의 px_rate를 설정한다
-		void scale_set(pixel px_rate);
+		//scaler 설정 함수집합
+		void set_px_rate(pixel px_rate);
+		void set_fix_point(PhysicalVector fix_point);
+		void set_fix_point(PixelCoord fix_point);
 
 		//페인트를 시작한다
 		void begin();

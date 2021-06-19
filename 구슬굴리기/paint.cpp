@@ -33,7 +33,11 @@ BOOL Paint::init(HINSTANCE m_hInstance, HWND m_hwnd)
 
 	init_flags();
 	init_res_count();
-	scale_set(32);
+
+	set_px_rate(32);
+	GetClientRect(hwnd, &windowRect);
+	set_fix_point(PixelCoord(windowRect.right / 2, windowRect.bottom / 2));
+	set_fix_point(PhysicalVector(0, 0));
 
 	memset(&windowRect, 0, sizeof(windowRect));
 
@@ -47,12 +51,17 @@ BOOL Paint::init(HINSTANCE m_hInstance, HWND m_hwnd)
 
 	return TRUE;
 }
-void RollingBall::Paint::scale_set(pixel px_rate)
+void RollingBall::Paint::set_px_rate(pixel px_rate)
 {
 	scale.px_rate(px_rate);
-	scale.fix_point_physical(PhysicalVector(5, 5));
-	GetClientRect(hwnd, &windowRect);
-	scale.fix_point_pixel(PixelCoord(windowRect.right / 2, windowRect.bottom / 2));
+}
+void RollingBall::Paint::set_fix_point(PhysicalVector fix_point)
+{
+	scale.fix_point_physical(fix_point);
+}
+void RollingBall::Paint::set_fix_point(PixelCoord fix_point)
+{
+	scale.fix_point_pixel(fix_point);
 }
 void Paint::begin()
 {
