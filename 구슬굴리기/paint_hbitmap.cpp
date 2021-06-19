@@ -42,15 +42,12 @@ void Paint_hBitmap::_windowBuffer::init()
 {
 	m_windowBuffer = NULL;
 }
-void Paint_hBitmap::_windowBuffer::set(const HWND& hwnd, Paint_hDC& hDC)
+void Paint_hBitmap::_windowBuffer::set(RECT& windowRect, Paint_hDC& hDC)
 {
 	if (isSet())
 		release(hDC);
 
-	RECT windowRect;
-
 	//화면 DC와 호환되는 hBitmap을 로드한다
-	GetClientRect(hwnd, &windowRect);
 	m_windowBuffer = m_bmp.create_hDC_compatible(hDC.window, windowRect);
 
 	backup(hDC);
@@ -166,4 +163,16 @@ int Paint_hBitmap::res_count()
 void Paint_hBitmap::resize_res_vector(const size_t& newSize)
 {
 	res.resize(newSize);
+}
+
+void RollingBall::Paint_hBitmap::set(RECT& windowRect, Paint_hDC& hDC)
+{
+	res.set(hDC); 
+	windowBuffer.set(windowRect, hDC);
+}
+
+void RollingBall::Paint_hBitmap::release(Paint_hDC& hDC)
+{
+	windowBuffer.release(hDC);
+	res.release(hDC);
 }

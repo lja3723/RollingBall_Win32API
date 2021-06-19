@@ -142,12 +142,12 @@ BOOL Paint_hDC::_mem::_res::isSet()
 	return flag_isSet;
 }
 
-void Paint_hDC::_mem::create(const HDC& window, const HDC& mem_windowBuffer)
+void Paint_hDC::_mem::set(const HDC& window, const HDC& mem_windowBuffer)
 {
 	windowBuffer.set(window);
 	res.set(mem_windowBuffer);
 }
-void Paint_hDC::_mem::del()
+void Paint_hDC::_mem::release()
 {
 	windowBuffer.release();
 	res.release();

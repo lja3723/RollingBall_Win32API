@@ -126,20 +126,15 @@ BOOL Paint::isWindowSizeChanged()
 *********************************/
 void Paint::doubleBuffering_init()
 {	
-	//doublebuffering이 처음 시작되었을때만 아래 작업 수행
 	//hDC.memory.windowBuffer와 hDC.mem.res를 생성하는 것과
-	//hDC.mem.res에 hBitmap.res를 선택하는 것은 한번만 수행해도 됨
+	//hDC.mem.res에 hBitmap.res를 선택하는 것은 한번만 수행해도 된다.
 	if (isInitDoubleBuffering()) return;
 
 	//hDC.mem.window와 hDC.mem.res를 생성하고 
 	//hBitmap.res를 hDC.mem.res에 선택시킨다
-	hDC.mem.create(hDC.window, hDC.mem.windowBuffer);
-
-
-	hBitmap.res.set(hDC);
-
-	//hBitmap.windowBuffer를 생성한 뒤 그것을 hDC.mem.windowBuffer에 선택시킨다
-	hBitmap.windowBuffer.set(hwnd, hDC);
+	hDC.mem.set(hDC.window, hDC.mem.windowBuffer);
+	GetClientRect(hwnd, &windowRect);
+	hBitmap.set(windowRect, hDC);
 
 	flag.isInitDoubleBuffering = TRUE;
 }
@@ -157,10 +152,8 @@ void Paint::doubleBuffering_start()
 	{
 		GetClientRect(hwnd, &windowRect);
 		
-		//hBitmap.windowBuffer를 hDC.mem.windowBuffer에서 롤백하고 release한다
-		hBitmap.windowBuffer.release(hDC);
 		//hBitmap.windowBuffer를 생성한 뒤 그것을 hDC.mem.windowBuffer에 선택시킨다
-		hBitmap.windowBuffer.set(hwnd, hDC);
+		hBitmap.windowBuffer.set(windowRect, hDC);
 
 		PixelCoord p(windowRect.right / 2, windowRect.bottom / 2);
 		scale.fix_point_pixel(p);
@@ -177,13 +170,11 @@ void Paint::doubleBuffering_stop()
 }
 void Paint::doubleBuffering_halt()
 {
-	//hBitmap.windowBuffer를 hDC.mem.windowBuffer에서 롤백하고 release한다
-	hBitmap.windowBuffer.release(hDC);
-
 	//doublebuffering을 끝내고 프로그램을 종료할 때 마지막으로 아래 작업 수행
+	//hBitmap을 release한다(hDC.mem.windowBuffer에서 롤백하는 과정 포함)
 	//hDC.mem.windowBuffer와 hDC.mem.res를 삭제함
-	hBitmap.res.release(hDC);
-	hDC.mem.del();
+	hBitmap.release(hDC);
+	hDC.mem.release();
 }
 
 

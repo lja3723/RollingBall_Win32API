@@ -34,7 +34,8 @@ namespace RollingBall
 			_windowBuffer() { init(); }
 			BOOL isSet();
 			void init();
-			void set(const HWND& hwnd, Paint_hDC& hDC);
+			//windowRect크기의 화면 DC 호환 windowBuffer를 생성
+			void set(RECT& windowRect, Paint_hDC& hDC);
 			void release(Paint_hDC& hDC);
 
 		} windowBuffer;
@@ -83,6 +84,8 @@ namespace RollingBall
 		int bmpidx(Object& object, Scaler& scale, BOOL mask_texture = FALSE);
 		int res_count();
 		void resize_res_vector(const size_t& newSize);
+		void set(RECT& windowRect, Paint_hDC& hDC);
+		void release(Paint_hDC& hDC);
 	};
 }
 

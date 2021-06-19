@@ -114,7 +114,7 @@ namespace RollingBall
 		*	double buffering management
 		*
 		*********************************/
-		//더블버퍼링을 처음으로 시작하기 위한 준비를 함
+		//더블버퍼링을 처음 시작할 때 호출되어야 함
 		void doubleBuffering_init();
 		//더블버퍼링을 시작함
 		void doubleBuffering_start();

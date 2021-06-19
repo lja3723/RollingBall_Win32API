@@ -89,8 +89,8 @@ namespace RollingBall
 			} res;
 
 		public:
-			void create(const HDC& window, const HDC& mem_windowBuffer);
-			void del();
+			void set(const HDC& window, const HDC& mem_windowBuffer);
+			void release();
 		} mem;
 
 		void resize_res_vector(const size_t& newSize);
