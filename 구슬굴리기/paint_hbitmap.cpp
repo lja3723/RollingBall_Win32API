@@ -42,21 +42,26 @@ void Paint_hBitmap::_windowBuffer::init()
 {
 	m_windowBuffer = NULL;
 }
-void Paint_hBitmap::_windowBuffer::set(RECT& windowRect, Paint_hDC& hDC)
+//void Paint_hBitmap::_windowBuffer::set(RECT& windowRect, Paint_hDC& hDC)
+void Paint_hBitmap::_windowBuffer::set(RECT& windowRect, const HDC& window)
 {
 	if (isSet())
-		release(hDC);
+		//release(hDC);
+		release();
 
-	//화면 DC와 호환되는 hBitmap을 로드한다
-	m_windowBuffer = m_bmp.create_hDC_compatible(hDC.window, windowRect);
+	//화면 DC와 호환되고 크기가 windowRect인 hBitmap을 생성
+	m_windowBuffer = m_bmp.create_hDC_compatible(window, windowRect);
 
-	backup(hDC);
+	//화면 DC 호환 hBitmap을 hDC.mem.windowBuffer에 선택시킴
+	//동시에 기존의 hBitmap을 old hBitmap에 백업시킨다
+	//backup(hDC);
 }
-void Paint_hBitmap::_windowBuffer::release(Paint_hDC& hDC)
+//void Paint_hBitmap::_windowBuffer::release(Paint_hDC& hDC)
+void Paint_hBitmap::_windowBuffer::release()
 {
 	if (!isSet()) return;
 
-	rollback(hDC);
+	//rollback(hDC);
 
 	//hBitmap을 삭제함
 	m_bmp.delete_hDC_compatible(m_windowBuffer);
@@ -116,23 +121,26 @@ void Paint_hBitmap::_res::init()
 
 	flag_isSet = FALSE;
 }
-void Paint_hBitmap::_res::set(Paint_hDC& hDC)
+//void Paint_hBitmap::_res::set(Paint_hDC& hDC)
+void Paint_hBitmap::_res::set()
 {
 	if (isSet())
-		release(hDC);
+		//release(hDC);
+		release();
 
 	for (int i = 0; i < m_res.size(); i++)
 		m_res[i] = m_bmp(i);
 
-	backup(hDC);
+	//backup(hDC);
 
 	flag_isSet = TRUE;
 }
-void Paint_hBitmap::_res::release(Paint_hDC& hDC)
+//void Paint_hBitmap::_res::release(Paint_hDC& hDC)
+void Paint_hBitmap::_res::release()
 {
 	if (!isSet()) return;
 
-	rollback(hDC);
+	//rollback(hDC);
 	init();
 }
 void Paint_hBitmap::_res::resize(const size_t& newSize)
@@ -165,14 +173,16 @@ void Paint_hBitmap::resize_res_vector(const size_t& newSize)
 	res.resize(newSize);
 }
 
-void RollingBall::Paint_hBitmap::set(RECT& windowRect, Paint_hDC& hDC)
-{
-	res.set(hDC); 
-	windowBuffer.set(windowRect, hDC);
-}
+//void RollingBall::Paint_hBitmap::set(RECT& windowRect, Paint_hDC& hDC)
+//void RollingBall::Paint_hBitmap::set(RECT& windowRect, const HDC& window)
+//{
+//	windowBuffer.set(windowRect, window);
+//	res.set();
+//}
 
-void RollingBall::Paint_hBitmap::release(Paint_hDC& hDC)
-{
-	windowBuffer.release(hDC);
-	res.release(hDC);
-}
+//void RollingBall::Paint_hBitmap::release(Paint_hDC& hDC)
+//void RollingBall::Paint_hBitmap::release()
+//{
+//	windowBuffer.release();
+//	res.release();
+//}

@@ -48,13 +48,17 @@ namespace RollingBall
 				isWindowSizeChanged = FALSE;
 			}
 		} flag;
+
+		//여러가지 기본값을 저장하는 클래스
+		static const class _default_value
+		{
+		public:
+			static const int px_rate = 32;
+		} DEFAULT;
+
 	
 	public:
-		Paint() {
-			hInstance = NULL;
-			hwnd = NULL;
-			memset(&windowRect, 0, sizeof(windowRect));
-		}
+		Paint();
 		~Paint();
 
 		//PrantManager 클래스 변수를 사용하기 전 반드시 수행해야 한다
@@ -87,12 +91,11 @@ namespace RollingBall
 		/********************************
 		*
 		*	init management
+		*	Paint::init()에서만 호출되어야 함
 		*
 		*********************************/
-		//클래스의 각종 플래그변수를 초기화
-		//Paint::init()에서만 호출되어야 함
 		void init_res_vectors(int res_count);
-
+		void init_scaler();
 
 
 		/********************************
