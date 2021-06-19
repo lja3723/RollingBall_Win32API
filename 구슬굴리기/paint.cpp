@@ -13,6 +13,7 @@ using namespace RollingBall;
 int Paint::res_count = 0;
 
 
+
 /********************************
 * 
 *		public functions
@@ -70,17 +71,14 @@ void Paint::background(Object& background)
 	paint_background_tobuffer(background);
 	paint_background_ruller_tobuffer();
 }
-
 void RollingBall::Paint::operator()(Object& obj)
 {
 	paint_tobuffer(obj);
 }
-
 void RollingBall::Paint::info(Object& obj, int yPos)
 {
 	paint_info_tobuffer(obj, yPos);
 }
-
 void RollingBall::Paint::text(LPCTSTR text, pixel x, pixel y)
 {
 	paint_text_tobuffer(text, x, y);
@@ -132,7 +130,6 @@ BOOL Paint::isInit()
 	return hInstance != NULL;
 }
 
-
 BOOL Paint::isSetHBitmapWindowBuffer()
 {
 	return hBitmap.windowBuffer != NULL;
@@ -166,6 +163,7 @@ BOOL Paint::isWindowSizeChanged()
 {
 	return flag.isWindowSizeChanged;
 }
+
 
 
 /********************************
@@ -409,7 +407,6 @@ void Paint::paint_background_ruller_tobuffer()
 		LineTo(winBuff, scale.transform(p).x, scale.transform(p).y);
 	}
 }
-
 void RollingBall::Paint::paint_tobuffer(Object& object)
 {
 	if (!isReadyToPaint()) return;
@@ -445,19 +442,16 @@ void RollingBall::Paint::paint_tobuffer(Object& object)
 		}
 	}
 }
-
 void RollingBall::Paint::paint_info_tobuffer(Object& object, int yPos)
 {
 	TCHAR buff[256];
 	_stprintf_s(buff, 256, _T("좌표(%lf, %lf)"), object.physical.pos.x, object.physical.pos.y);
 	paint_text_tobuffer(buff, 0, yPos);
 }
-
 void RollingBall::Paint::paint_text_tobuffer(LPCTSTR text, pixel x, pixel y)
 {
 	TextOut(hDC.mem.windowBuffer, x, y, text, (int)_tcslen(text));
 }
-
 void Paint::flush_buffer()
 {
 	if (!isReadyToPaint()) return;
@@ -469,7 +463,6 @@ void Paint::flush_buffer()
 		SRCCOPY
 	);
 }
-
 void RollingBall::Paint::event_all(Event e)
 {
 
