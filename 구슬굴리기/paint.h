@@ -48,18 +48,30 @@ namespace RollingBall
 		} hBitmap;
 		
 		//여러가지 플래그를 저장하는 변수
-		struct _flag{
+		class _flag{
+		public:
 			BOOL isSetHBitmapRes;
-
-
 			BOOL isBackedUpHBitmapRes;
 
 			BOOL isDoubleBufferingStart;
 			BOOL isInitDoubleBuffering;
 			BOOL isWindowSizeChanged;
+
+		public:
+			_flag() {
+				isSetHBitmapRes = FALSE;
+				isBackedUpHBitmapRes = FALSE;
+
+				isDoubleBufferingStart = FALSE;
+				isInitDoubleBuffering = FALSE;
+				isWindowSizeChanged = FALSE;
+			}
 		} flag;
 	
 	public:
+		Paint() {
+			hDC.window.mode.set_BeginPaint();
+		}
 		~Paint();
 
 		//PrantManager 클래스 변수를 사용하기 전 반드시 수행해야 한다
@@ -96,7 +108,6 @@ namespace RollingBall
 		*********************************/
 		//클래스의 각종 플래그변수를 초기화
 		//Paint::init()에서만 호출되어야 함
-		void init_flags();
 		void init_res_count();
 		void init_res_vectors();
 

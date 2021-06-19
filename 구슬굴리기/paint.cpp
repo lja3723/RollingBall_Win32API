@@ -14,6 +14,8 @@ int Paint::res_count = 0;
 
 
 
+
+
 /********************************
 * 
 *		public functions
@@ -29,9 +31,9 @@ BOOL Paint::init(HINSTANCE m_hInstance, HWND m_hwnd)
 
 	hInstance = m_hInstance;
 	hwnd = m_hwnd;
-	if (!bmp.init(hInstance)) return FALSE;
+	memset(&windowRect, 0, sizeof(windowRect));
 
-	init_flags();
+	if (!bmp.init(hInstance)) return FALSE;
 	init_res_count();
 
 	set_px_rate(32);
@@ -39,14 +41,10 @@ BOOL Paint::init(HINSTANCE m_hInstance, HWND m_hwnd)
 	set_fix_point(PixelCoord(windowRect.right / 2, windowRect.bottom / 2));
 	set_fix_point(PhysicalVector(0, 0));
 
-	memset(&windowRect, 0, sizeof(windowRect));
-
 	hBitmap_windowBuffer_init();
 	hBitmap_res_init();
-
 	hBitmap_old_windowBuffer_init();
 	hBitmap_old_res_init();
-
 	hBitmap_res_set();
 
 	return TRUE;
@@ -102,17 +100,6 @@ void RollingBall::Paint::text(LPCTSTR text, pixel x, pixel y)
 *
 *********************************/
 //처음 init 될 때 한 번만 호출되는 함수
-void Paint::init_flags()
-{
-	hDC.window.mode.set_BeginPaint();
-
-	flag.isSetHBitmapRes = FALSE;
-	flag.isBackedUpHBitmapRes = FALSE;
-
-	flag.isDoubleBufferingStart = FALSE;
-	flag.isInitDoubleBuffering = FALSE;
-	flag.isWindowSizeChanged = FALSE;
-}
 void Paint::init_res_count()
 {
 	if (!bmp.isInit()) return;
