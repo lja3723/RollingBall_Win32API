@@ -133,6 +133,7 @@ void Paint::doubleBuffering_init()
 	//hDC.mem.window와 hDC.mem.res를 생성하고 
 	//hBitmap.res를 hDC.mem.res에 선택시킨다
 	hDC.mem.set(hDC.window, hDC.mem.windowBuffer);
+
 	GetClientRect(hwnd, &windowRect);
 	hBitmap.set(windowRect, hDC);
 
@@ -140,19 +141,19 @@ void Paint::doubleBuffering_init()
 }
 void Paint::doubleBuffering_start()
 {
+	//더블버퍼링 시작 조건을 만족하는지 확인함
 	if (isDoubleBufferingStart()) return;
 	if (!hDC.window.isSet()) return;
 
-	//더블버퍼링 초기작업이 안됐으면 우선 수행하도록 한다
+	//더블버퍼링 초기 작업이 안되어 있으면 수행함
 	if (!isInitDoubleBuffering())
 		doubleBuffering_init();
 
-	//윈도우 크기가 변경되었으면 변경된 크기에 맞는 hBitmap_windowBuffer를 등록한다
+	//윈도우 크기가 변경되었으면 변경된 크기에 맞는 hBitmap_windowBuffer를 설정함
 	if (isWindowSizeChanged())
 	{
-		GetClientRect(hwnd, &windowRect);
-		
 		//hBitmap.windowBuffer를 생성한 뒤 그것을 hDC.mem.windowBuffer에 선택시킨다
+		GetClientRect(hwnd, &windowRect);
 		hBitmap.windowBuffer.set(windowRect, hDC);
 
 		PixelCoord p(windowRect.right / 2, windowRect.bottom / 2);
@@ -170,7 +171,6 @@ void Paint::doubleBuffering_stop()
 }
 void Paint::doubleBuffering_halt()
 {
-	//doublebuffering을 끝내고 프로그램을 종료할 때 마지막으로 아래 작업 수행
 	//hBitmap을 release한다(hDC.mem.windowBuffer에서 롤백하는 과정 포함)
 	//hDC.mem.windowBuffer와 hDC.mem.res를 삭제함
 	hBitmap.release(hDC);
@@ -215,6 +215,7 @@ void Paint::paint_background_ruller_tobuffer()
 	int cm = 40;
 	auto winBuff = hDC.mem.windowBuffer;
 
+	//x축, y축 그리기
 	p(-cm, 0);
 	MoveToEx(winBuff, scale.transform(p).x, scale.transform(p).y, NULL);
 	p(cm, 0);
@@ -224,7 +225,7 @@ void Paint::paint_background_ruller_tobuffer()
 	p(0, cm);
 	LineTo(winBuff, scale.transform(p).x, scale.transform(p).y);
 
-
+	//x축 눈금 그리기
 	for (int i = -30; i < 30; i++)
 	{
 		p(i, 0.5);
@@ -233,6 +234,7 @@ void Paint::paint_background_ruller_tobuffer()
 		LineTo(winBuff, scale.transform(p).x, scale.transform(p).y);
 	}
 
+	//y축 눈금 그리기
 	for (int i = -30; i < 30; i++)
 	{
 		p(0.5, i);
