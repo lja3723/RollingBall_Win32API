@@ -27,6 +27,8 @@ namespace RollingBall
 				void init();
 			} old;
 
+		public:
+		//private:
 			void backup(Paint_hDC& hDC);
 			void rollback(Paint_hDC& hDC);
 
@@ -65,7 +67,8 @@ namespace RollingBall
 				void resize(const size_t& newSize);
 			} old;
 
-
+		//private:
+		public:
 			void backup(Paint_hDC& hDC);
 			void rollback(Paint_hDC& hDC);
 
