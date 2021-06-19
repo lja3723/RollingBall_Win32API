@@ -308,11 +308,11 @@ void Paint::doubleBuffering_init()
 
 
 	//oldcode
-	_oldcode_hBitmap_old_res_backup______1();
+	//_oldcode_hBitmap_old_res_backup______1();
 
 	//hBitmap.windowBuffer를 생성한 뒤 그것을 hDC.mem.windowBuffer에 선택시킨다
-	_oldcode_hBitmap_windowBuffer_set________2();
-	_oldcode_hBitmap_old_windowBuffer_backup________3();
+	//_oldcode_hBitmap_windowBuffer_set________2();
+	//_oldcode_hBitmap_old_windowBuffer_backup________3();
 	//~oldcode
 	
 	
