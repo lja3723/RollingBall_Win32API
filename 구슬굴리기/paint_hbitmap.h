@@ -27,16 +27,19 @@ namespace RollingBall
 				void init();
 			} old;
 
-			void backup(Paint_hDC& hDC);
-			void rollback(Paint_hDC& hDC);
+			//아래 두 함수는 hDC로 옮기기
+			//void backup(Paint_hDC& hDC);
+			//void rollback(Paint_hDC& hDC);
 
 		public:
 			_windowBuffer() { init(); }
 			BOOL isSet();
 			void init();
 			//windowRect크기의 화면 DC 호환 windowBuffer를 생성
-			void set(RECT& windowRect, Paint_hDC& hDC);
-			void release(Paint_hDC& hDC);
+			//void set(RECT& windowRect, Paint_hDC& hDC);
+			//void release(Paint_hDC& hDC);
+			void set(RECT& windowRect, const HDC& window);
+			void release();
 
 		} windowBuffer;
 
@@ -62,8 +65,9 @@ namespace RollingBall
 				void resize(const size_t& newSize);
 			} old;
 
-			void backup(Paint_hDC& hDC);
-			void rollback(Paint_hDC& hDC);
+			//아래 두 함수는 hDC로 옮기기
+			//void backup(Paint_hDC& hDC);
+			//void rollback(Paint_hDC& hDC);
 
 		public:
 			_res() {
@@ -72,8 +76,10 @@ namespace RollingBall
 			}
 			BOOL isSet();
 			void init();
-			void set(Paint_hDC& hDC);
-			void release(Paint_hDC& hDC);
+			//void set(Paint_hDC& hDC);
+			//void release(Paint_hDC& hDC);
+			void set();
+			void release();
 			void resize(const size_t& newSize);
 		} res;
 
@@ -84,8 +90,10 @@ namespace RollingBall
 		int bmpidx(Object& object, Scaler& scale, BOOL mask_texture = FALSE);
 		int res_count();
 		void resize_res_vector(const size_t& newSize);
-		void set(RECT& windowRect, Paint_hDC& hDC);
-		void release(Paint_hDC& hDC);
+		//void set(RECT& windowRect, Paint_hDC& hDC);
+		//void release(Paint_hDC& hDC);
+		void set(RECT& windowRect, const HDC& window);
+		void release();
 	};
 }
 

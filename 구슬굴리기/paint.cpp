@@ -9,24 +9,30 @@ using namespace RollingBall;
 *		public functions
 *
 *********************************/
+Paint::Paint() 
+{
+	hInstance = NULL;
+	hwnd = NULL;
+	memset(&windowRect, 0, sizeof(windowRect));
+}
 Paint::~Paint()
 {
 	doubleBuffering_halt();
 }
 BOOL Paint::init(HINSTANCE m_hInstance, HWND m_hwnd)
 {
+	//초기화 안된 상태에서만 함수실행
 	if (isInit()) return TRUE;
 
+	//멤버변수 초기화
 	hInstance = m_hInstance;
 	hwnd = m_hwnd;
-
+	//hBitmap 초기화
 	if (!hBitmap.init(hInstance)) return FALSE;
+	//res vector들 초기화
 	init_res_vectors(hBitmap.res_count());
-
-	set_px_rate(32);
-	GetClientRect(hwnd, &windowRect);
-	set_fix_point(PixelCoord(windowRect.right / 2, windowRect.bottom / 2));
-	set_fix_point(PhysicalVector(0, 0));
+	//scaler 초기화
+	init_scaler();
 
 	return TRUE;
 }
@@ -80,11 +86,18 @@ void RollingBall::Paint::text(LPCTSTR text, pixel x, pixel y)
 *		- initialization
 *
 *********************************/
-//처음 init 될 때 한 번만 호출되는 함수
 void Paint::init_res_vectors(int res_count)
 {
 	hBitmap.resize_res_vector(res_count);
 	hDC.resize_res_vector(res_count);
+}
+void RollingBall::Paint::init_scaler()
+{
+	//프로그램 화면 정중앙과 물리좌표 (0, 0)이 일치하도록 초기화함
+	scale.px_rate(DEFAULT.px_rate);
+	GetClientRect(hwnd, &windowRect);
+	scale.fix_point_pixel(PixelCoord(windowRect.right / 2, windowRect.bottom / 2));
+	scale.fix_point_physical(PhysicalVector(0, 0));
 }
 
 
@@ -126,14 +139,19 @@ BOOL Paint::isWindowSizeChanged()
 *********************************/
 void Paint::doubleBuffering_init()
 {	
-	//hDC.memory.windowBuffer와 hDC.mem.res를 생성하는 것과
-	//hDC.mem.res에 hBitmap.res를 선택하는 것은 한번만 수행해도 된다.
+
+	//초기화 안된 상태에서만 함수실행
 	if (isInitDoubleBuffering()) return;
 
-	//hDC.mem.window와 hDC.mem.res를 생성하고 
-	//hBitmap.res를 hDC.mem.res에 선택시킨다
+	//hDC.mem.set은 한번만 수행해도 됨
+	//hDC.mem.set의 의미:
+		//hDC.window 호환 DC인 hDC.mem(windowBuffer, res)을 만드는 것
 	hDC.mem.set(hDC.window, hDC.mem.windowBuffer);
 
+	//hBitmap.set도 한번만 수행해도 됨
+	//hBitmap.set의 의미:
+		//화면 DC(hDC.window) 호환이 되며 크기가 windowRect인 windowBuffer의 hBitmap을 만들고
+		//hDC.mem에 hBitmap을 선택시키는 것임
 	GetClientRect(hwnd, &windowRect);
 	hBitmap.set(windowRect, hDC);
 
@@ -141,7 +159,7 @@ void Paint::doubleBuffering_init()
 }
 void Paint::doubleBuffering_start()
 {
-	//더블버퍼링 시작 조건을 만족하는지 확인함
+	//더블버퍼링 시작 조건을 만족할 때만 함수실행
 	if (isDoubleBufferingStart()) return;
 	if (!hDC.window.isSet()) return;
 
@@ -149,10 +167,10 @@ void Paint::doubleBuffering_start()
 	if (!isInitDoubleBuffering())
 		doubleBuffering_init();
 
-	//윈도우 크기가 변경되었으면 변경된 크기에 맞는 hBitmap_windowBuffer를 설정함
+	//윈도우 크기가 변경되었으면 변경된 크기에 맞는 hBitmap.windowBuffer를 새로 설정함
 	if (isWindowSizeChanged())
 	{
-		//hBitmap.windowBuffer를 생성한 뒤 그것을 hDC.mem.windowBuffer에 선택시킨다
+		//hBitmap.windowBuffer를 생성하고 그것을 hDC.mem.windowBuffer에 선택시킨다
 		GetClientRect(hwnd, &windowRect);
 		hBitmap.windowBuffer.set(windowRect, hDC);
 
