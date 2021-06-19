@@ -20,7 +20,7 @@ using namespace RollingBall;
 //	init_res_vectors();
 //}
 
-
+/*
 BOOL Paint::_oldcode_isSetHBitmapWindowBuffer()
 {
 	return _oldcode_hBitmap.windowBuffer != NULL;
@@ -144,6 +144,7 @@ void Paint::_oldcode_hBitmap_old_res_rollback()
 
 	_oldcode_flag_isBackedUpHBitmapRes = FALSE;
 }
+*/
 //////////////////////////////////
 //~oldcode
 //////////////////////////////////
@@ -167,7 +168,7 @@ BOOL Paint::init(HINSTANCE m_hInstance, HWND m_hwnd)
 	hwnd = m_hwnd;
 
 	//oldcode
-	if (!_oldcode_bmp.init(hInstance)) return FALSE;
+	//if (!_oldcode_bmp.init(hInstance)) return FALSE;
 	//_oldcode_init_res_count();
 	//~oldcode//newcode
 	if (!hBitmap.init(hInstance)) return FALSE;
@@ -181,15 +182,16 @@ BOOL Paint::init(HINSTANCE m_hInstance, HWND m_hwnd)
 
 	//oldcode
 	//아래코드는 생성자로 대체되었음
-	_oldcode_hBitmap_windowBuffer_init();
-	_oldcode_hBitmap_old_windowBuffer_init();
+	//_oldcode_hBitmap_windowBuffer_init();
+	//_oldcode_hBitmap_old_windowBuffer_init();
 
-	_oldcode_hBitmap_res_init();
-	_oldcode_hBitmap_old_res_init();
+	//_oldcode_hBitmap_res_init();
+	//_oldcode_hBitmap_old_res_init();
 
 	////아래 코드만 새코드로 코딩하면됨
 	//_oldcode_hBitmap_res_set();
 	//~oldcode//newcode
+	//doublebuffering_init때 아래 문장 수행하면됨
 	//hBitmap.res.set(hDC);
 	//~newcode
 
@@ -249,8 +251,8 @@ void RollingBall::Paint::text(LPCTSTR text, pixel x, pixel y)
 void Paint::init_res_vectors(int res_count)
 {
 	//oldcode
-	_oldcode_hBitmap.res.resize(res_count);
-	_oldcode_hBitmap.old.res.resize(res_count);
+	//_oldcode_hBitmap.res.resize(res_count);
+	//_oldcode_hBitmap.old.res.resize(res_count);
 	//~oldcode//newcode
 	hBitmap.resize_res_vector(res_count);
 	//~newcode

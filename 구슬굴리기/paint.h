@@ -59,8 +59,8 @@ namespace RollingBall
 			memset(&windowRect, 0, sizeof(windowRect));
 
 			//oldcode
-			_oldcode_flag_isSetHBitmapRes = FALSE;
-			_oldcode_flag_isBackedUpHBitmapRes = FALSE;
+			//_oldcode_flag_isSetHBitmapRes = FALSE;
+			//_oldcode_flag_isBackedUpHBitmapRes = FALSE;
 			//~oldcode
 		}
 		~Paint();
@@ -93,6 +93,7 @@ namespace RollingBall
 		//////////////////////////////////
 		//oldcode
 		//////////////////////////////////
+		/*
 	private:
 		Bitmap _oldcode_bmp;
 		//리소스 개수를 저장함
@@ -131,6 +132,7 @@ namespace RollingBall
 		void _oldcode_hBitmap_old_res_init();
 		void _oldcode_hBitmap_old_res_backup______1();
 		void _oldcode_hBitmap_old_res_rollback();
+		*/
 		//////////////////////////////////
 		//~oldcode
 		//////////////////////////////////
