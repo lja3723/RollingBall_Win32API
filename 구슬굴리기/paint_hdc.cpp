@@ -120,8 +120,7 @@ const HDC& Paint_hDC::_mem::_res::operator[](int idx)
 	if (0 <= idx && idx < m_res.size())
 		return m_res[idx];
 	else
-		return NULL;
-
+		return m_res[0];
 }
 void Paint_hDC::_mem::_res::release()
 {

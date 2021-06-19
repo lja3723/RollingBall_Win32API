@@ -26,8 +26,11 @@ namespace RollingBall
 	class Paint : public EventAcceptable
 	{
 	private:
-		//Bitmap bmp;
+		Bitmap bmp;
 		Scaler scale;
+
+		//리소스 개수를 저장함
+		static int res_count;
 
 		HINSTANCE hInstance;
 		HWND hwnd;
@@ -41,7 +44,6 @@ namespace RollingBall
 			BOOL isDoubleBufferingStart;
 			BOOL isInitDoubleBuffering;
 			BOOL isWindowSizeChanged;
-			BOOL isInitResVectors;
 		} flag;
 	
 	public:
@@ -80,6 +82,7 @@ namespace RollingBall
 		//클래스의 각종 플래그변수를 초기화
 		//Paint::init()에서만 호출되어야 함
 		void init_flags();
+		void init_res_count();
 		void init_res_vectors();
 
 
@@ -92,7 +95,6 @@ namespace RollingBall
 
 		//기타 정보를 알려줌
 		BOOL isInit();
-		BOOL isInitResVectors();
 		BOOL isDoubleBufferingStart();
 		BOOL isReadyToPaint();
 		BOOL isInitDoubleBuffering();

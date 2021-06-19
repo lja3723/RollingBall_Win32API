@@ -2,8 +2,6 @@
 
 using namespace RollingBall;
 
-Bitmap Paint_hBitmap::m_bmp = Bitmap();
-
 BOOL Paint_hBitmap::_windowBuffer::isSet()
 {
 	return m_windowBuffer != NULL;
@@ -12,21 +10,21 @@ void Paint_hBitmap::_windowBuffer::init()
 {
 	m_windowBuffer = NULL;
 }
-void RollingBall::Paint_hBitmap::_windowBuffer::set(const HWND& hwnd, const HDC& hDC_window)
+void Paint_hBitmap::_windowBuffer::set(const HWND& hwnd, Bitmap& bmp, const HDC& hDC_window)
 {
 	if (isSet())
-		release();
+		release(bmp);
 
 	RECT windowRect;
 	//화면 DC와 호환되는 hBitmap을 로드한다
 	GetClientRect(hwnd, &windowRect);
-	m_windowBuffer = m_bmp.create_hDC_compatible(hDC_window, windowRect);
+	m_windowBuffer = bmp.create_hDC_compatible(hDC_window, windowRect);
 }
-void RollingBall::Paint_hBitmap::_windowBuffer::release()
+void Paint_hBitmap::_windowBuffer::release(Bitmap& bmp)
 {
 	if (!isSet()) return;
 	//hBitmap을 삭제함
-	m_bmp.delete_hDC_compatible(m_windowBuffer);
+	bmp.delete_hDC_compatible(m_windowBuffer);
 	init();
 }
 
@@ -73,10 +71,11 @@ void Paint_hBitmap::_res::init()
 	//(resource.size() != 0)
 	flag_isSet = FALSE;
 }
-void RollingBall::Paint_hBitmap::_res::set()
+void Paint_hBitmap::_res::set(Bitmap& bmp)
 {
 	for (int i = 0; i < m_res.size(); i++)
-		m_res[i] = m_bmp(i);
+		m_res[i] = bmp(i);
+
 	flag_isSet = TRUE;
 }
 void Paint_hBitmap::_res::resize(const size_t& newSize)
@@ -127,20 +126,4 @@ void Paint_hBitmap::_res::_old::rollback(Paint_hDC& hDC)
 	flag_isBackedUp = FALSE;
 }
 
-BOOL RollingBall::Paint_hBitmap::init(HINSTANCE hInstance)
-{
-	return m_bmp.init(hInstance);
-}
-BOOL RollingBall::Paint_hBitmap::isInit()
-{
-	return m_bmp.isInit();
-}
-int RollingBall::Paint_hBitmap::bmpidx(Object& object, Scaler& scale, BOOL mask_texture)
-{
-	return m_bmp.idx(object, scale, mask_texture);
-}
-int RollingBall::Paint_hBitmap::res_count()
-{
-	if (!m_bmp.isInit()) return 0;
-	return m_bmp.file_count();
-}
+
