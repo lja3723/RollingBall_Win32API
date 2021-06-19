@@ -119,17 +119,17 @@ namespace RollingBall
 
 		//hBitmap 변수를 관리함
 		void _oldcode_hBitmap_windowBuffer_init();
-		void _oldcode_hBitmap_windowBuffer_set();
+		void _oldcode_hBitmap_windowBuffer_set________2();
 		void _oldcode_hBitmap_windowBuffer_release();
 		void _oldcode_hBitmap_res_init();
 		void _oldcode_hBitmap_res_set();
 
 		//hBitmap.old 변수를 관리함
 		void _oldcode_hBitmap_old_windowBuffer_init();
-		void _oldcode_hBitmap_old_windowBuffer_backup();
+		void _oldcode_hBitmap_old_windowBuffer_backup________3();
 		void _oldcode_hBitmap_old_windowBuffer_rollback();
 		void _oldcode_hBitmap_old_res_init();
-		void _oldcode_hBitmap_old_res_backup();
+		void _oldcode_hBitmap_old_res_backup______1();
 		void _oldcode_hBitmap_old_res_rollback();
 		//////////////////////////////////
 		//~oldcode

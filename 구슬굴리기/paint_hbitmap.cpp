@@ -38,15 +38,18 @@ void Paint_hBitmap::_windowBuffer::_old::init()
 {
 	m_windowBuffer = NULL;
 }
+//틀린코드 수정필요
 void Paint_hBitmap::_windowBuffer::_old::backup(Paint_hDC& hDC)
 {
 	if (!hDC.mem.windowBuffer.isSet()) return;
 	if (isBackedUp())
+		//잘못된 코드(_res::_old::의 rollback을 호출해야함)
 		rollback(hDC);
 
 	m_windowBuffer
 		= (HBITMAP)SelectObject(
 			hDC.mem.windowBuffer,
+			//잘못된 코드(_res의 m_windowBuffer를 인자로 줘야함)
 			m_windowBuffer
 		);
 }
@@ -97,6 +100,8 @@ void Paint_hBitmap::_res::_old::init()
 	for (int i = 0; i < m_res.size(); i++)
 		m_res[i] = NULL;
 }
+
+//틀린코드 수정필요
 void Paint_hBitmap::_res::_old::backup(Paint_hDC& hDC)
 {
 	if (!hDC.mem.res.isSet()) return;
@@ -107,6 +112,7 @@ void Paint_hBitmap::_res::_old::backup(Paint_hDC& hDC)
 		m_res[i]
 		= (HBITMAP)SelectObject(
 			hDC.mem.res[i],
+			//아래 코드는 틀렸음(_res의 m_res를 인자로줘야함)
 			m_res[i]
 		);
 

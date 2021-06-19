@@ -43,7 +43,8 @@ void Paint::_oldcode_hBitmap_windowBuffer_init()
 {
 	_oldcode_hBitmap.windowBuffer = NULL;
 }
-void Paint::_oldcode_hBitmap_windowBuffer_set()
+//doubleBuffering_init()에서  호출
+void Paint::_oldcode_hBitmap_windowBuffer_set________2()
 {
 	if (_oldcode_isSetHBitmapWindowBuffer())
 		_oldcode_hBitmap_windowBuffer_release();
@@ -80,7 +81,8 @@ void Paint::_oldcode_hBitmap_old_windowBuffer_init()
 {
 	_oldcode_hBitmap.old.windowBuffer = NULL;
 }
-void Paint::_oldcode_hBitmap_old_windowBuffer_backup()
+//doubleBuffering_init()에서  호출
+void Paint::_oldcode_hBitmap_old_windowBuffer_backup________3()
 {
 	if (!hDC.mem.windowBuffer.isSet()) return;
 	if (_oldcode_isBackedUpHBitmapWindowBuffer())
@@ -106,7 +108,8 @@ void Paint::_oldcode_hBitmap_old_res_init()
 	for (int i = 0; i < hBitmap.res_count(); i++)
 		_oldcode_hBitmap.old.res[i] = NULL;
 }
-void Paint::_oldcode_hBitmap_old_res_backup()
+//doubleBuffering_init()에서  호출
+void Paint::_oldcode_hBitmap_old_res_backup______1()
 {
 	if (!hDC.mem.res.isSet()) return;
 	if (!_oldcode_isBackedUpHBitmapRes())
@@ -295,13 +298,19 @@ void Paint::doubleBuffering_init()
 	//hDC.mem.window와 hDC.mem.res를 생성하고 
 	//hBitmap.res를 hDC.mem.res에 선택시킨다
 	hDC.mem.create(hDC.window, hDC.mem.windowBuffer);
+
+
+
 	//oldcode
-	_oldcode_hBitmap_old_res_backup();
+	_oldcode_hBitmap_old_res_backup______1();
 
 	//hBitmap.windowBuffer를 생성한 뒤 그것을 hDC.mem.windowBuffer에 선택시킨다
-	_oldcode_hBitmap_windowBuffer_set();
-	_oldcode_hBitmap_old_windowBuffer_backup();
-	//~oldcode//newcode
+	_oldcode_hBitmap_windowBuffer_set________2();
+	_oldcode_hBitmap_old_windowBuffer_backup________3();
+	//~oldcode
+	
+	
+	//newcode
 	hBitmap.res.old.backup(hDC);
 
 	//hBitmap.windowBuffer를 생성한 뒤 그것을 hDC.mem.windowBuffer에 선택시킨다
