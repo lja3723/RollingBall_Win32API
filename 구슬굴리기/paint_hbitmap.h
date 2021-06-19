@@ -14,18 +14,12 @@ namespace RollingBall
 	public:
 		class _windowBuffer
 		{
-		private:
-			HBITMAP m_windowBuffer;
+		//private:
 		public:
-			_windowBuffer() { init(); }
-			BOOL isSet();
-			void init();
-			void set(const HWND& hwnd, const HDC& hDC_window);
-			void release();
-
+			HBITMAP m_windowBuffer;
 			class _old
 			{
-			private:
+			public:
 				HBITMAP m_windowBuffer;
 			public:
 				_old() { init(); }
@@ -34,6 +28,15 @@ namespace RollingBall
 				void backup(Paint_hDC& hDC);
 				void rollback(Paint_hDC& hDC);
 			} old;
+		public:
+			_windowBuffer() { init(); }
+			BOOL isSet();
+			void init();
+			//set 수행후 backup함수 실행하기
+			void set(const HWND& hwnd, const HDC& hDC_window);
+
+			//release 수행전 rollback 함수 실행하기
+			void release();
 
 		} windowBuffer;
 

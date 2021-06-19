@@ -43,7 +43,6 @@ void Paint_hBitmap::_windowBuffer::_old::backup(Paint_hDC& hDC)
 {
 	if (!hDC.mem.windowBuffer.isSet()) return;
 	if (isBackedUp())
-		//잘못된 코드(_res::_old::의 rollback을 호출해야함)
 		rollback(hDC);
 
 	m_windowBuffer

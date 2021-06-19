@@ -71,7 +71,7 @@ void Paint::_oldcode_hBitmap_old_windowBuffer_backup________3()
 {
 	if (!hDC.mem.windowBuffer.isSet()) return;
 	if (_oldcode_isBackedUpHBitmapWindowBuffer())
-		_oldcode_hBitmap_old_res_rollback();
+		_oldcode_hBitmap_old_windowBuffer_rollback();
 
 	_oldcode_hBitmap.old.windowBuffer
 		= (HBITMAP)SelectObject(
