@@ -26,42 +26,26 @@ namespace RollingBall
 	class Paint : public EventAcceptable
 	{
 	private:
-		Bitmap bmp;
 		Scaler scale;
-
-		//리소스 개수를 저장함
-		static int res_count;
-
 		HINSTANCE hInstance;
 		HWND hwnd;
 		RECT windowRect;
 
 		Paint_hDC hDC;
+		Paint_hBitmap hBitmap;
 
-		struct _hBitmap {
-			HBITMAP windowBuffer;
-			vector<HBITMAP> res;
-			struct _old {
-				HBITMAP windowBuffer;
-				vector<HBITMAP> res;
-			} old;
-		} hBitmap;
-		
+
+
+
 		//여러가지 플래그를 저장하는 변수
 		class _flag{
 		public:
-			BOOL isSetHBitmapRes;
-			BOOL isBackedUpHBitmapRes;
-
 			BOOL isDoubleBufferingStart;
 			BOOL isInitDoubleBuffering;
 			BOOL isWindowSizeChanged;
 
 		public:
 			_flag() {
-				isSetHBitmapRes = FALSE;
-				isBackedUpHBitmapRes = FALSE;
-
 				isDoubleBufferingStart = FALSE;
 				isInitDoubleBuffering = FALSE;
 				isWindowSizeChanged = FALSE;
@@ -70,7 +54,14 @@ namespace RollingBall
 	
 	public:
 		Paint() {
-			hDC.window.mode.set_BeginPaint();
+			hInstance = NULL;
+			hwnd = NULL;
+			memset(&windowRect, 0, sizeof(windowRect));
+
+			//oldcode
+			_oldcode_flag_isSetHBitmapRes = FALSE;
+			_oldcode_flag_isBackedUpHBitmapRes = FALSE;
+			//~oldcode
 		}
 		~Paint();
 
@@ -99,7 +90,52 @@ namespace RollingBall
 
 		void text(LPCTSTR text, pixel x, pixel y);
 	
+		//////////////////////////////////
+		//oldcode
+		//////////////////////////////////
+	private:
+		Bitmap _oldcode_bmp;
+		//리소스 개수를 저장함
+		//static int _oldcode_res_count;
+
+		struct __oldcode_hBitmap {
+			HBITMAP windowBuffer;
+			vector<HBITMAP> res;
+			struct _old {
+				HBITMAP windowBuffer;
+				vector<HBITMAP> res;
+			} old;
+		} _oldcode_hBitmap;
+
+		BOOL _oldcode_flag_isSetHBitmapRes;
+		BOOL _oldcode_flag_isBackedUpHBitmapRes;
+
+		//void _oldcode_init_res_count();
+		//변수가 세팅되었는지 알려줌
+		BOOL _oldcode_isSetHBitmapWindowBuffer();
+		BOOL _oldcode_isSetHBitmapRes();
+		BOOL _oldcode_isBackedUpHBitmapWindowBuffer();
+		BOOL _oldcode_isBackedUpHBitmapRes();
+
+		//hBitmap 변수를 관리함
+		void _oldcode_hBitmap_windowBuffer_init();
+		void _oldcode_hBitmap_windowBuffer_set();
+		void _oldcode_hBitmap_windowBuffer_release();
+		void _oldcode_hBitmap_res_init();
+		void _oldcode_hBitmap_res_set();
+
+		//hBitmap.old 변수를 관리함
+		void _oldcode_hBitmap_old_windowBuffer_init();
+		void _oldcode_hBitmap_old_windowBuffer_backup();
+		void _oldcode_hBitmap_old_windowBuffer_rollback();
+		void _oldcode_hBitmap_old_res_init();
+		void _oldcode_hBitmap_old_res_backup();
+		void _oldcode_hBitmap_old_res_rollback();
+		//////////////////////////////////
+		//~oldcode
+		//////////////////////////////////
 	
+
 	private:
 		/********************************
 		*
@@ -108,8 +144,7 @@ namespace RollingBall
 		*********************************/
 		//클래스의 각종 플래그변수를 초기화
 		//Paint::init()에서만 호출되어야 함
-		void init_res_count();
-		void init_res_vectors();
+		void init_res_vectors(int res_count);
 
 
 
@@ -118,40 +153,12 @@ namespace RollingBall
 		*	bool returns
 		*
 		*********************************/
-		//변수가 세팅되었는지 알려줌
-		BOOL isSetHBitmapWindowBuffer();
-		BOOL isSetHBitmapRes();
-		BOOL isBackedUpHBitmapWindowBuffer();
-		BOOL isBackedUpHBitmapRes();
-
 		//기타 정보를 알려줌
 		BOOL isInit();
 		BOOL isDoubleBufferingStart();
 		BOOL isReadyToPaint();
 		BOOL isInitDoubleBuffering();
 		BOOL isWindowSizeChanged();
-
-
-
-		/********************************
-		*
-		*	hBitmap management
-		*
-		*********************************/
-		//hBitmap 변수를 관리함
-		void hBitmap_windowBuffer_init();
-		void hBitmap_windowBuffer_set();
-		void hBitmap_windowBuffer_release();
-		void hBitmap_res_init();
-		void hBitmap_res_set();
-
-		//hBitmap.old 변수를 관리함
-		void hBitmap_old_windowBuffer_init();
-		void hBitmap_old_windowBuffer_backup();
-		void hBitmap_old_windowBuffer_rollback();
-		void hBitmap_old_res_init();
-		void hBitmap_old_res_backup();
-		void hBitmap_old_res_rollback();
 
 
 
@@ -167,7 +174,6 @@ namespace RollingBall
 		void doubleBuffering_stop();
 		//프로그램을 종료할 때 진행함
 		void doubleBuffering_halt();
-
 
 
 
