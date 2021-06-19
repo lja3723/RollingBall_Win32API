@@ -4,15 +4,140 @@ using namespace RollingBall;
 
 
 
-/********************************
-*
-*		static variables
-*		initialization
-*
-*********************************/
-int Paint::res_count = 0;
+
+//////////////////////////////////
+//oldcode
+//////////////////////////////////
+//static variables
+//int Paint::_oldcode_res_count = 0;
 
 
+//처음 init 될 때 한 번만 호출되는 함수
+//void Paint::_oldcode_init_res_count()
+//{
+//	if (!_oldcode_bmp.isInit()) return;
+//	_oldcode_res_count = _oldcode_bmp.file_count();
+//	init_res_vectors();
+//}
+
+
+BOOL Paint::_oldcode_isSetHBitmapWindowBuffer()
+{
+	return _oldcode_hBitmap.windowBuffer != NULL;
+}
+BOOL Paint::_oldcode_isSetHBitmapRes()
+{
+	return _oldcode_flag_isSetHBitmapRes;
+}
+BOOL Paint::_oldcode_isBackedUpHBitmapWindowBuffer()
+{
+	return _oldcode_hBitmap.old.windowBuffer != NULL;
+}
+BOOL Paint::_oldcode_isBackedUpHBitmapRes()
+{
+	return _oldcode_flag_isBackedUpHBitmapRes;
+}
+
+
+void Paint::_oldcode_hBitmap_windowBuffer_init()
+{
+	_oldcode_hBitmap.windowBuffer = NULL;
+}
+void Paint::_oldcode_hBitmap_windowBuffer_set()
+{
+	if (_oldcode_isSetHBitmapWindowBuffer())
+		_oldcode_hBitmap_windowBuffer_release();
+
+	//화면 DC와 호환되는 hBitmap을 로드한다
+	GetClientRect(hwnd, &windowRect);
+	_oldcode_hBitmap.windowBuffer = _oldcode_bmp.create_hDC_compatible(hDC.window, windowRect);
+}
+void Paint::_oldcode_hBitmap_windowBuffer_release()
+{
+	if (!_oldcode_isSetHBitmapWindowBuffer()) return;
+	//hBitmap을 삭제함
+	_oldcode_bmp.delete_hDC_compatible(_oldcode_hBitmap.windowBuffer);
+	_oldcode_hBitmap_windowBuffer_init();
+}
+void Paint::_oldcode_hBitmap_res_init()
+{
+	for (int i = 0; i < hBitmap.res_count(); i++)
+		_oldcode_hBitmap.res[i] = NULL;
+
+	//아래 플래그 변수는 삭제할 수 있을 것 같다 
+	//(hBitmap.resource.size() != 0)
+	_oldcode_flag_isSetHBitmapRes = FALSE;
+}
+void Paint::_oldcode_hBitmap_res_set()
+{
+	for (int i = 0; i < hBitmap.res_count(); i++)
+		_oldcode_hBitmap.res[i] = _oldcode_bmp(i);
+
+	_oldcode_flag_isSetHBitmapRes = TRUE;
+}
+
+void Paint::_oldcode_hBitmap_old_windowBuffer_init()
+{
+	_oldcode_hBitmap.old.windowBuffer = NULL;
+}
+void Paint::_oldcode_hBitmap_old_windowBuffer_backup()
+{
+	if (!hDC.mem.windowBuffer.isSet()) return;
+	if (_oldcode_isBackedUpHBitmapWindowBuffer())
+		_oldcode_hBitmap_old_res_rollback();
+
+	_oldcode_hBitmap.old.windowBuffer
+		= (HBITMAP)SelectObject(
+			hDC.mem.windowBuffer,
+			_oldcode_hBitmap.windowBuffer
+		);
+}
+void Paint::_oldcode_hBitmap_old_windowBuffer_rollback()
+{
+	if (!_oldcode_isBackedUpHBitmapWindowBuffer()) return;
+	SelectObject(
+		hDC.mem.windowBuffer,
+		_oldcode_hBitmap.old.windowBuffer
+	);
+	_oldcode_hBitmap_old_windowBuffer_init();
+}
+void Paint::_oldcode_hBitmap_old_res_init()
+{
+	for (int i = 0; i < hBitmap.res_count(); i++)
+		_oldcode_hBitmap.old.res[i] = NULL;
+}
+void Paint::_oldcode_hBitmap_old_res_backup()
+{
+	if (!hDC.mem.res.isSet()) return;
+	if (!_oldcode_isBackedUpHBitmapRes())
+		_oldcode_hBitmap_old_res_rollback();
+
+	for (int i = 0; i < hBitmap.res_count(); i++)
+		_oldcode_hBitmap.old.res[i]
+		= (HBITMAP)SelectObject(
+			hDC.mem.res[i],
+			_oldcode_hBitmap.res[i]
+		);
+
+	_oldcode_flag_isBackedUpHBitmapRes = TRUE;
+}
+void Paint::_oldcode_hBitmap_old_res_rollback()
+{
+	if (!_oldcode_isBackedUpHBitmapRes()) return;
+
+	for (int i = 0; i < hBitmap.res_count(); i++)
+		SelectObject(
+			hDC.mem.res[i],
+			_oldcode_hBitmap.old.res[i]
+		);
+
+	_oldcode_hBitmap_old_res_init();
+
+	_oldcode_flag_isBackedUpHBitmapRes = FALSE;
+}
+//////////////////////////////////
+//~oldcode
+//////////////////////////////////
 
 
 
@@ -31,21 +156,33 @@ BOOL Paint::init(HINSTANCE m_hInstance, HWND m_hwnd)
 
 	hInstance = m_hInstance;
 	hwnd = m_hwnd;
-	memset(&windowRect, 0, sizeof(windowRect));
 
-	if (!bmp.init(hInstance)) return FALSE;
-	init_res_count();
+	//oldcode
+	if (!_oldcode_bmp.init(hInstance)) return FALSE;
+	//_oldcode_init_res_count();
+	//~oldcode//newcode
+	if (!hBitmap.init(hInstance)) return FALSE;
+	init_res_vectors(hBitmap.res_count());
+	//~newcode
 
 	set_px_rate(32);
 	GetClientRect(hwnd, &windowRect);
 	set_fix_point(PixelCoord(windowRect.right / 2, windowRect.bottom / 2));
 	set_fix_point(PhysicalVector(0, 0));
 
-	hBitmap_windowBuffer_init();
-	hBitmap_res_init();
-	hBitmap_old_windowBuffer_init();
-	hBitmap_old_res_init();
-	hBitmap_res_set();
+	//oldcode
+	//아래코드는 생성자로 대체되었음
+	_oldcode_hBitmap_windowBuffer_init();
+	_oldcode_hBitmap_old_windowBuffer_init();
+
+	_oldcode_hBitmap_res_init();
+	_oldcode_hBitmap_old_res_init();
+
+	//아래 코드만 새코드로 코딩하면됨
+	_oldcode_hBitmap_res_set();
+	//~oldcode//newcode
+	hBitmap.res.set();
+	//~newcode
 
 	return TRUE;
 }
@@ -100,17 +237,15 @@ void RollingBall::Paint::text(LPCTSTR text, pixel x, pixel y)
 *
 *********************************/
 //처음 init 될 때 한 번만 호출되는 함수
-void Paint::init_res_count()
+void Paint::init_res_vectors(int res_count)
 {
-	if (!bmp.isInit()) return;
-	res_count = bmp.file_count();
-	init_res_vectors();
-}
-void Paint::init_res_vectors()
-{
+	//oldcode
+	_oldcode_hBitmap.res.resize(res_count);
+	_oldcode_hBitmap.old.res.resize(res_count);
+	//~oldcode//newcode
+	hBitmap.resize_vectors(res_count);
+	//~newcode
 	hDC.mem.res.resize(res_count);
-	hBitmap.res.resize(res_count);
-	hBitmap.old.res.resize(res_count);
 }
 
 
@@ -125,24 +260,6 @@ BOOL Paint::isInit()
 {
 	return hInstance != NULL;
 }
-
-BOOL Paint::isSetHBitmapWindowBuffer()
-{
-	return hBitmap.windowBuffer != NULL;
-}
-BOOL Paint::isSetHBitmapRes()
-{
-	return flag.isSetHBitmapRes;
-}
-BOOL Paint::isBackedUpHBitmapWindowBuffer()
-{
-	return hBitmap.old.windowBuffer != NULL;
-}
-BOOL Paint::isBackedUpHBitmapRes()
-{
-	return flag.isBackedUpHBitmapRes;
-}
-
 BOOL Paint::isDoubleBufferingStart()
 {
 	return flag.isDoubleBufferingStart;
@@ -165,111 +282,6 @@ BOOL Paint::isWindowSizeChanged()
 /********************************
 *
 *		private functions
-*		- hBitmap management
-*
-*********************************/
-void Paint::hBitmap_windowBuffer_init()
-{
-	hBitmap.windowBuffer = NULL;
-}
-void Paint::hBitmap_windowBuffer_set()
-{
-	if (isSetHBitmapWindowBuffer())
-		hBitmap_windowBuffer_release();
-
-	//화면 DC와 호환되는 hBitmap을 로드한다
-	GetClientRect(hwnd, &windowRect);
-	hBitmap.windowBuffer = bmp.create_hDC_compatible(hDC.window, windowRect);
-}
-void Paint::hBitmap_windowBuffer_release()
-{
-	if (!isSetHBitmapWindowBuffer()) return;
-	//hBitmap을 삭제함
-	bmp.delete_hDC_compatible(hBitmap.windowBuffer);
-	hBitmap_windowBuffer_init();
-}
-void Paint::hBitmap_res_init()
-{
-	for (int i = 0; i < res_count; i++)
-		hBitmap.res[i] = NULL;
-
-	//아래 플래그 변수는 삭제할 수 있을 것 같다 
-	//(hBitmap.resource.size() != 0)
-	flag.isSetHBitmapRes = FALSE;
-}
-void Paint::hBitmap_res_set()
-{
-	for (int i = 0; i < res_count; i++)
-		hBitmap.res[i] = bmp(i);
-
-	flag.isSetHBitmapRes = TRUE;
-}
-
-void Paint::hBitmap_old_windowBuffer_init()
-{
-	hBitmap.old.windowBuffer = NULL;
-}
-void Paint::hBitmap_old_windowBuffer_backup()
-{
-	if (!hDC.mem.windowBuffer.isSet()) return;
-	if (isBackedUpHBitmapWindowBuffer())
-		hBitmap_old_res_rollback();
-
-	hBitmap.old.windowBuffer
-		= (HBITMAP)SelectObject(
-			hDC.mem.windowBuffer,
-			hBitmap.windowBuffer
-		);
-}
-void Paint::hBitmap_old_windowBuffer_rollback()
-{
-	if (!isBackedUpHBitmapWindowBuffer()) return;
-	SelectObject(
-		hDC.mem.windowBuffer, 
-		hBitmap.old.windowBuffer
-	);
-	hBitmap_old_windowBuffer_init();
-}
-void Paint::hBitmap_old_res_init()
-{
-	for (int i = 0; i < res_count; i++)
-		hBitmap.old.res[i] = NULL;
-}
-void Paint::hBitmap_old_res_backup()
-{
-	if (!hDC.mem.res.isSet()) return;
-	if (!isBackedUpHBitmapRes())
-		hBitmap_old_res_rollback();
-
-	for (int i = 0; i < res_count; i++)
-		hBitmap.old.res[i]
-		= (HBITMAP)SelectObject(
-			hDC.mem.res[i], 
-			hBitmap.res[i]
-		);
-
-	flag.isBackedUpHBitmapRes = TRUE;
-}
-void Paint::hBitmap_old_res_rollback()
-{
-	if (!isBackedUpHBitmapRes()) return;
-
-	for (int i = 0; i < res_count; i++)
-		SelectObject(
-			hDC.mem.res[i], 
-			hBitmap.old.res[i]
-		);
-
-	hBitmap_old_res_init();
-
-	flag.isBackedUpHBitmapRes = FALSE;
-}
-
-
-
-/********************************
-*
-*		private functions
 *		- double buffering manage
 *
 *********************************/
@@ -283,11 +295,19 @@ void Paint::doubleBuffering_init()
 	//hDC.mem.window와 hDC.mem.res를 생성하고 
 	//hBitmap.res를 hDC.mem.res에 선택시킨다
 	hDC.mem.create(hDC.window, hDC.mem.windowBuffer);
-	hBitmap_old_res_backup();
+	//oldcode
+	_oldcode_hBitmap_old_res_backup();
 
 	//hBitmap.windowBuffer를 생성한 뒤 그것을 hDC.mem.windowBuffer에 선택시킨다
-	hBitmap_windowBuffer_set();
-	hBitmap_old_windowBuffer_backup();
+	_oldcode_hBitmap_windowBuffer_set();
+	_oldcode_hBitmap_old_windowBuffer_backup();
+	//~oldcode//newcode
+	hBitmap.res.old.backup(hDC);
+
+	//hBitmap.windowBuffer를 생성한 뒤 그것을 hDC.mem.windowBuffer에 선택시킨다
+	hBitmap.windowBuffer.set(hwnd, hDC.window);
+	hBitmap.windowBuffer.old.backup(hDC);
+	//~newcode
 
 	flag.isInitDoubleBuffering = TRUE;
 }
@@ -304,13 +324,23 @@ void Paint::doubleBuffering_start()
 	if (isWindowSizeChanged())
 	{
 		GetClientRect(hwnd, &windowRect);
+		//oldcode
 		//hBitmap.windowBuffer를 hDC.mem.windowBuffer에서 롤백하고 release한다
-		hBitmap_old_windowBuffer_rollback();
-		hBitmap_windowBuffer_release();
+		_oldcode_hBitmap_old_windowBuffer_rollback();
+		_oldcode_hBitmap_windowBuffer_release();
 
 		//hBitmap.windowBuffer를 생성한 뒤 그것을 hDC.mem.windowBuffer에 선택시킨다
-		hBitmap_windowBuffer_set();
-		hBitmap_old_windowBuffer_backup();
+		_oldcode_hBitmap_windowBuffer_set();
+		_oldcode_hBitmap_old_windowBuffer_backup();
+		//~oldcode//newcode
+		//hBitmap.windowBuffer를 hDC.mem.windowBuffer에서 롤백하고 release한다
+		hBitmap.windowBuffer.old.rollback(hDC);
+		hBitmap.windowBuffer.release();
+		//hBitmap.windowBuffer를 생성한 뒤 그것을 hDC.mem.windowBuffer에 선택시킨다
+		hBitmap.windowBuffer.set(hwnd, hDC.window);
+		hBitmap.windowBuffer.old.backup(hDC);
+		//~newcode
+
 
 		PixelCoord p(windowRect.right / 2, windowRect.bottom / 2);
 		scale.fix_point_pixel(p);
@@ -331,13 +361,24 @@ void Paint::doubleBuffering_stop()
 }
 void Paint::doubleBuffering_halt()
 {
+	//oldcode
 	//hBitmap.windowBuffer를 hDC.mem.windowBuffer에서 롤백하고 release한다
-	hBitmap_old_windowBuffer_rollback();
-	hBitmap_windowBuffer_release();
+	_oldcode_hBitmap_old_windowBuffer_rollback();
+	_oldcode_hBitmap_windowBuffer_release();
 
 	//doublebuffering을 끝내고 프로그램을 종료할 때 마지막으로 아래 작업 수행
 	//hDC.mem.windowBuffer와 hDC.mem.res를 삭제함
-	hBitmap_old_res_rollback();
+	_oldcode_hBitmap_old_res_rollback();
+	//~oldcode//newcode
+	//hBitmap.windowBuffer를 hDC.mem.windowBuffer에서 롤백하고 release한다
+	hBitmap.windowBuffer.old.rollback(hDC);
+	hBitmap.windowBuffer.release();
+
+	//doublebuffering을 끝내고 프로그램을 종료할 때 마지막으로 아래 작업 수행
+	//hDC.mem.windowBuffer와 hDC.mem.res를 삭제함
+	hBitmap.res.old.rollback(hDC);
+	//~newcode
+
 	hDC.mem.del();
 }
 
@@ -364,12 +405,23 @@ void Paint::paint_background_tobuffer(Object& background)
 	SetStretchBltMode(hDC.mem.windowBuffer, COLORONCOLOR);
 	for (int i = -1; i * px_size + px_pos.x < windowRect.right; i++)
 		for (int j = -1; j * px_size + px_pos.y < windowRect.bottom; j++)
+		{
+			//oldcode
 			StretchBlt(
 				hDC.mem.windowBuffer,
 				i * px_size + px_pos.x, j * px_size + px_pos.y, px_size, px_size,
-				hDC.mem.res[bmp.idx(background, scale)], 0, 0, tsize, tsize,
+				hDC.mem.res[_oldcode_bmp.idx(background, scale)], 0, 0, tsize, tsize,
 				SRCCOPY
 			);
+			//~oldcode//newcode
+			StretchBlt(
+				hDC.mem.windowBuffer,
+				i * px_size + px_pos.x, j * px_size + px_pos.y, px_size, px_size,
+				hDC.mem.res[hBitmap.bmpidx(background, scale)], 0, 0, tsize, tsize,
+				SRCCOPY
+			);
+			//~newcode
+		}
 }
 void Paint::paint_background_ruller_tobuffer()
 {
@@ -429,12 +481,21 @@ void RollingBall::Paint::paint_tobuffer(Object& object)
 			pixel tsize = object.texture_size(scale);
 			PixelCoord px_pos = scale.transform(object.physical.pos);
 			SetStretchBltMode(hDC.mem.windowBuffer, COLORONCOLOR);
+			//oldcode
 			StretchBlt(
 				hDC.mem.windowBuffer,
 				px_pos.x - px_size / 2, px_pos.y - px_size / 2, px_size, px_size,
-				hDC.mem.res[bmp.idx(object, scale, mask)], 0, 0, tsize, tsize,
+				hDC.mem.res[_oldcode_bmp.idx(object, scale, mask)], 0, 0, tsize, tsize,
 				paintmode
 			);
+			//~oldcode//newcode
+			StretchBlt(
+				hDC.mem.windowBuffer,
+				px_pos.x - px_size / 2, px_pos.y - px_size / 2, px_size, px_size,
+				hDC.mem.res[hBitmap.bmpidx(object, scale, mask)], 0, 0, tsize, tsize,
+				paintmode
+			);
+			//~newcode
 		}
 	}
 }

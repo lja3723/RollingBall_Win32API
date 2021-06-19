@@ -144,3 +144,8 @@ int RollingBall::Paint_hBitmap::res_count()
 	if (!m_bmp.isInit()) return 0;
 	return m_bmp.file_count();
 }
+void RollingBall::Paint_hBitmap::resize_vectors(const size_t& newSize)
+{
+	res.resize(newSize);
+	res.old.resize(newSize);
+}

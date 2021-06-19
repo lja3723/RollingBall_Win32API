@@ -17,6 +17,7 @@ namespace RollingBall
 		private:
 			HBITMAP m_windowBuffer;
 		public:
+			_windowBuffer() { init(); }
 			BOOL isSet();
 			void init();
 			void set(const HWND& hwnd, const HDC& hDC_window);
@@ -27,6 +28,7 @@ namespace RollingBall
 			private:
 				HBITMAP m_windowBuffer;
 			public:
+				_old() { init(); }
 				BOOL isBackedUp();
 				void init();
 				void backup(Paint_hDC& hDC);
@@ -41,6 +43,10 @@ namespace RollingBall
 			vector<HBITMAP> m_res;
 			BOOL flag_isSet;
 		public:
+			_res() {
+				m_res = vector<HBITMAP>();
+				init();
+			}
 			BOOL isSet();
 			void init();
 			void set();
@@ -52,6 +58,10 @@ namespace RollingBall
 				vector<HBITMAP> m_res;
 				BOOL flag_isBackedUp;
 			public:
+				_old() {
+					m_res = vector<HBITMAP>();
+					init();
+				}
 				BOOL isBackedUp();
 				void init();
 				void backup(Paint_hDC& hDC);
@@ -61,10 +71,12 @@ namespace RollingBall
 		} res;
 
 	public:
+		//클래스 변수 사용전 반드시 호출
 		BOOL init(HINSTANCE hInstance);
 		BOOL isInit();
 		int bmpidx(Object& object, Scaler& scale, BOOL mask_texture = FALSE);
 		int res_count();
+		void resize_vectors(const size_t& newSize);
 	};
 }
 
