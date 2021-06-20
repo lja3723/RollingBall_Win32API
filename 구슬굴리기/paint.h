@@ -68,6 +68,7 @@ namespace RollingBall
 		void set_px_rate(pixel px_rate);
 		void set_fix_point(PhysicalVector fix_point);
 		void set_fix_point(PixelCoord fix_point);
+		Scaler get_scaler();
 
 		//페인트를 시작한다
 		void begin();

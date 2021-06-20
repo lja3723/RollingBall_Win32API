@@ -17,7 +17,7 @@ void RollingBallClass::update_window()
 	for (int i = 0; i < ball.size(); i++)
 		paint(ball[i]);
 
-	POINT keyViewer = { 300, 100 };
+	POINT keyViewer = { 300, 120 };
 	int d_keyViewer = 18;
 
 	if (controller.isPushed.key.down())
@@ -29,15 +29,37 @@ void RollingBallClass::update_window()
 	if (controller.isPushed.key.right())
 		paint.text(_T("→"), keyViewer.x + d_keyViewer, keyViewer.y);
 
+	TCHAR buff[256];
+
+	_stprintf_s(buff, 256, _T("ballSwitch:%d"), ballSwitch);
+	paint.text(buff, 300, 30);
+	_stprintf_s(buff, 256, _T("ball count:%d"), (int)ball.size());
+	paint.text(buff, 300, 50);
+	PhysicalVector cen = paint.get_scaler().fix_point_physical();
+	_stprintf_s(buff, 256, _T("center position:(%3.2f, %3.2f)"), cen.x, cen.y);
+	paint.text(buff, 300, 70);
+
 	paint.end();
 }
 void RollingBallClass::update_state()
 {
-	if (!ball.size()) return;
-
+	PhysicalVector posPrev = ball[ballSwitch].physical.pos;
 	for (int i = 0; i < ball.size(); i++) {
 		controller.force_to(ball[ballSwitch], 0.015 + 0.001 * ballSwitch);
 		controller.update_ballPos(ball[i]);
+	}
+	PhysicalVector& posNow = ball[ballSwitch].physical.pos;
+
+	if (!(posPrev.x == posNow.x && posPrev.y == posNow.y))
+	{
+		Ball _ball;
+		_ball.physical.pos(posPrev.x, posPrev.y);
+		ball.push_back(_ball);
+	}
+
+	if (ball.size() > 100)
+	{
+		ball.erase(ball.begin() + 1);
 	}
 }
 

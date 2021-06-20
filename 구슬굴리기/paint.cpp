@@ -48,6 +48,10 @@ void Paint::set_fix_point(PixelCoord fix_point)
 {
 	scale.fix_point_pixel(fix_point);
 }
+Scaler Paint::get_scaler()
+{
+	return scale;
+}
 void Paint::begin()
 {
 	hDC.window.mode.set_BeginPaint();
