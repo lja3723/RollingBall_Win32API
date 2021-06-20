@@ -48,9 +48,10 @@ void RollingBallClass::update_state()
 		controller.force_to(ball[ballSwitch], 0.015 + 0.001 * ballSwitch);
 		controller.update_ballPos(ball[i]);
 	}
-	PhysicalVector& posNow = ball[ballSwitch].physical.pos;
+	PhysicalVector posNow = ball[ballSwitch].physical.pos;
 
-	if (!(posPrev.x == posNow.x && posPrev.y == posNow.y))
+	//if (posPrev.x != posNow.x || posPrev.y != posNow.y)
+	if (posPrev != posNow)
 	{
 		Ball _ball;
 		_ball.physical.pos(posPrev.x, posPrev.y);
@@ -78,8 +79,8 @@ BOOL RollingBallClass::init(HINSTANCE m_hInstance, HWND m_hwnd, UINT frame_updat
 
 	_ball.physical.pos(0, 0);
 	ball.push_back(_ball);
-	_ball.physical.pos(0, -1);
-	ball.push_back(_ball);
+	//_ball.physical.pos(0, -1);
+	//ball.push_back(_ball);
 
 	//memset(&physics, 0, sizeof(physics));
 

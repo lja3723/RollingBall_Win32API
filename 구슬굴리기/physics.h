@@ -20,6 +20,8 @@ namespace RollingBall
 		BasicPhysicalVector<Length>& operator()(Length _x, Length _y) { x = _x, y = _y; return *this; }
 		BasicPhysicalVector<Length>& operator+=(BasicPhysicalVector<Length>& v);
 		BasicPhysicalVector<Length>& operator-=(BasicPhysicalVector<Length>& v);
+		int operator==(BasicPhysicalVector<Length>& v);
+		int operator!=(BasicPhysicalVector<Length>& v);
 	};
 
 	template <typename Length, typename Mass>

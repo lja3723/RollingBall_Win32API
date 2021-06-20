@@ -16,3 +16,15 @@ BasicPhysicalVector<Length>& BasicPhysicalVector<Length>::operator-=(BasicPhysic
 	y -= v.y;
 	return this;
 }
+
+template<typename Length>
+int BasicPhysicalVector<Length>::operator==(BasicPhysicalVector<Length>& v)
+{
+	return x == v.x && y == v.y;
+}
+
+template<typename Length>
+int BasicPhysicalVector<Length>::operator!=(BasicPhysicalVector<Length>& v)
+{
+	return !operator==(v);
+}

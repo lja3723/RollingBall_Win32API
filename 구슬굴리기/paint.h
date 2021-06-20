@@ -4,7 +4,6 @@
 
 #include <Windows.h>
 #include <vector>
-#include "bitmap.h"
 #include "object.h"
 #include "scaler.h"
 #include "event.h"
