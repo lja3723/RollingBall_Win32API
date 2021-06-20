@@ -48,19 +48,34 @@ void RollingBallClass::update_state()
 		controller.force_to(ball[ballSwitch], 0.015 + 0.001 * ballSwitch);
 		controller.update_ballPos(ball[i]);
 	}
-	PhysicalVector& posNow = ball[ballSwitch].physical.pos;
+	PhysicalVector posNow = ball[ballSwitch].physical.pos;
 
-	if (!(posPrev.x == posNow.x && posPrev.y == posNow.y))
+	if (posPrev != posNow)
 	{
 		Ball _ball;
 		_ball.physical.pos(posPrev.x, posPrev.y);
 		ball.push_back(_ball);
 	}
 
-	if (ball.size() > 100)
+	static int tickNow = 0;
+	static BOOL isShadowCleared = TRUE;
+	if (tickNow > 100)
+		isShadowCleared = FALSE;
+
+	if (!isShadowCleared)
 	{
-		ball.erase(ball.begin() + 1);
+		if (ball.size() > 1)
+		{
+			ball.erase(ball.begin() + 1);
+			tickNow--;
+		}
+		else if (ball.size() == 1)
+		{
+			isShadowCleared = TRUE;
+		}
 	}
+	else
+		tickNow++;
 }
 
 BOOL RollingBallClass::init(HINSTANCE m_hInstance, HWND m_hwnd, UINT frame_update_interval)
@@ -78,8 +93,8 @@ BOOL RollingBallClass::init(HINSTANCE m_hInstance, HWND m_hwnd, UINT frame_updat
 
 	_ball.physical.pos(0, 0);
 	ball.push_back(_ball);
-	_ball.physical.pos(0, -1);
-	ball.push_back(_ball);
+	//_ball.physical.pos(0, -1);
+	//ball.push_back(_ball);
 
 	//memset(&physics, 0, sizeof(physics));
 
