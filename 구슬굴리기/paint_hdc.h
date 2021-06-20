@@ -78,16 +78,8 @@ namespace RollingBall
 				operator const HDC&();				
 				void release();
 				BOOL isSet();
-
-				////////////////////////////////////////////////
-				/////    Paint_hBitmap에서 이식됨(미구현)   /////
-				///////////////////////////////////////////////
-			public:
-				//void select_hBitmap(Paint_hDC& hDC);
-				//void restore_hBitmap(Paint_hDC& hDC);
-				void select_hBitmap(Paint_hBitmap& hBitmap);
-				void restore_hBitmap(Paint_hBitmap& hBitmap);
-				///////////////////////////////////////////////
+				void select(Paint_hBitmap& hBitmap);
+				void restore(Paint_hBitmap& hBitmap);
 
 			} windowBuffer;
 			class _res
@@ -107,16 +99,8 @@ namespace RollingBall
 				void release();
 				void resize(const size_t& newSize);
 				BOOL isSet();
-
-				////////////////////////////////////////////////
-				/////    Paint_hBitmap에서 이식됨(미구현)   /////
-				///////////////////////////////////////////////
-			public:
-				//void select_hBitmap(Paint_hDC& hDC);
-				//void restore_hBitmap(Paint_hDC& hDC);
-				void select_hBitmap(Paint_hBitmap& hBitmap);
-				void restore_hBitmap(Paint_hBitmap& hBitmap);
-				///////////////////////////////////////////////
+				void select(Paint_hBitmap& hBitmap);
+				void restore(Paint_hBitmap& hBitmap);
 			} res;
 
 		public:

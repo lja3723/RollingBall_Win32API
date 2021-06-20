@@ -18,12 +18,6 @@ namespace RollingBall
 		//////////////////
 		class _windowBuffer
 		{
-			////////////////////////////////////////
-		//public:
-			//아래 두 함수는 hDC로 옮기기
-			//void select_hBitmap(Paint_hDC& hDC);
-			//void restore_hBitmap(Paint_hDC& hDC);
-			////////////////////////////////////////
 		private:
 			HBITMAP m_windowBuffer;
 
@@ -38,11 +32,7 @@ namespace RollingBall
 
 			public:
 				_old() { m_windowBuffer = NULL; }
-				//아래 1개 함수를 public으로 옮기기
-				//BOOL isBackedUp();
-				//void init();
 				void operator=(HBITMAP hBitmap);
-
 				operator HBITMAP ();
 			} old;
 
@@ -54,9 +44,6 @@ namespace RollingBall
 			BOOL isSet();
 			void init();
 			//windowRect크기의 화면 DC 호환 windowBuffer를 생성
-			//backup, rollback과의 연관성 제거
-			//void set(RECT& windowRect, Paint_hDC& hDC);
-			//void release(Paint_hDC& hDC);
 			void set(RECT& windowRect, const HDC& window);
 			void release();
 
@@ -69,12 +56,6 @@ namespace RollingBall
 		} windowBuffer;
 		class _res
 		{
-			////////////////////////////////////////
-		//public:
-			//아래 두 함수는 hDC로 옮기기
-			//void select_hBitmap(Paint_hDC& hDC);
-			//void restore_hBitmap(Paint_hDC& hDC);
-			////////////////////////////////////////
 		private:
 			vector<HBITMAP> m_res;
 			BOOL flag_isSet;
@@ -87,7 +68,6 @@ namespace RollingBall
 			class _old
 			{
 			private:
-			//public:
 				vector<HBITMAP> m_res;
 
 			public:
@@ -97,11 +77,7 @@ namespace RollingBall
 				}
 				void init();
 				void resize(const size_t& newSize);
-
-				//void operator=(HBITMAP hBitmap);
 				HBITMAP& operator()(int idx);
-
-				//operator HBITMAP ();
 			} old;
 
 		public:
@@ -114,9 +90,6 @@ namespace RollingBall
 			}
 			BOOL isSet();
 			void init();
-			//backup, rollback과의 연관성 제거
-			//void set(Paint_hDC& hDC);
-			//void release(Paint_hDC& hDC);
 			void set();
 			void release();
 			void resize(const size_t& newSize);
