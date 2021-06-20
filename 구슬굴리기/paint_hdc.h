@@ -2,6 +2,7 @@
 #define __paint_hdc_h__
 #include <Windows.h>
 #include <vector>
+#include "paint_hbitmap.h"
 
 using std::vector;
 
@@ -82,8 +83,10 @@ namespace RollingBall
 				/////    Paint_hBitmap에서 이식됨(미구현)   /////
 				///////////////////////////////////////////////
 			public:
-				void select_hBitmap(Paint_hDC& hDC);
-				void restore_hBitmap(Paint_hDC& hDC);
+				//void select_hBitmap(Paint_hDC& hDC);
+				//void restore_hBitmap(Paint_hDC& hDC);
+				void select_hBitmap(Paint_hBitmap& hBitmap);
+				void restore_hBitmap(Paint_hBitmap& hBitmap);
 				///////////////////////////////////////////////
 
 			} windowBuffer;
@@ -109,8 +112,10 @@ namespace RollingBall
 				/////    Paint_hBitmap에서 이식됨(미구현)   /////
 				///////////////////////////////////////////////
 			public:
-				void select_hBitmap(Paint_hDC& hDC);
-				void restore_hBitmap(Paint_hDC& hDC);
+				//void select_hBitmap(Paint_hDC& hDC);
+				//void restore_hBitmap(Paint_hDC& hDC);
+				void select_hBitmap(Paint_hBitmap& hBitmap);
+				void restore_hBitmap(Paint_hBitmap& hBitmap);
 				///////////////////////////////////////////////
 			} res;
 

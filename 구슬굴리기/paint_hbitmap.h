@@ -3,7 +3,7 @@
 
 #include <Windows.h>
 #include "bitmap.h"
-#include "paint_hdc.h"
+//#include "paint_hdc.h"
 
 namespace RollingBall
 {
@@ -19,10 +19,10 @@ namespace RollingBall
 		class _windowBuffer
 		{
 			////////////////////////////////////////
-		public:
+		//public:
 			//아래 두 함수는 hDC로 옮기기
-			void select_hBitmap(Paint_hDC& hDC);
-			void restore_hBitmap(Paint_hDC& hDC);
+			//void select_hBitmap(Paint_hDC& hDC);
+			//void restore_hBitmap(Paint_hDC& hDC);
 			////////////////////////////////////////
 		private:
 			HBITMAP m_windowBuffer;
@@ -33,12 +33,17 @@ namespace RollingBall
 			////////////////////////
 			class _old
 			{
-			public:
+			private:
 				HBITMAP m_windowBuffer;
 
-				_old() { init(); }
-				BOOL isBackedUp();
-				void init();
+			public:
+				_old() { m_windowBuffer = NULL; }
+				//아래 1개 함수를 public으로 옮기기
+				//BOOL isBackedUp();
+				//void init();
+				void operator=(HBITMAP hBitmap);
+
+				operator HBITMAP ();
 			} old;
 
 		public:
@@ -55,18 +60,25 @@ namespace RollingBall
 			void set(RECT& windowRect, const HDC& window);
 			void release();
 
+			operator HBITMAP ();
+
+
+			BOOL isBackedUp();
+
+
 		} windowBuffer;
 		class _res
 		{
 			////////////////////////////////////////
-		public:
+		//public:
 			//아래 두 함수는 hDC로 옮기기
-			void select_hBitmap(Paint_hDC& hDC);
-			void restore_hBitmap(Paint_hDC& hDC);
+			//void select_hBitmap(Paint_hDC& hDC);
+			//void restore_hBitmap(Paint_hDC& hDC);
 			////////////////////////////////////////
 		private:
 			vector<HBITMAP> m_res;
 			BOOL flag_isSet;
+			BOOL flag_isBackedUp;
 
 		public:
 			////////////////
@@ -74,18 +86,22 @@ namespace RollingBall
 			////////////////
 			class _old
 			{
-			public:
+			private:
+			//public:
 				vector<HBITMAP> m_res;
-				BOOL flag_isBackedUp;
 
 			public:
 				_old() {
 					m_res = vector<HBITMAP>();
 					init();
 				}
-				BOOL isBackedUp();
 				void init();
 				void resize(const size_t& newSize);
+
+				//void operator=(HBITMAP hBitmap);
+				HBITMAP& operator()(int idx);
+
+				//operator HBITMAP ();
 			} old;
 
 		public:
@@ -104,6 +120,13 @@ namespace RollingBall
 			void set();
 			void release();
 			void resize(const size_t& newSize);
+
+			size_t size();
+
+			const HBITMAP& operator()(int idx);
+
+			BOOL isBackedUp();
+			void isBackedUp(BOOL flag);
 		} res;
 
 	public:

@@ -7,17 +7,56 @@ using namespace RollingBall;
 ////////////////////////////////////////////////
 /////    Paint_hBitmap에서 이식됨(미구현)   /////
 ///////////////////////////////////////////////
-void RollingBall::Paint_hDC::_mem::_windowBuffer::select_hBitmap(Paint_hDC& hDC)
+//void RollingBall::Paint_hDC::_mem::_windowBuffer::select_hBitmap(Paint_hDC& hDC)
+void RollingBall::Paint_hDC::_mem::_windowBuffer::select_hBitmap(Paint_hBitmap& hBitmap)
 {
+	if (!isSet()) return;
+	if (hBitmap.windowBuffer.isBackedUp())
+		restore_hBitmap(hBitmap);
+
+	hBitmap.windowBuffer.old
+		= (HBITMAP)SelectObject(
+			m_windowBuffer,
+			hBitmap.windowBuffer
+		);
 }
-void RollingBall::Paint_hDC::_mem::_windowBuffer::restore_hBitmap(Paint_hDC& hDC)
+//void RollingBall::Paint_hDC::_mem::_windowBuffer::restore_hBitmap(Paint_hDC& hDC)
+void RollingBall::Paint_hDC::_mem::_windowBuffer::restore_hBitmap(Paint_hBitmap& hBitmap)
 {
+	if (!hBitmap.windowBuffer.isBackedUp()) return;
+	SelectObject(
+		m_windowBuffer,
+		hBitmap.windowBuffer.old
+	);
 }
-void RollingBall::Paint_hDC::_mem::_res::select_hBitmap(Paint_hDC& hDC)
+//void RollingBall::Paint_hDC::_mem::_res::select_hBitmap(Paint_hDC& hDC)
+void RollingBall::Paint_hDC::_mem::_res::select_hBitmap(Paint_hBitmap& hBitmap)
 {
+	if (!isSet()) return;
+	if (!hBitmap.res.isBackedUp())
+		restore_hBitmap(hBitmap);
+
+	for (int i = 0; i < hBitmap.res.size(); i++)
+		hBitmap.res.old(i)
+		= (HBITMAP)SelectObject(
+			m_res[i],
+			hBitmap.res(i)
+		);
+
+	hBitmap.res.isBackedUp(TRUE);
 }
-void RollingBall::Paint_hDC::_mem::_res::restore_hBitmap(Paint_hDC& hDC)
+//void RollingBall::Paint_hDC::_mem::_res::restore_hBitmap(Paint_hDC& hDC)
+void RollingBall::Paint_hDC::_mem::_res::restore_hBitmap(Paint_hBitmap& hBitmap)
 {
+	if (!hBitmap.res.isBackedUp()) return;
+
+	for (int i = 0; i < m_res.size(); i++)
+		SelectObject(
+			m_res[i],
+			hBitmap.res.old(i)
+		);
+
+	hBitmap.res.isBackedUp(FALSE);
 }
 
 

@@ -5,6 +5,7 @@ using namespace RollingBall;
 Bitmap Paint_hBitmap::m_bmp = Bitmap();
 
 //아래 네 개의 함수는 Paint_hDC로 옮길 필요 있음
+/*
 void Paint_hBitmap::_windowBuffer::select_hBitmap(Paint_hDC& hDC)
 {
 	if (!hDC.mem.windowBuffer.isSet()) return;
@@ -52,6 +53,7 @@ void Paint_hBitmap::_res::restore_hBitmap(Paint_hDC& hDC)
 
 	old.flag_isBackedUp = FALSE;
 }
+*/
 
 
 
@@ -60,13 +62,14 @@ void Paint_hBitmap::_res::restore_hBitmap(Paint_hDC& hDC)
 //		hBitmap.windowBuffer manage
 // 
 //////////////////////////////////////////
-BOOL Paint_hBitmap::_windowBuffer::_old::isBackedUp()
+
+void RollingBall::Paint_hBitmap::_windowBuffer::_old::operator=(HBITMAP hBitmap)
 {
-	return m_windowBuffer != NULL;
+	m_windowBuffer = hBitmap;
 }
-void Paint_hBitmap::_windowBuffer::_old::init()
+RollingBall::Paint_hBitmap::_windowBuffer::_old::operator HBITMAP()
 {
-	m_windowBuffer = NULL;
+	return m_windowBuffer;
 }
 BOOL Paint_hBitmap::_windowBuffer::isSet()
 {
@@ -90,6 +93,10 @@ void Paint_hBitmap::_windowBuffer::set(RECT& windowRect, const HDC& window)
 	//동시에 기존의 hBitmap을 old hBitmap에 백업시킨다
 	//backup(hDC);
 }
+RollingBall::Paint_hBitmap::_windowBuffer::operator HBITMAP()
+{
+	return m_windowBuffer;
+}
 //void Paint_hBitmap::_windowBuffer::release(Paint_hDC& hDC)
 void Paint_hBitmap::_windowBuffer::release()
 {
@@ -101,18 +108,16 @@ void Paint_hBitmap::_windowBuffer::release()
 	m_bmp.delete_hDC_compatible(m_windowBuffer);
 	init();
 }
-
-
+BOOL Paint_hBitmap::_windowBuffer::isBackedUp()
+{
+	return m_windowBuffer != NULL;
+}
 
 //////////////////////////////////////
 // 
 //		hBitmap.res manage
 // 
 //////////////////////////////////////
-BOOL Paint_hBitmap::_res::_old::isBackedUp()
-{
-	return flag_isBackedUp;
-}
 void Paint_hBitmap::_res::_old::init()
 {
 	for (int i = 0; i < m_res.size(); i++)
@@ -122,6 +127,13 @@ void Paint_hBitmap::_res::_old::resize(const size_t& newSize)
 {
 	m_res.resize(newSize);
 }
+
+HBITMAP& RollingBall::Paint_hBitmap::_res::_old::operator()(int idx)
+{
+	if (!(0 <= idx && idx < m_res.size())) idx = 0;
+	return m_res[idx];
+}
+
 BOOL Paint_hBitmap::_res::isSet()
 {
 	return flag_isSet;
@@ -158,9 +170,29 @@ void Paint_hBitmap::_res::release()
 void Paint_hBitmap::_res::resize(const size_t& newSize)
 {
 	m_res.resize(newSize);
-	old.m_res.resize(newSize);
+	old.resize(newSize);
 }
 
+size_t RollingBall::Paint_hBitmap::_res::size()
+{
+	return m_res.size();
+}
+
+const HBITMAP& RollingBall::Paint_hBitmap::_res::operator()(int idx)
+{
+	if (!(0 <= idx && idx < m_res.size())) idx = 0;
+	return m_res[idx];
+}
+
+BOOL Paint_hBitmap::_res::isBackedUp()
+{
+	return flag_isBackedUp;
+}
+
+void RollingBall::Paint_hBitmap::_res::isBackedUp(BOOL flag)
+{
+	flag_isBackedUp = flag;
+}
 
 
 //////////////////////////////////////
