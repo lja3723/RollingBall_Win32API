@@ -11,9 +11,19 @@ namespace RollingBall
 	{
 	private:
 		static Bitmap m_bmp;
+
+		//////////////////////////
+		//	public inner class
+		//////////////////////////
 	public:
 		class _windowBuffer
 		{
+			////////////////////////////////////////
+		public:
+			//아래 두 함수는 hDC로 옮기기
+			void backup(Paint_hDC& hDC);
+			void rollback(Paint_hDC& hDC);
+			////////////////////////////////////////
 		private:
 			HBITMAP m_windowBuffer;
 
@@ -26,11 +36,6 @@ namespace RollingBall
 				BOOL isBackedUp();
 				void init();
 			} old;
-
-		public:
-			//아래 두 함수는 hDC로 옮기기
-			void backup(Paint_hDC& hDC);
-			void rollback(Paint_hDC& hDC);
 
 		public:
 			_windowBuffer() { init(); }
@@ -47,6 +52,12 @@ namespace RollingBall
 
 		class _res
 		{
+			////////////////////////////////////////
+		public:
+			//아래 두 함수는 hDC로 옮기기
+			void backup(Paint_hDC& hDC);
+			void rollback(Paint_hDC& hDC);
+			////////////////////////////////////////
 		private:
 			vector<HBITMAP> m_res;
 			BOOL flag_isSet;
@@ -68,11 +79,6 @@ namespace RollingBall
 			} old;
 
 		public:
-			//아래 두 함수는 hDC로 옮기기
-			void backup(Paint_hDC& hDC);
-			void rollback(Paint_hDC& hDC);
-
-		public:
 			_res() {
 				m_res = vector<HBITMAP>();
 				init();
@@ -87,6 +93,10 @@ namespace RollingBall
 			void resize(const size_t& newSize);
 		} res;
 
+
+		//////////////////////////
+		//	public interface
+		//////////////////////////
 	public:
 		//클래스 변수 사용전 반드시 호출
 		BOOL init(HINSTANCE hInstance);
@@ -94,11 +104,6 @@ namespace RollingBall
 		int bmpidx(Object& object, Scaler& scale, BOOL mask_texture = FALSE);
 		int res_count();
 		void resize_res_vector(const size_t& newSize);
-		//backup, rollback과의 연관성 제거
-		//void set(RECT& windowRect, Paint_hDC& hDC);
-		//void release(Paint_hDC& hDC);
-		//void set(RECT& windowRect, const HDC& window);
-		//void release();
 	};
 }
 

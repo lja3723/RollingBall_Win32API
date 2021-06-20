@@ -4,16 +4,7 @@ using namespace RollingBall;
 
 Bitmap Paint_hBitmap::m_bmp = Bitmap();
 
-
-
-BOOL Paint_hBitmap::_windowBuffer::_old::isBackedUp()
-{
-	return m_windowBuffer != NULL;
-}
-void Paint_hBitmap::_windowBuffer::_old::init()
-{
-	m_windowBuffer = NULL;
-}
+//아래 네 개의 함수는 Paint_hDC로 옮길 필요 있음
 void Paint_hBitmap::_windowBuffer::backup(Paint_hDC& hDC)
 {
 	if (!hDC.mem.windowBuffer.isSet()) return;
@@ -33,6 +24,49 @@ void Paint_hBitmap::_windowBuffer::rollback(Paint_hDC& hDC)
 		hDC.mem.windowBuffer,
 		old.m_windowBuffer
 	);
+}
+void Paint_hBitmap::_res::backup(Paint_hDC& hDC)
+{
+	if (!hDC.mem.res.isSet()) return;
+	if (!old.isBackedUp())
+		rollback(hDC);
+
+	for (int i = 0; i < old.m_res.size(); i++)
+		old.m_res[i]
+		= (HBITMAP)SelectObject(
+			hDC.mem.res[i],
+			m_res[i]
+		);
+
+	old.flag_isBackedUp = TRUE;
+}
+void Paint_hBitmap::_res::rollback(Paint_hDC& hDC)
+{
+	if (!old.isBackedUp()) return;
+
+	for (int i = 0; i < m_res.size(); i++)
+		SelectObject(
+			hDC.mem.res[i],
+			old.m_res[i]
+		);
+
+	old.flag_isBackedUp = FALSE;
+}
+
+
+
+//////////////////////////////////////////
+// 
+//		hBitmap.windowBuffer manage
+// 
+//////////////////////////////////////////
+BOOL Paint_hBitmap::_windowBuffer::_old::isBackedUp()
+{
+	return m_windowBuffer != NULL;
+}
+void Paint_hBitmap::_windowBuffer::_old::init()
+{
+	m_windowBuffer = NULL;
 }
 BOOL Paint_hBitmap::_windowBuffer::isSet()
 {
@@ -70,6 +104,11 @@ void Paint_hBitmap::_windowBuffer::release()
 
 
 
+//////////////////////////////////////
+// 
+//		hBitmap.res manage
+// 
+//////////////////////////////////////
 BOOL Paint_hBitmap::_res::_old::isBackedUp()
 {
 	return flag_isBackedUp;
@@ -82,33 +121,6 @@ void Paint_hBitmap::_res::_old::init()
 void Paint_hBitmap::_res::_old::resize(const size_t& newSize)
 {
 	m_res.resize(newSize);
-}
-void Paint_hBitmap::_res::backup(Paint_hDC& hDC)
-{
-	if (!hDC.mem.res.isSet()) return;
-	if (!old.isBackedUp())
-		rollback(hDC);
-
-	for (int i = 0; i < old.m_res.size(); i++)
-		old.m_res[i]
-		= (HBITMAP)SelectObject(
-			hDC.mem.res[i],
-			m_res[i]
-		);
-
-	old.flag_isBackedUp = TRUE;
-}
-void Paint_hBitmap::_res::rollback(Paint_hDC& hDC)
-{
-	if (!old.isBackedUp()) return;
-
-	for (int i = 0; i < m_res.size(); i++)
-		SelectObject(
-			hDC.mem.res[i],
-			old.m_res[i]
-		);
-
-	old.flag_isBackedUp = FALSE;
 }
 BOOL Paint_hBitmap::_res::isSet()
 {
@@ -151,6 +163,11 @@ void Paint_hBitmap::_res::resize(const size_t& newSize)
 
 
 
+//////////////////////////////////////
+// 
+//		hBitmap public interface
+// 
+//////////////////////////////////////
 BOOL Paint_hBitmap::init(HINSTANCE hInstance)
 {
 	return m_bmp.init(hInstance);
@@ -172,17 +189,3 @@ void Paint_hBitmap::resize_res_vector(const size_t& newSize)
 {
 	res.resize(newSize);
 }
-
-//void RollingBall::Paint_hBitmap::set(RECT& windowRect, Paint_hDC& hDC)
-//void RollingBall::Paint_hBitmap::set(RECT& windowRect, const HDC& window)
-//{
-//	windowBuffer.set(windowRect, window);
-//	res.set();
-//}
-
-//void RollingBall::Paint_hBitmap::release(Paint_hDC& hDC)
-//void RollingBall::Paint_hBitmap::release()
-//{
-//	windowBuffer.release();
-//	res.release();
-//}
