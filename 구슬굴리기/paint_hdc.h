@@ -9,24 +9,27 @@ namespace RollingBall
 {
 	class Paint_hDC
 	{
-	//public class
 	public:
-		//hDC.window를 관리함
+		//////////////////
+		//	inner class
+		//////////////////
 		class _window
 		{
-		private:
-			HDC m_window;
-			PAINTSTRUCT m_ps;
-
 		public:
-			//window를 어떤 방식으로 얻을지 설정함
-			//BeginPaint 또는 GetDC으로 얻을 수 있음
+			//////////////////
+			//	inner class
+			//////////////////
 			class _mode
 			{
+				//window를 어떤 방식으로 얻을지 설정함
+				//BeginPaint 또는 GetDC으로 얻을 수 있음
 			private:
 				BOOL flag_isGetDC;
 
 			public:
+				//////////////////////////////
+				//	window.mode interface
+				//////////////////////////////
 				_mode() { flag_isGetDC = FALSE; }
 				void set_BeginPaint();
 				void set_GetDC();
@@ -34,10 +37,16 @@ namespace RollingBall
 				BOOL isBeginPaint();
 
 			}mode;
+
 		private:
+			HDC m_window;
+			PAINTSTRUCT m_ps;
 			void init();
 
 		public:
+			//////////////////////////
+			//	window interface
+			//////////////////////////
 			_window() { init(); }
 			void set(HWND hwnd);
 			operator const HDC&();
@@ -45,21 +54,22 @@ namespace RollingBall
 			BOOL isSet();
 
 		}window;
-
-		//hDC.mem 요소를 관리함
 		class _mem
 		{
 		public:
+			//////////////////
+			//	inner class
+			//////////////////
 			class _windowBuffer
 			{
 			private:
-				//Paint_hDC* m_hDC;
 				HDC m_windowBuffer;
-
-			private:
 				void init();
 
 			public:
+				//////////////////////////////////
+				//	mem.windowBuffer interface
+				//////////////////////////////////
 				_windowBuffer()
 				{ init(); }
 
@@ -68,31 +78,54 @@ namespace RollingBall
 				void release();
 				BOOL isSet();
 
+				////////////////////////////////////////////////
+				/////    Paint_hBitmap에서 이식됨(미구현)   /////
+				///////////////////////////////////////////////
+			public:
+				void select_hBitmap(Paint_hDC& hDC);
+				void restore_hBitmap(Paint_hDC& hDC);
+				///////////////////////////////////////////////
+
 			} windowBuffer;
 			class _res
 			{
 			private:
 				vector<HDC> m_res;
 				BOOL flag_isSet;
-
-			private:
 				void init();
 
 			public:
+				//////////////////////////
+				//	mem.res interface
+				//////////////////////////
 				_res() { init(); }
-
 				void set(const HDC& mem_windowBuffer);
 				const HDC& operator[](int idx);
 				void release();
 				void resize(const size_t& newSize);
 				BOOL isSet();
+
+				////////////////////////////////////////////////
+				/////    Paint_hBitmap에서 이식됨(미구현)   /////
+				///////////////////////////////////////////////
+			public:
+				void select_hBitmap(Paint_hDC& hDC);
+				void restore_hBitmap(Paint_hDC& hDC);
+				///////////////////////////////////////////////
 			} res;
 
 		public:
+			//////////////////////
+			//	mem interface
+			//////////////////////
 			void set(const HDC& window, const HDC& mem_windowBuffer);
 			void release();
 		} mem;
 
+	public:
+		//////////////////
+		//	interface
+		//////////////////
 		void resize_res_vector(const size_t& newSize);
 	};
 }
