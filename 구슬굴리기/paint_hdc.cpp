@@ -4,103 +4,11 @@ using namespace RollingBall;
 
 
 
-////////////////////////////////////////////////
-/////    Paint_hBitmap에서 이식됨(미구현)   /////
-///////////////////////////////////////////////
-//void RollingBall::Paint_hDC::_mem::_windowBuffer::select_hBitmap(Paint_hDC& hDC)
-void RollingBall::Paint_hDC::_mem::_windowBuffer::select_hBitmap(Paint_hBitmap& hBitmap)
-{
-	if (!isSet()) return;
-	if (hBitmap.windowBuffer.isBackedUp())
-		restore_hBitmap(hBitmap);
-
-	hBitmap.windowBuffer.old
-		= (HBITMAP)SelectObject(
-			m_windowBuffer,
-			hBitmap.windowBuffer
-		);
-}
-//void RollingBall::Paint_hDC::_mem::_windowBuffer::restore_hBitmap(Paint_hDC& hDC)
-void RollingBall::Paint_hDC::_mem::_windowBuffer::restore_hBitmap(Paint_hBitmap& hBitmap)
-{
-	if (!hBitmap.windowBuffer.isBackedUp()) return;
-	SelectObject(
-		m_windowBuffer,
-		hBitmap.windowBuffer.old
-	);
-}
-//void RollingBall::Paint_hDC::_mem::_res::select_hBitmap(Paint_hDC& hDC)
-void RollingBall::Paint_hDC::_mem::_res::select_hBitmap(Paint_hBitmap& hBitmap)
-{
-	if (!isSet()) return;
-	if (!hBitmap.res.isBackedUp())
-		restore_hBitmap(hBitmap);
-
-	for (int i = 0; i < hBitmap.res.size(); i++)
-		hBitmap.res.old(i)
-		= (HBITMAP)SelectObject(
-			m_res[i],
-			hBitmap.res(i)
-		);
-
-	hBitmap.res.isBackedUp(TRUE);
-}
-//void RollingBall::Paint_hDC::_mem::_res::restore_hBitmap(Paint_hDC& hDC)
-void RollingBall::Paint_hDC::_mem::_res::restore_hBitmap(Paint_hBitmap& hBitmap)
-{
-	if (!hBitmap.res.isBackedUp()) return;
-
-	for (int i = 0; i < m_res.size(); i++)
-		SelectObject(
-			m_res[i],
-			hBitmap.res.old(i)
-		);
-
-	hBitmap.res.isBackedUp(FALSE);
-}
-
-
-/********************************
-*
-*		private functions
-*		- hDCwindow Management
-*
-*********************************/
-void Paint_hDC::_window::init()
-{
-	m_window = NULL;
-	memset(&m_ps, 0, sizeof(m_ps));
-}
-void Paint_hDC::_window::set(HWND hwnd)
-{
-	if (isSet())
-		release(hwnd);
-
-	if (mode.isGetDC())
-		m_window = GetDC(hwnd);
-	else
-		m_window = BeginPaint(hwnd, &m_ps);
-}
-RollingBall::Paint_hDC::_window::operator const HDC&()
-{
-	return m_window;
-}
-void Paint_hDC::_window::release(const HWND& hwnd)
-{
-	if (!isSet()) return;
-
-	if (mode.isGetDC())
-		ReleaseDC(hwnd, m_window);
-	else
-		EndPaint(hwnd, &m_ps);
-
-	init();
-}
-BOOL Paint_hDC::_window::isSet()
-{
-	return m_window != NULL;
-}
-
+//////////////////////////////////////////
+// 
+//		hDC.window manage
+// 
+//////////////////////////////////////////
 void Paint_hDC::_window::_mode::set_BeginPaint()
 {
 	flag_isGetDC = FALSE;
@@ -118,13 +26,48 @@ BOOL Paint_hDC::_window::_mode::isBeginPaint()
 	return !isGetDC();
 }
 
+void Paint_hDC::_window::init()
+{
+	m_window = NULL;
+	memset(&m_ps, 0, sizeof(m_ps));
+}
+void Paint_hDC::_window::set(HWND hwnd)
+{
+	if (isSet())
+		release(hwnd);
 
-/********************************
-*
-*		private functions
-*		- mem management
-*
-*********************************/
+	if (mode.isGetDC())
+		m_window = GetDC(hwnd);
+	else
+		m_window = BeginPaint(hwnd, &m_ps);
+}
+void Paint_hDC::_window::release(const HWND& hwnd)
+{
+	if (!isSet()) return;
+
+	if (mode.isGetDC())
+		ReleaseDC(hwnd, m_window);
+	else
+		EndPaint(hwnd, &m_ps);
+
+	init();
+}
+BOOL Paint_hDC::_window::isSet()
+{
+	return m_window != NULL;
+}
+Paint_hDC::_window::operator const HDC& ()
+{
+	return m_window;
+}
+
+
+
+//////////////////////////////////////////
+// 
+//		hDC.mem.windowBuffer manage
+// 
+//////////////////////////////////////////
 void Paint_hDC::_mem::_windowBuffer::init()
 {
 	m_windowBuffer = NULL;
@@ -137,12 +80,6 @@ void Paint_hDC::_mem::_windowBuffer::set(const HDC& window)
 	//화면 DC와 호환이 되는 memDC를 생성
 	m_windowBuffer = CreateCompatibleDC(window);
 }
-RollingBall::Paint_hDC::_mem::_windowBuffer::operator const HDC& ()
-{
-	return m_windowBuffer;
-}
-//void RollingBall::Paint_hDC::_mem::_windowBuffer::select_hBitmap(Paint_hDC& hDC)
-//void RollingBall::Paint_hDC::_mem::_windowBuffer::restore_hBitmap(Paint_hDC& hDC)
 void Paint_hDC::_mem::_windowBuffer::release()
 {
 	if (!isSet()) return;
@@ -154,7 +91,38 @@ BOOL Paint_hDC::_mem::_windowBuffer::isSet()
 {
 	return m_windowBuffer != NULL;
 }
+void Paint_hDC::_mem::_windowBuffer::select(Paint_hBitmap& hBitmap)
+{
+	if (!isSet()) return;
+	if (hBitmap.windowBuffer.isBackedUp())
+		restore(hBitmap);
 
+	hBitmap.windowBuffer.old
+		= (HBITMAP)SelectObject(
+			m_windowBuffer,
+			hBitmap.windowBuffer
+		);
+}
+void Paint_hDC::_mem::_windowBuffer::restore(Paint_hBitmap& hBitmap)
+{
+	if (!hBitmap.windowBuffer.isBackedUp()) return;
+	SelectObject(
+		m_windowBuffer,
+		hBitmap.windowBuffer.old
+	);
+}
+Paint_hDC::_mem::_windowBuffer::operator const HDC& ()
+{
+	return m_windowBuffer;
+}
+
+
+
+//////////////////////////////////////////
+// 
+//		hDC.mem.res manage
+// 
+//////////////////////////////////////////
 void Paint_hDC::_mem::_res::init()
 {
 	flag_isSet = NULL;
@@ -172,15 +140,6 @@ void Paint_hDC::_mem::_res::set(const HDC& mem_windowBuffer)
 
 	flag_isSet = TRUE;
 }
-const HDC& Paint_hDC::_mem::_res::operator[](int idx)
-{
-	if (0 <= idx && idx < m_res.size())
-		return m_res[idx];
-	else
-		return m_res[0];
-}
-//void RollingBall::Paint_hDC::_mem::_res::select_hBitmap(Paint_hDC& hDC)
-//void RollingBall::Paint_hDC::_mem::_res::restore_hBitmap(Paint_hDC& hDC)
 void Paint_hDC::_mem::_res::release()
 {
 	if (!isSet()) return;
@@ -200,7 +159,48 @@ BOOL Paint_hDC::_mem::_res::isSet()
 {
 	return flag_isSet;
 }
+void Paint_hDC::_mem::_res::select(Paint_hBitmap& hBitmap)
+{
+	if (!isSet()) return;
+	if (!hBitmap.res.isBackedUp())
+		restore(hBitmap);
 
+	for (int i = 0; i < hBitmap.res.size(); i++)
+		hBitmap.res.old(i)
+		= (HBITMAP)SelectObject(
+			m_res[i],
+			hBitmap.res(i)
+		);
+
+	hBitmap.res.isBackedUp(TRUE);
+}
+void Paint_hDC::_mem::_res::restore(Paint_hBitmap& hBitmap)
+{
+	if (!hBitmap.res.isBackedUp()) return;
+
+	for (int i = 0; i < m_res.size(); i++)
+		SelectObject(
+			m_res[i],
+			hBitmap.res.old(i)
+		);
+
+	hBitmap.res.isBackedUp(FALSE);
+}
+const HDC& Paint_hDC::_mem::_res::operator()(int idx)
+{
+	if (0 <= idx && idx < m_res.size())
+		return m_res[idx];
+	else
+		return m_res[0];
+}
+
+
+
+//////////////////////////////////////////
+// 
+//		hDC.mem || hDC manage
+// 
+//////////////////////////////////////////
 void Paint_hDC::_mem::set(const HDC& window, const HDC& mem_windowBuffer)
 {
 	windowBuffer.set(window);
@@ -212,7 +212,7 @@ void Paint_hDC::_mem::release()
 	res.release();
 }
 
-void RollingBall::Paint_hDC::resize_res_vector(const size_t& newSize)
+void Paint_hDC::resize_res_vector(const size_t& newSize)
 {
 	mem.res.resize(newSize);
 }

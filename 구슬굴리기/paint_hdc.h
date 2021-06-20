@@ -48,11 +48,13 @@ namespace RollingBall
 			//////////////////////////
 			//	window interface
 			//////////////////////////
-			_window() { init(); }
+			_window() {
+				init();
+			}
 			void set(HWND hwnd);
-			operator const HDC&();
 			void release(const HWND& hwnd);
 			BOOL isSet();
+			operator const HDC& ();
 
 		}window;
 		class _mem
@@ -71,23 +73,13 @@ namespace RollingBall
 				//////////////////////////////////
 				//	mem.windowBuffer interface
 				//////////////////////////////////
-				_windowBuffer()
-				{ init(); }
-
-				void set(const HDC& window);
-				operator const HDC&();				
+				_windowBuffer() { init(); }
+				void set(const HDC& window);			
 				void release();
 				BOOL isSet();
-
-				////////////////////////////////////////////////
-				/////    Paint_hBitmap에서 이식됨(미구현)   /////
-				///////////////////////////////////////////////
-			public:
-				//void select_hBitmap(Paint_hDC& hDC);
-				//void restore_hBitmap(Paint_hDC& hDC);
-				void select_hBitmap(Paint_hBitmap& hBitmap);
-				void restore_hBitmap(Paint_hBitmap& hBitmap);
-				///////////////////////////////////////////////
+				void select(Paint_hBitmap& hBitmap);
+				void restore(Paint_hBitmap& hBitmap);
+				operator const HDC& ();
 
 			} windowBuffer;
 			class _res
@@ -103,20 +95,12 @@ namespace RollingBall
 				//////////////////////////
 				_res() { init(); }
 				void set(const HDC& mem_windowBuffer);
-				const HDC& operator[](int idx);
 				void release();
 				void resize(const size_t& newSize);
 				BOOL isSet();
-
-				////////////////////////////////////////////////
-				/////    Paint_hBitmap에서 이식됨(미구현)   /////
-				///////////////////////////////////////////////
-			public:
-				//void select_hBitmap(Paint_hDC& hDC);
-				//void restore_hBitmap(Paint_hDC& hDC);
-				void select_hBitmap(Paint_hBitmap& hBitmap);
-				void restore_hBitmap(Paint_hBitmap& hBitmap);
-				///////////////////////////////////////////////
+				void select(Paint_hBitmap& hBitmap);
+				void restore(Paint_hBitmap& hBitmap);
+				const HDC& operator()(int idx);
 			} res;
 
 		public:

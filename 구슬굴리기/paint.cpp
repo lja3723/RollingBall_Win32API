@@ -36,15 +36,15 @@ BOOL Paint::init(HINSTANCE m_hInstance, HWND m_hwnd)
 
 	return TRUE;
 }
-void RollingBall::Paint::set_px_rate(pixel px_rate)
+void Paint::set_px_rate(pixel px_rate)
 {
 	scale.px_rate(px_rate);
 }
-void RollingBall::Paint::set_fix_point(PhysicalVector fix_point)
+void Paint::set_fix_point(PhysicalVector fix_point)
 {
 	scale.fix_point_physical(fix_point);
 }
-void RollingBall::Paint::set_fix_point(PixelCoord fix_point)
+void Paint::set_fix_point(PixelCoord fix_point)
 {
 	scale.fix_point_pixel(fix_point);
 }
@@ -65,15 +65,15 @@ void Paint::background(Object& background)
 	paint_background_tobuffer(background);
 	paint_background_ruller_tobuffer();
 }
-void RollingBall::Paint::operator()(Object& obj)
+void Paint::operator()(Object& obj)
 {
 	paint_tobuffer(obj);
 }
-void RollingBall::Paint::info(Object& obj, int yPos)
+void Paint::info(Object& obj, int yPos)
 {
 	paint_info_tobuffer(obj, yPos);
 }
-void RollingBall::Paint::text(LPCTSTR text, pixel x, pixel y)
+void Paint::text(LPCTSTR text, pixel x, pixel y)
 {
 	paint_text_tobuffer(text, x, y);
 }
@@ -91,7 +91,7 @@ void Paint::init_res_vectors(int res_count)
 	hBitmap.resize_res_vector(res_count);
 	hDC.resize_res_vector(res_count);
 }
-void RollingBall::Paint::init_scaler()
+void Paint::init_scaler()
 {
 	//프로그램 화면 정중앙과 물리좌표 (0, 0)이 일치하도록 초기화함
 	scale.px_rate(DEFAULT.px_rate);
@@ -154,11 +154,10 @@ void Paint::doubleBuffering_init()
 		//hDC.mem에 hBitmap을 선택시키는 것임
 	GetClientRect(hwnd, &windowRect);
 	hBitmap.windowBuffer.set(windowRect, hDC.window);
-	hDC.mem.windowBuffer.select_hBitmap(hBitmap);
-	//hBitmap.windowBuffer.select_hBitmap(hDC);
+	hDC.mem.windowBuffer.select(hBitmap);
+
 	hBitmap.res.set();
-	hDC.mem.res.select_hBitmap(hBitmap);
-	//hBitmap.res.select_hBitmap(hDC);
+	hDC.mem.res.select(hBitmap);
 
 	flag.isInitDoubleBuffering = TRUE;
 }
@@ -178,6 +177,7 @@ void Paint::doubleBuffering_start()
 		//hBitmap.windowBuffer를 생성하고 그것을 hDC.mem.windowBuffer에 선택시킨다
 		GetClientRect(hwnd, &windowRect);
 		hBitmap.windowBuffer.set(windowRect, hDC.window);
+		hDC.mem.windowBuffer.select(hBitmap);
 
 		PixelCoord p(windowRect.right / 2, windowRect.bottom / 2);
 		scale.fix_point_pixel(p);
@@ -194,14 +194,14 @@ void Paint::doubleBuffering_stop()
 }
 void Paint::doubleBuffering_halt()
 {
+
 	//hBitmap을 release한다(hDC.mem.windowBuffer에서 롤백하는 과정 포함)
-	//hDC.mem.windowBuffer와 hDC.mem.res를 삭제함
-	hDC.mem.windowBuffer.restore_hBitmap(hBitmap);
-	//hBitmap.windowBuffer.restore_hBitmap(hDC);
+	hDC.mem.windowBuffer.restore(hBitmap);
 	hBitmap.windowBuffer.release();
-	hDC.mem.res.restore_hBitmap(hBitmap);
-	//hBitmap.res.restore_hBitmap(hDC);
+	hDC.mem.res.restore(hBitmap);
 	hBitmap.res.release();
+
+	//hDC.mem.windowBuffer와 hDC.mem.res를 삭제함
 	hDC.mem.release();
 }
 
@@ -232,7 +232,7 @@ void Paint::paint_background_tobuffer(Object& background)
 			StretchBlt(
 				hDC.mem.windowBuffer,
 				i * px_size + px_pos.x, j * px_size + px_pos.y, px_size, px_size,
-				hDC.mem.res[hBitmap.bmpidx(background, scale)], 0, 0, tsize, tsize,
+				hDC.mem.res(hBitmap.bmpidx(background, scale)), 0, 0, tsize, tsize,
 				SRCCOPY
 			);
 		}
@@ -271,7 +271,7 @@ void Paint::paint_background_ruller_tobuffer()
 		LineTo(winBuff, scale.transform(p).x, scale.transform(p).y);
 	}
 }
-void RollingBall::Paint::paint_tobuffer(Object& object)
+void Paint::paint_tobuffer(Object& object)
 {
 	if (!isReadyToPaint()) return;
 
@@ -300,19 +300,19 @@ void RollingBall::Paint::paint_tobuffer(Object& object)
 			StretchBlt(
 				hDC.mem.windowBuffer,
 				px_pos.x - px_size / 2, px_pos.y - px_size / 2, px_size, px_size,
-				hDC.mem.res[hBitmap.bmpidx(object, scale, mask)], 0, 0, tsize, tsize,
+				hDC.mem.res(hBitmap.bmpidx(object, scale, mask)), 0, 0, tsize, tsize,
 				paintmode
 			);
 		}
 	}
 }
-void RollingBall::Paint::paint_info_tobuffer(Object& object, int yPos)
+void Paint::paint_info_tobuffer(Object& object, int yPos)
 {
 	TCHAR buff[256];
 	_stprintf_s(buff, 256, _T("좌표(%lf, %lf)"), object.physical.pos.x, object.physical.pos.y);
 	paint_text_tobuffer(buff, 0, yPos);
 }
-void RollingBall::Paint::paint_text_tobuffer(LPCTSTR text, pixel x, pixel y)
+void Paint::paint_text_tobuffer(LPCTSTR text, pixel x, pixel y)
 {
 	TextOut(hDC.mem.windowBuffer, x, y, text, (int)_tcslen(text));
 }
@@ -327,7 +327,7 @@ void Paint::flush_buffer()
 		SRCCOPY
 	);
 }
-void RollingBall::Paint::event_all(Event e)
+void Paint::event_all(Event e)
 {
 
 	if (e.winmsg.iMsg == WM_SIZE)
