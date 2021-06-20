@@ -12,21 +12,25 @@ namespace RollingBall
 	private:
 		static Bitmap m_bmp;
 
-		//////////////////////////
-		//	public inner class
-		//////////////////////////
 	public:
+		//////////////////
+		//	inner class
+		//////////////////
 		class _windowBuffer
 		{
 			////////////////////////////////////////
 		public:
 			//아래 두 함수는 hDC로 옮기기
-			void backup(Paint_hDC& hDC);
-			void rollback(Paint_hDC& hDC);
+			void select_hBitmap(Paint_hDC& hDC);
+			void restore_hBitmap(Paint_hDC& hDC);
 			////////////////////////////////////////
 		private:
 			HBITMAP m_windowBuffer;
 
+		public:
+			////////////////////////
+			//	windowBuffer.old
+			////////////////////////
 			class _old
 			{
 			public:
@@ -38,6 +42,9 @@ namespace RollingBall
 			} old;
 
 		public:
+			////////////////////////////////
+			//	windowBuffer interface
+			////////////////////////////////
 			_windowBuffer() { init(); }
 			BOOL isSet();
 			void init();
@@ -49,19 +56,22 @@ namespace RollingBall
 			void release();
 
 		} windowBuffer;
-
 		class _res
 		{
 			////////////////////////////////////////
 		public:
 			//아래 두 함수는 hDC로 옮기기
-			void backup(Paint_hDC& hDC);
-			void rollback(Paint_hDC& hDC);
+			void select_hBitmap(Paint_hDC& hDC);
+			void restore_hBitmap(Paint_hDC& hDC);
 			////////////////////////////////////////
 		private:
 			vector<HBITMAP> m_res;
 			BOOL flag_isSet;
 
+		public:
+			////////////////
+			//	res.old
+			////////////////
 			class _old
 			{
 			public:
@@ -79,6 +89,9 @@ namespace RollingBall
 			} old;
 
 		public:
+			////////////////////
+			//	res interface
+			////////////////////
 			_res() {
 				m_res = vector<HBITMAP>();
 				init();
@@ -93,11 +106,10 @@ namespace RollingBall
 			void resize(const size_t& newSize);
 		} res;
 
-
-		//////////////////////////
-		//	public interface
-		//////////////////////////
 	public:
+		//////////////////////////
+		//	interface
+		//////////////////////////
 		//클래스 변수 사용전 반드시 호출
 		BOOL init(HINSTANCE hInstance);
 		BOOL isInit();

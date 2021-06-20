@@ -154,9 +154,9 @@ void Paint::doubleBuffering_init()
 		//hDC.mem에 hBitmap을 선택시키는 것임
 	GetClientRect(hwnd, &windowRect);
 	hBitmap.windowBuffer.set(windowRect, hDC.window);
-	hBitmap.windowBuffer.backup(hDC);
+	hBitmap.windowBuffer.select_hBitmap(hDC);
 	hBitmap.res.set();
-	hBitmap.res.backup(hDC);
+	hBitmap.res.select_hBitmap(hDC);
 
 	flag.isInitDoubleBuffering = TRUE;
 }
@@ -194,9 +194,9 @@ void Paint::doubleBuffering_halt()
 {
 	//hBitmap을 release한다(hDC.mem.windowBuffer에서 롤백하는 과정 포함)
 	//hDC.mem.windowBuffer와 hDC.mem.res를 삭제함
-	hBitmap.windowBuffer.rollback(hDC);
+	hBitmap.windowBuffer.restore_hBitmap(hDC);
 	hBitmap.windowBuffer.release();
-	hBitmap.res.rollback(hDC);
+	hBitmap.res.restore_hBitmap(hDC);
 	hBitmap.res.release();
 	hDC.mem.release();
 }

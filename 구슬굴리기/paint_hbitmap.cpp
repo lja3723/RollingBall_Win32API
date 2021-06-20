@@ -5,11 +5,11 @@ using namespace RollingBall;
 Bitmap Paint_hBitmap::m_bmp = Bitmap();
 
 //아래 네 개의 함수는 Paint_hDC로 옮길 필요 있음
-void Paint_hBitmap::_windowBuffer::backup(Paint_hDC& hDC)
+void Paint_hBitmap::_windowBuffer::select_hBitmap(Paint_hDC& hDC)
 {
 	if (!hDC.mem.windowBuffer.isSet()) return;
 	if (old.isBackedUp())
-		rollback(hDC);
+		restore_hBitmap(hDC);
 
 	old.m_windowBuffer
 		= (HBITMAP)SelectObject(
@@ -17,7 +17,7 @@ void Paint_hBitmap::_windowBuffer::backup(Paint_hDC& hDC)
 			m_windowBuffer
 		);
 }
-void Paint_hBitmap::_windowBuffer::rollback(Paint_hDC& hDC)
+void Paint_hBitmap::_windowBuffer::restore_hBitmap(Paint_hDC& hDC)
 {
 	if (!old.isBackedUp()) return;
 	SelectObject(
@@ -25,11 +25,11 @@ void Paint_hBitmap::_windowBuffer::rollback(Paint_hDC& hDC)
 		old.m_windowBuffer
 	);
 }
-void Paint_hBitmap::_res::backup(Paint_hDC& hDC)
+void Paint_hBitmap::_res::select_hBitmap(Paint_hDC& hDC)
 {
 	if (!hDC.mem.res.isSet()) return;
 	if (!old.isBackedUp())
-		rollback(hDC);
+		restore_hBitmap(hDC);
 
 	for (int i = 0; i < old.m_res.size(); i++)
 		old.m_res[i]
@@ -40,7 +40,7 @@ void Paint_hBitmap::_res::backup(Paint_hDC& hDC)
 
 	old.flag_isBackedUp = TRUE;
 }
-void Paint_hBitmap::_res::rollback(Paint_hDC& hDC)
+void Paint_hBitmap::_res::restore_hBitmap(Paint_hDC& hDC)
 {
 	if (!old.isBackedUp()) return;
 
@@ -95,7 +95,7 @@ void Paint_hBitmap::_windowBuffer::release()
 {
 	if (!isSet()) return;
 
-	//rollback(hDC);
+	//restore_hBitmap(hDC);
 
 	//hBitmap을 삭제함
 	m_bmp.delete_hDC_compatible(m_windowBuffer);
@@ -152,7 +152,7 @@ void Paint_hBitmap::_res::release()
 {
 	if (!isSet()) return;
 
-	//rollback(hDC);
+	//restore_hBitmap(hDC);
 	init();
 }
 void Paint_hBitmap::_res::resize(const size_t& newSize)
