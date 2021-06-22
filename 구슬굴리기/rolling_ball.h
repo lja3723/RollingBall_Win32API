@@ -46,8 +46,8 @@ namespace RollingBall
 		/*
 		*	이벤트 처리 메서드
 		*/
-		virtual void event_all(Event e);
-		virtual void event_keyboard(KeyboardEvent e);
+		void event_all(Event e);
+		void event_keyboard(KeyboardEvent e);
 
 	public:
 		RollingBallClass() { 
