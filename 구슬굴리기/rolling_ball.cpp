@@ -14,9 +14,6 @@ void RollingBallClass::update_window()
 	for (int i = 0; i < ball.size(); i++)
 		paint.info(ball[i], i * 20);
 
-	for (int i = 0; i < ball.size(); i++)
-		paint(ball[i]);
-
 	POINT keyViewer = { 300, 120 };
 	int d_keyViewer = 18;
 
@@ -39,43 +36,36 @@ void RollingBallClass::update_window()
 	_stprintf_s(buff, 256, _T("center position:(%3.2f, %3.2f)"), cen.x, cen.y);
 	paint.text(buff, 300, 70);
 
+	for (int i = 0; i < ball.size(); i++)
+		paint(ball[i]);
+
 	paint.end();
 }
 void RollingBallClass::update_state()
 {
+	//static class 멤버변수 ballSwitch를 가림
+	//그림자 효과를 위해 가렸음
+	static const int ballSwitch = 0;
 	PhysicalVector posPrev = ball[ballSwitch].physical.pos;
 	for (int i = 0; i < ball.size(); i++) {
 		controller.force_to(ball[ballSwitch], 0.015 + 0.001 * ballSwitch);
 		controller.update_ballPos(ball[i]);
 	}
-	PhysicalVector posNow = ball[ballSwitch].physical.pos;
+	PhysicalVector& posNow = ball[ballSwitch].physical.pos;
 
+	//이전 위치에 공을 생성함
 	if (posPrev != posNow)
 	{
 		Ball _ball;
-		_ball.physical.pos(posPrev.x, posPrev.y);
+		_ball.physical.pos = posPrev;
 		ball.push_back(_ball);
 	}
 
-	static int tickNow = 0;
-	static BOOL isShadowCleared = TRUE;
-	if (tickNow > 100)
-		isShadowCleared = FALSE;
-
-	if (!isShadowCleared)
-	{
-		if (ball.size() > 1)
-		{
-			ball.erase(ball.begin() + 1);
-			tickNow--;
-		}
-		else if (ball.size() == 1)
-		{
-			isShadowCleared = TRUE;
-		}
-	}
-	else
-		tickNow++;
+	static const int tail_length = 30;
+	if (tail_length < ball.size())
+		ball.erase(ball.begin() + 1);
+	else if (1 < ball.size() && posPrev == posNow)
+		ball.erase(ball.begin() + 1);
 }
 
 BOOL RollingBallClass::init(HINSTANCE m_hInstance, HWND m_hwnd, UINT frame_update_interval)

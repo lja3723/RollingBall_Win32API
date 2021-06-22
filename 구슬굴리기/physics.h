@@ -18,6 +18,7 @@ namespace RollingBall
 
 		BasicPhysicalVector(Length _x = 0, Length _y = 0) { x = _x, y = _y; }
 		BasicPhysicalVector<Length>& operator()(Length _x, Length _y) { x = _x, y = _y; return *this; }
+		BasicPhysicalVector<Length>& operator()(const BasicPhysicalVector<Length>& v) { return operator()(v.x, v.y); }
 		BasicPhysicalVector<Length>& operator+=(BasicPhysicalVector<Length>& v);
 		BasicPhysicalVector<Length>& operator-=(BasicPhysicalVector<Length>& v);
 		int operator==(BasicPhysicalVector<Length>& v)
@@ -42,7 +43,6 @@ namespace RollingBall
 
 	typedef NormalPhysicalValue<cm_val, g_val> PhysicalValue;
 	typedef BasicPhysicalVector<cm_val> PhysicalVector;
-	
 }
 
 #endif
