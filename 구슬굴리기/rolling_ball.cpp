@@ -7,16 +7,18 @@ void RollingBallClass::update_window()
 {
 	paint.begin();
 
+	//배경 그리기
 	Background background;
 	background.physical.size = 10;
-
 	paint(background);
+
+	//공 정보 그리기
 	for (int i = 0; i < ball.size(); i++)
 		paint.info(ball[i], i * 20);
 
+	//방향키 뷰어 그리기
 	POINT keyViewer = { 300, 120 };
 	int d_keyViewer = 18;
-
 	if (controller.isPushed.key.down())
 		paint.text(_T("↓"), keyViewer.x, keyViewer.y);
 	if (controller.isPushed.key.up())
@@ -26,8 +28,8 @@ void RollingBallClass::update_window()
 	if (controller.isPushed.key.right())
 		paint.text(_T("→"), keyViewer.x + d_keyViewer, keyViewer.y);
 
+	//기타 정보 그리기
 	TCHAR buff[256];
-
 	_stprintf_s(buff, 256, _T("ballSwitch:%d"), ballSwitch);
 	paint.text(buff, 300, 30);
 	_stprintf_s(buff, 256, _T("ball count:%d"), (int)ball.size());
@@ -36,6 +38,7 @@ void RollingBallClass::update_window()
 	_stprintf_s(buff, 256, _T("center position:(%3.2f, %3.2f)"), cen.x, cen.y);
 	paint.text(buff, 300, 70);
 
+	//공 그리기
 	for (int i = 0; i < ball.size(); i++)
 		paint(ball[i]);
 
