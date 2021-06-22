@@ -351,12 +351,6 @@ void RollingBall::RollingBallObject::init(LPCTSTR object_name)
 RollingBallObject::RollingBallObject() 
 { 
 	_name = _T(""); 
-	physical.size = 1;
-	physical.mass = 1;
-	physical.rotate_angle = 0;
-	physical.pos(0, 0);
-	physical.speed(0, 0);
-	physical.accel(0, 0);
 }
 
 int RollingBall::RollingBallObject::count_texture()
