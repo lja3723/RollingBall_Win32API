@@ -337,18 +337,18 @@ int RollingBall::ObjectBitmapInfoVector::count_bitmap_files()
 /***********************************************
 ************************************************
 ***
-***		Object class (abstract)
+***		RollingBallObject class (abstract)
 ***
 ************************************************
 ************************************************/
 
-void RollingBall::Object::init(LPCTSTR object_name)
+void RollingBall::RollingBallObject::init(LPCTSTR object_name)
 {
 	idx.object = ObjectBitmapInfoVector::index(object_name);
 	bmpInfo = ObjectBitmapInfoVector::get_bmpInfo(idx.object);
 }
 
-Object::Object() 
+RollingBallObject::RollingBallObject() 
 { 
 	_name = _T(""); 
 	physical.size = 1;
@@ -359,37 +359,37 @@ Object::Object()
 	physical.accel(0, 0);
 }
 
-int RollingBall::Object::count_texture()
+int RollingBall::RollingBallObject::count_texture()
 {
 	return bmpInfo.count_texture();
 }
-int RollingBall::Object::count_texture_size()
+int RollingBall::RollingBallObject::count_texture_size()
 {
 	return bmpInfo.count_texture_size();
 }
-BOOL RollingBall::Object::has_mask()
+BOOL RollingBall::RollingBallObject::has_mask()
 {
 	return bmpInfo.has_mask();
 }
-LPCTSTR RollingBall::Object::bitmap_name()
+LPCTSTR RollingBall::RollingBallObject::bitmap_name()
 {
 	return bmpInfo.name();
 }
 
-void RollingBall::Object::name(LPCTSTR name)
+void RollingBall::RollingBallObject::name(LPCTSTR name)
 {
 	_name = name;
 }
-LPCTSTR RollingBall::Object::name()
+LPCTSTR RollingBall::RollingBallObject::name()
 {
 	return _name.c_str();
 }
 
-LPCTSTR RollingBall::Object::texture()
+LPCTSTR RollingBall::RollingBallObject::texture()
 {
 	return bmpInfo.texture_name(idx.texture);
 }
-void RollingBall::Object::texture(LPCTSTR texture_name)
+void RollingBall::RollingBallObject::texture(LPCTSTR texture_name)
 {
 	for (int i = 0; i < bmpInfo.count_texture(); i++)
 		if (_tcscmp(texture_name, bmpInfo.texture_name(i)) == 0)
@@ -399,20 +399,20 @@ void RollingBall::Object::texture(LPCTSTR texture_name)
 		}
 	idx.texture = 0;
 }
-pixel RollingBall::Object::texture_size(Scaler& scale)
+pixel RollingBall::RollingBallObject::texture_size(Scaler& scale)
 {
 	return bmpInfo.texture_size(index_texture_size(scale));
 }
 
-int RollingBall::Object::index_object()
+int RollingBall::RollingBallObject::index_object()
 {
 	return idx.object;
 }
-int RollingBall::Object::index_texture()
+int RollingBall::RollingBallObject::index_texture()
 {
 	return idx.texture;
 }
-int RollingBall::Object::index_texture_size(Scaler& scale)
+int RollingBall::RollingBallObject::index_texture_size(Scaler& scale)
 {
 	int i;
 	for (i = 0; i < count_texture_size(); i++)

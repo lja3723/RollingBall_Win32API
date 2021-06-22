@@ -99,7 +99,7 @@ namespace RollingBall
 	};
 
 	
-	class Object abstract
+	class RollingBallObject abstract
 	{
 	/*****************************
 	*	protected variables
@@ -135,7 +135,7 @@ namespace RollingBall
 	*	pubilc functions
 	******************************/
 	public:
-		Object();
+		RollingBallObject();
 
 		//오브젝트의 텍스쳐 개수를 반환한다
 		int count_texture();
@@ -175,14 +175,14 @@ namespace RollingBall
 
 
 
-	class Ball : public Object 
+	class Ball : public RollingBallObject 
 	{
 	private:
 	public:
 		Ball(LPCTSTR texture_name = _T("iron1"));
 	};
 
-	class Background : public Object
+	class Background : public RollingBallObject
 	{
 	private:
 	public:

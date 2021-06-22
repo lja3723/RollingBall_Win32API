@@ -139,7 +139,7 @@ BOOL Paint_hBitmap::init(HINSTANCE hInstance)
 {
 	return m_bmp.init(hInstance);
 }
-int Paint_hBitmap::bmpidx(Object& object, Scaler& scale, BOOL mask_texture)
+int Paint_hBitmap::bmpidx(RollingBallObject& object, Scaler& scale, BOOL mask_texture)
 {
 	return m_bmp.idx(object, scale, mask_texture);
 }

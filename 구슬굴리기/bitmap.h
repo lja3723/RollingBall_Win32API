@@ -77,15 +77,15 @@ namespace RollingBall
 		~Bitmap();
 
 		HBITMAP get(int index);
-		//HBITMAP get(Object& object, pixel texture_size, BOOL mask_texture = FALSE);
-		HBITMAP get(Object& object, Scaler& scale, BOOL mask_texture = FALSE);
+		//HBITMAP get(RollingBallObject& object, pixel texture_size, BOOL mask_texture = FALSE);
+		HBITMAP get(RollingBallObject& object, Scaler& scale, BOOL mask_texture = FALSE);
 		
 		HBITMAP operator()(int index);
-		//HBITMAP operator()(Object& object, pixel texture_size, BOOL mask_texture = FALSE);
-		HBITMAP operator()(Object& object, Scaler& scale, BOOL mask_texture = FALSE);
+		//HBITMAP operator()(RollingBallObject& object, pixel texture_size, BOOL mask_texture = FALSE);
+		HBITMAP operator()(RollingBallObject& object, Scaler& scale, BOOL mask_texture = FALSE);
 
-		//int idx(Object& object, pixel texture_size, BOOL mask_texture = FALSE);
-		int idx(Object& object, Scaler& scale, BOOL mask_texture = FALSE);
+		//int idx(RollingBallObject& object, pixel texture_size, BOOL mask_texture = FALSE);
+		int idx(RollingBallObject& object, Scaler& scale, BOOL mask_texture = FALSE);
 
 		int file_count();
 

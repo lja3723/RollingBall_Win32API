@@ -76,13 +76,13 @@ namespace RollingBall
 		void end();
 
 		//배경을 페인트한다
-		void background(Object& background);
+		void background(RollingBallObject& background);
 
 		//오브젝트를 페인트한다
-		void operator()(Object& obj);
+		void operator()(RollingBallObject& obj);
 
 		//오브젝트 정보를 페인트한다
-		void info(Object& obj, int yPos = 0);
+		void info(RollingBallObject& obj, int yPos = 0);
 
 		void text(LPCTSTR text, pixel x, pixel y);
 	
@@ -134,11 +134,11 @@ namespace RollingBall
 		*
 		*********************************/
 		//오브젝트를 버퍼에 그림
-		void paint_background_tobuffer(Object& background);
+		void paint_background_tobuffer(RollingBallObject& background);
 		void paint_background_ruller_tobuffer();
-		void paint_tobuffer(Object& object);
+		void paint_tobuffer(RollingBallObject& object);
 
-		void paint_info_tobuffer(Object& object, int yPos = 0);
+		void paint_info_tobuffer(RollingBallObject& object, int yPos = 0);
 
 		void paint_text_tobuffer(LPCTSTR text, pixel x, pixel y);
 		//버퍼에 그려진 그림을 윈도우로 출력

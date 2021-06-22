@@ -64,16 +64,16 @@ void Paint::end()
 	hDC.window.release(hwnd);
 	doubleBuffering_stop();
 }
-void Paint::background(Object& background)
+void Paint::background(RollingBallObject& background)
 {
 	paint_background_tobuffer(background);
 	paint_background_ruller_tobuffer();
 }
-void Paint::operator()(Object& obj)
+void Paint::operator()(RollingBallObject& obj)
 {
 	paint_tobuffer(obj);
 }
-void Paint::info(Object& obj, int yPos)
+void Paint::info(RollingBallObject& obj, int yPos)
 {
 	paint_info_tobuffer(obj, yPos);
 }
@@ -217,7 +217,7 @@ void Paint::doubleBuffering_halt()
 *		- paint management
 *
 *********************************/
-void Paint::paint_background_tobuffer(Object& background)
+void Paint::paint_background_tobuffer(RollingBallObject& background)
 {
 	if (!isReadyToPaint()) return;
 
@@ -275,7 +275,7 @@ void Paint::paint_background_ruller_tobuffer()
 		LineTo(winBuff, scale.transform(p).x, scale.transform(p).y);
 	}
 }
-void Paint::paint_tobuffer(Object& object)
+void Paint::paint_tobuffer(RollingBallObject& object)
 {
 	if (!isReadyToPaint()) return;
 
@@ -310,7 +310,7 @@ void Paint::paint_tobuffer(Object& object)
 		}
 	}
 }
-void Paint::paint_info_tobuffer(Object& object, int yPos)
+void Paint::paint_info_tobuffer(RollingBallObject& object, int yPos)
 {
 	TCHAR buff[256];
 	_stprintf_s(buff, 256, _T("좌표(%lf, %lf)"), object.physical.pos.x, object.physical.pos.y);

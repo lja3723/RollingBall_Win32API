@@ -102,7 +102,7 @@ namespace RollingBall
 		BOOL isInit();
 		//클래스 변수 사용전 반드시 호출
 		BOOL init(HINSTANCE hInstance);
-		int bmpidx(Object& object, Scaler& scale, BOOL mask_texture = FALSE);
+		int bmpidx(RollingBallObject& object, Scaler& scale, BOOL mask_texture = FALSE);
 		int res_count();
 		void resize_res_vector(const size_t& newSize);
 	};

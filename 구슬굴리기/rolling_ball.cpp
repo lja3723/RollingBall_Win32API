@@ -56,7 +56,7 @@ void RollingBallClass::update_state()
 	}
 	PhysicalVector& posNow = ball[ballSwitch].physical.pos;
 
-	//이전 위치에 공을 생성함
+	//공 위치가 변하면 이전위치에 공(그림자) 생성
 	if (posPrev != posNow)
 	{
 		Ball _ball;
@@ -64,6 +64,7 @@ void RollingBallClass::update_state()
 		ball.push_back(_ball);
 	}
 
+	//그림자가 길어지면 공 삭제
 	static const int tail_length = 30;
 	if (tail_length < ball.size())
 		ball.erase(ball.begin() + 1);
@@ -86,10 +87,6 @@ BOOL RollingBallClass::init(HINSTANCE m_hInstance, HWND m_hwnd, UINT frame_updat
 
 	_ball.physical.pos(0, 0);
 	ball.push_back(_ball);
-	//_ball.physical.pos(0, -1);
-	//ball.push_back(_ball);
-
-	//memset(&physics, 0, sizeof(physics));
 
 	return TRUE;
 }
@@ -100,12 +97,16 @@ void RollingBall::RollingBallClass::set_frame_update_interval(UINT millisecond)
 
 void RollingBall::RollingBallClass::event_keyboard(KeyboardEvent e)
 {
+	//그림자 효과를 위해 static 클래스 변수 ballSwitch를 가림
+	static const int ballSwitch = 0;
+
 	static BOOL isProcessed = FALSE;
 	if (!isProcessed && e.isKeyDown('C'))
 	{
 		ball[ballSwitch].physical.accel = { 0, 0 };
-		ballSwitch++;
-		if (ballSwitch == ball.size()) ballSwitch = 0;
+		//그림자 효과를 위해 주석처리
+		//ballSwitch++;
+		//if (ballSwitch == ball.size()) ballSwitch = 0;
 		isProcessed = TRUE;
 	}
 	else if (!e.isKeyDown('C'))
