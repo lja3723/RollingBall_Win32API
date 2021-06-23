@@ -21,7 +21,7 @@ namespace RollingBall
 	{
 	private:
 		//scaler의 기본 px_rate
-		static const int DEFAULT_PX_RATE = 320;
+		static const int DEFAULT_PX_RATE = 32;
 
 		struct {
 			HINSTANCE hInstance;
