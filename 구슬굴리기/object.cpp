@@ -1,6 +1,5 @@
 ﻿#include "object.h"
 #include "file.h"
-//#include "debugger.h"
 
 using namespace RollingBall;
 
@@ -104,8 +103,7 @@ BOOL ObjectBitmapInfoVector::flag_isLoaded = FALSE;
 vector<ObjectBitmapInfo> ObjectBitmapInfoVector::_bitmap_info = vector<ObjectBitmapInfo>();
 ObjectBitmapInfo ObjectBitmapInfoVector::_dummy_bmpInfo = ObjectBitmapInfo();
 
-
-BOOL RollingBall::ObjectBitmapInfoVector::isIdxInRange(int idx, int idxMax)
+BOOL ObjectBitmapInfoVector::isIdxInRange(int idx, int idxMax)
 {
 	return 0 <= idx && idx < idxMax;
 }
@@ -305,7 +303,7 @@ ObjectBitmapInfo& ObjectBitmapInfoVector::get_bmpInfo(int idx_object)
 		return _dummy_bmpInfo;
 	return _bitmap_info[idx_object];
 }
-int RollingBall::ObjectBitmapInfoVector::index(LPCTSTR object_name)
+int ObjectBitmapInfoVector::index(LPCTSTR object_name)
 {
 	for (int i = 0; i < count_object(); i++)
 		if (_tcscmp(object_name, _bitmap_info[i].name()) == 0)
@@ -317,14 +315,14 @@ int ObjectBitmapInfoVector::count_object()
 {
 	return (int)_bitmap_info.size();
 }
-int RollingBall::ObjectBitmapInfoVector::count_bitmap(int idx_object)
+int ObjectBitmapInfoVector::count_bitmap(int idx_object)
 {
 	if (!isIdxInRange(idx_object, count_object())) return 0;
 	return (int)_bitmap_info[idx_object].count_texture()
 		* (int)_bitmap_info[idx_object].count_texture_size()
 		* (_bitmap_info[idx_object].has_mask() ? 2 : 1);
 }
-int RollingBall::ObjectBitmapInfoVector::count_bitmap_files()
+int ObjectBitmapInfoVector::count_bitmap_files()
 {
 	int bitmap_files = 0;
 	for (int i = 0; i < count_object(); i++)
@@ -341,8 +339,7 @@ int RollingBall::ObjectBitmapInfoVector::count_bitmap_files()
 ***
 ************************************************
 ************************************************/
-
-void RollingBall::RollingBallObject::init(LPCTSTR object_name)
+void RollingBallObject::init(LPCTSTR object_name)
 {
 	idx.object = ObjectBitmapInfoVector::index(object_name);
 	bmpInfo = ObjectBitmapInfoVector::get_bmpInfo(idx.object);
@@ -353,37 +350,37 @@ RollingBallObject::RollingBallObject()
 	_name = _T(""); 
 }
 
-int RollingBall::RollingBallObject::count_texture()
+int RollingBallObject::count_texture()
 {
 	return bmpInfo.count_texture();
 }
-int RollingBall::RollingBallObject::count_texture_size()
+int RollingBallObject::count_texture_size()
 {
 	return bmpInfo.count_texture_size();
 }
-BOOL RollingBall::RollingBallObject::has_mask()
+BOOL RollingBallObject::has_mask()
 {
 	return bmpInfo.has_mask();
 }
-LPCTSTR RollingBall::RollingBallObject::bitmap_name()
+LPCTSTR RollingBallObject::bitmap_name()
 {
 	return bmpInfo.name();
 }
 
-void RollingBall::RollingBallObject::name(LPCTSTR name)
+void RollingBallObject::name(LPCTSTR name)
 {
 	_name = name;
 }
-LPCTSTR RollingBall::RollingBallObject::name()
+LPCTSTR RollingBallObject::name()
 {
 	return _name.c_str();
 }
 
-LPCTSTR RollingBall::RollingBallObject::texture()
+LPCTSTR RollingBallObject::texture()
 {
 	return bmpInfo.texture_name(idx.texture);
 }
-void RollingBall::RollingBallObject::texture(LPCTSTR texture_name)
+void RollingBallObject::texture(LPCTSTR texture_name)
 {
 	for (int i = 0; i < bmpInfo.count_texture(); i++)
 		if (_tcscmp(texture_name, bmpInfo.texture_name(i)) == 0)
@@ -393,20 +390,20 @@ void RollingBall::RollingBallObject::texture(LPCTSTR texture_name)
 		}
 	idx.texture = 0;
 }
-pixel RollingBall::RollingBallObject::texture_size(Scaler& scaler)
+pixel RollingBallObject::texture_size(Scaler& scaler)
 {
 	return bmpInfo.texture_size(index_texture_size(scaler));
 }
 
-int RollingBall::RollingBallObject::index_object()
+int RollingBallObject::index_object()
 {
 	return idx.object;
 }
-int RollingBall::RollingBallObject::index_texture()
+int RollingBallObject::index_texture()
 {
 	return idx.texture;
 }
-int RollingBall::RollingBallObject::index_texture_size(Scaler& scaler)
+int RollingBallObject::index_texture_size(Scaler& scaler)
 {
 	int i;
 	for (i = 0; i < count_texture_size(); i++)
@@ -416,6 +413,7 @@ int RollingBall::RollingBallObject::index_texture_size(Scaler& scaler)
 }
 
 
+
 /***********************************************
 ************************************************
 ***
@@ -423,7 +421,7 @@ int RollingBall::RollingBallObject::index_texture_size(Scaler& scaler)
 ***
 ************************************************
 ************************************************/
-RollingBall::Ball::Ball(LPCTSTR texture_name)
+Ball::Ball(LPCTSTR texture_name)
 {
 	init(_T("ball"));
 	texture(texture_name);
@@ -438,7 +436,7 @@ RollingBall::Ball::Ball(LPCTSTR texture_name)
 ***
 ************************************************
 ************************************************/
-RollingBall::Background::Background(LPCTSTR texture_name)
+Background::Background(LPCTSTR texture_name)
 {
 	init(_T("floor"));
 	texture(texture_name);

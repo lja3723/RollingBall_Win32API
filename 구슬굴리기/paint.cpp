@@ -1,24 +1,12 @@
 ﻿#include "paint.h"
-#include "debugger.h"
+
 using namespace RollingBall;
-
-
 
 /********************************
 * 
 *		public functions
 *
 *********************************/
-Paint::Paint() 
-{
-	hInstance = NULL;
-	hwnd = NULL;
-	memset(&windowRect, 0, sizeof(windowRect));
-}
-Paint::~Paint()
-{
-	doubleBuffering_halt();
-}
 BOOL Paint::init(HINSTANCE m_hInstance, HWND m_hwnd, Scaler* _scaler)
 {
 	//초기화 안된 상태에서만 함수실행
@@ -79,10 +67,11 @@ void Paint::init_res_vectors(int res_count)
 	hBitmap.resize_res_vector(res_count);
 	hDC.resize_res_vector(res_count);
 }
-void RollingBall::Paint::register_scaler(Scaler* _scaler)
+void Paint::register_scaler(Scaler* _scaler)
 {
 	scaler = _scaler;
 }
+
 
 
 /********************************
@@ -310,9 +299,17 @@ void Paint::flush_buffer()
 		SRCCOPY
 	);
 }
+
+
+
+/********************************
+*
+*		private functions
+*		- event processing
+*
+*********************************/
 void Paint::event_all(Event e)
 {
-
 	if (e.winmsg.iMsg == WM_SIZE)
 	{
 		switch (e.winmsg.wParam)

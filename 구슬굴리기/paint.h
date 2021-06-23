@@ -49,30 +49,29 @@ namespace RollingBall
 		} flag;
 	
 	public:
-		Paint();
-		~Paint();
+		Paint() {
+			hInstance = NULL;
+			hwnd = NULL;
+			memset(&windowRect, 0, sizeof(windowRect));
+		}
+		~Paint() {
+			doubleBuffering_halt();
+		}
 
 		//PrantManager 클래스 변수를 사용하기 전 반드시 수행해야 한다
 		BOOL init(HINSTANCE m_hInstance, HWND m_hwnd, Scaler* _scaler);
-
 		//페인트를 시작한다
 		void begin();
-
 		//페인트를 마친다
 		void end();
-
 		//배경을 페인트한다
 		void background(RollingBallObject& background);
-
 		//오브젝트를 페인트한다
 		void operator()(RollingBallObject& obj);
-
 		//오브젝트 정보를 페인트한다
 		void info(RollingBallObject& obj, int yPos = 0);
-
 		void text(LPCTSTR text, pixel x, pixel y);
 	
-
 	private:
 		/********************************
 		*
@@ -97,7 +96,6 @@ namespace RollingBall
 		BOOL isWindowSizeChanged();
 
 
-
 		/********************************
 		*
 		*	double buffering management
@@ -113,7 +111,6 @@ namespace RollingBall
 		void doubleBuffering_halt();
 
 
-
 		/********************************
 		*
 		*	paint management
@@ -127,7 +124,6 @@ namespace RollingBall
 		void paint_text_tobuffer(LPCTSTR text, pixel x, pixel y);
 		//버퍼에 그려진 그림을 윈도우로 출력
 		void flush_buffer();
-
 
 
 		/********************************

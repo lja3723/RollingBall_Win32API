@@ -3,7 +3,7 @@
 
 using namespace RollingBall;
 
-void RollingBall::RollingBallClass::init_scaler(int px_rate)
+void RollingBallClass::init_scaler(int px_rate)
 {
 	//프로그램 화면 정중앙과 물리좌표 (0, 0)이 일치하도록 초기화함
 	scaler.px_rate(px_rate);
@@ -82,7 +82,7 @@ void RollingBallClass::update_state()
 	else if (1 < ball.size() && posPrev == posNow)
 		ball.erase(ball.begin() + 1);
 }
-void RollingBall::RollingBallClass::update_scaler(Event& e)
+void RollingBallClass::update_scaler(Event& e)
 {
 		KeyboardEvent ek = e;
 
@@ -124,12 +124,12 @@ BOOL RollingBallClass::init(HINSTANCE m_hInstance, HWND m_hwnd, UINT frame_updat
 
 	return TRUE;
 }
-void RollingBall::RollingBallClass::set_frame_update_interval(UINT millisecond)
+void RollingBallClass::set_frame_update_interval(UINT millisecond)
 {
 	set_timer(millisecond);
 }
 
-void RollingBall::RollingBallClass::event_keyboard(KeyboardEvent e)
+void RollingBallClass::event_keyboard(KeyboardEvent e)
 {
 	//그림자 효과를 위해 static 클래스 변수 ballSwitch를 가림
 	static const int ballSwitch = 0;
@@ -146,7 +146,7 @@ void RollingBall::RollingBallClass::event_keyboard(KeyboardEvent e)
 	else if (!e.isKeyDown('C'))
 		isProcessed = FALSE;
 }
-void RollingBall::RollingBallClass::event_all(Event e)
+void RollingBallClass::event_all(Event e)
 {
 	static int k = 1;
 	switch (e.winmsg.iMsg)

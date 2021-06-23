@@ -63,8 +63,6 @@ namespace RollingBall
 		//모든 정보를 초기화
 		void clear();
 	};
-
-
 	class ObjectBitmapInfoVector
 	{
 
@@ -98,7 +96,6 @@ namespace RollingBall
 		static int count_bitmap_files();
 	};
 
-	
 	class RollingBallObject abstract
 	{
 	/*****************************
@@ -171,17 +168,12 @@ namespace RollingBall
 
 
 	};
-
-
-
-
 	class Ball : public RollingBallObject 
 	{
 	private:
 	public:
 		Ball(LPCTSTR texture_name = _T("iron1"));
 	};
-
 	class Background : public RollingBallObject
 	{
 	private:
