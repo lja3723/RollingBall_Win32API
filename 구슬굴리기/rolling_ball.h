@@ -4,12 +4,15 @@
 
 #include <Windows.h>
 #include <vector>
+#include <chrono>
+
 #include "paint.h"
 #include "physics.h"
 #include "controller.h"
 #include "object.h"
 #include "event.h"
 
+using namespace std::chrono;
 
 namespace RollingBall
 {
@@ -25,6 +28,13 @@ namespace RollingBall
 		Paint paint;
 		Controller controller;
 		vector<Ball> ball;
+
+		class _time {
+		private:
+			system_clock::time_point start;
+		public:
+		} time;
+
 
 		void update_window();
 		void update_state();

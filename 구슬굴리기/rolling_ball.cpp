@@ -84,8 +84,6 @@ BOOL RollingBallClass::init(HINSTANCE m_hInstance, HWND m_hwnd, UINT frame_updat
 	if (!paint.init(winAPI.hInstance, winAPI.hwnd)) return FALSE;
 
 	Ball _ball;
-
-	_ball.physical.pos(0, 0);
 	ball.push_back(_ball);
 
 	return TRUE;
