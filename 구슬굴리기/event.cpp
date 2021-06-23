@@ -1,6 +1,5 @@
 ﻿#include "event.h"
 #include <algorithm>
-#include "debugger.h"
 
 using namespace RollingBall;
 using std::find;
@@ -8,21 +7,13 @@ using std::sort;
 
 /////////////////////////
 // 
-//	KeyboardEvent class
+//	Event class
 // 
 /////////////////////////
-BOOL KeyboardEvent::isInit = FALSE;
-BOOL KeyboardEvent::keys[numofKeys];
+BOOL Event::isInit = FALSE;
+BOOL Event::keys[numofKeys];
 
-void KeyboardEvent::key_down(WPARAM VK_msg)
-{
-	keys[VK_msg] = TRUE;
-}
-void KeyboardEvent::key_up(WPARAM VK_msg)
-{
-	keys[VK_msg] = FALSE;
-}
-void RollingBall::KeyboardEvent::init()
+void Event::init()
 {
 	if (!isInit)
 	{
@@ -31,10 +22,27 @@ void RollingBall::KeyboardEvent::init()
 		isInit = TRUE;
 	}
 }
-BOOL KeyboardEvent::isKeyDown(WPARAM VK_msg)
+BOOL Event::isKeyDown(WPARAM VK_msg)
 {
 	return keys[VK_msg];
 }
+
+
+
+/////////////////////////
+// 
+//	KeyboardEvent class
+// 
+/////////////////////////
+void KeyboardEvent::key_down(WPARAM VK_msg)
+{
+	keys[VK_msg] = TRUE;
+}
+void KeyboardEvent::key_up(WPARAM VK_msg)
+{
+	keys[VK_msg] = FALSE;
+}
+
 
 
 /////////////////////////
@@ -42,7 +50,7 @@ BOOL KeyboardEvent::isKeyDown(WPARAM VK_msg)
 //	EventProducer class
 // 
 /////////////////////////
-MouseEvent RollingBall::EventProducer::produce_mouseEvent(UINT iMsg, WPARAM wParam, LPARAM lParam)
+MouseEvent EventProducer::produce_mouseEvent(UINT iMsg, WPARAM wParam, LPARAM lParam)
 {
 	MouseEvent e(iMsg, wParam, lParam);
 	switch (iMsg)
@@ -77,7 +85,7 @@ MouseEvent RollingBall::EventProducer::produce_mouseEvent(UINT iMsg, WPARAM wPar
 
 	return e;
 }
-KeyboardEvent RollingBall::EventProducer::produce_keyboardEvent(UINT iMsg, WPARAM wParam, LPARAM lParam)
+KeyboardEvent EventProducer::produce_keyboardEvent(UINT iMsg, WPARAM wParam, LPARAM lParam)
 {
 	KeyboardEvent e(iMsg, wParam, lParam);
 
@@ -95,11 +103,11 @@ KeyboardEvent RollingBall::EventProducer::produce_keyboardEvent(UINT iMsg, WPARA
 
 	return e;
 }
-Event RollingBall::EventProducer::produce_Event(UINT iMsg, WPARAM wParam, LPARAM lParam)
+Event EventProducer::produce_Event(UINT iMsg, WPARAM wParam, LPARAM lParam)
 {
 	return Event(iMsg, wParam, lParam);
 }
-void RollingBall::EventProducer::translate_windowEvent(UINT iMsg, WPARAM wParam, LPARAM lParam)
+void EventProducer::translate_windowEvent(UINT iMsg, WPARAM wParam, LPARAM lParam)
 {
 	MouseEvent em = produce_mouseEvent(iMsg, wParam, lParam);
 	if (em.isValid)
@@ -135,11 +143,11 @@ void RollingBall::EventProducer::translate_windowEvent(UINT iMsg, WPARAM wParam,
 int EventAcceptable::object_count = 0;
 vector<EventAcceptable*> EventAcceptable::object_ref = vector<EventAcceptable*>();
 
-RollingBall::EventAcceptable::EventAcceptable()
+EventAcceptable::EventAcceptable()
 {
 	object_ref.push_back(this);
 }
-RollingBall::EventAcceptable::~EventAcceptable()
+EventAcceptable::~EventAcceptable()
 {
 	auto iter = find(object_ref.begin(), object_ref.end(), this);
 	if (iter != object_ref.end())

@@ -84,27 +84,25 @@ void RollingBallClass::update_state()
 }
 void RollingBallClass::update_scaler(Event& e)
 {
-		KeyboardEvent ek = e;
+	PhysicalVector ppos = scaler.fix_point_physical();
+	double zoom_in_out_rate = 0.03;
+	cm_val move_distance = 0.2;
 
-		PhysicalVector ppos = scaler.fix_point_physical();
-		double zoom_in_out_rate = 0.03;
-		cm_val move_distance = 0.2;
+	if (e.isKeyDown('O'))
+		if (scaler.px_rate() > 20)
+			scaler.px_rate(scaler.px_rate() * (1 - zoom_in_out_rate));
+	if (e.isKeyDown('P'))
+		if (scaler.px_rate() < 720)
+			scaler.px_rate(scaler.px_rate() * (1 + zoom_in_out_rate));
 
-		if (ek.isKeyDown('O'))
-			if (scaler.px_rate() > 20)
-				scaler.px_rate(scaler.px_rate() * (1 - zoom_in_out_rate));
-		if (ek.isKeyDown('P'))
-			if (scaler.px_rate() < 720)
-				scaler.px_rate(scaler.px_rate() * (1 + zoom_in_out_rate));
-
-		if (ek.isKeyDown('W'))
-			scaler.fix_point_physical(ppos(ppos.x, ppos.y + move_distance));
-		if (ek.isKeyDown('A'))
-			scaler.fix_point_physical(ppos(ppos.x - move_distance, ppos.y));
-		if (ek.isKeyDown('S'))
-			scaler.fix_point_physical(ppos(ppos.x, ppos.y - move_distance));
-		if (ek.isKeyDown('D'))
-			scaler.fix_point_physical(ppos(ppos.x + move_distance, ppos.y));
+	if (e.isKeyDown('W'))
+		scaler.fix_point_physical(ppos(ppos.x, ppos.y + move_distance));
+	if (e.isKeyDown('A'))
+		scaler.fix_point_physical(ppos(ppos.x - move_distance, ppos.y));
+	if (e.isKeyDown('S'))
+		scaler.fix_point_physical(ppos(ppos.x, ppos.y - move_distance));
+	if (e.isKeyDown('D'))
+		scaler.fix_point_physical(ppos(ppos.x + move_distance, ppos.y));
 }
 
 BOOL RollingBallClass::init(HINSTANCE m_hInstance, HWND m_hwnd, UINT frame_update_interval)

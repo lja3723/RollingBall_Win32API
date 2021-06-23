@@ -13,6 +13,13 @@ namespace RollingBall
 	*/
 	class Event
 	{
+	//키보드 눌림 저장
+	protected:
+		static BOOL isInit;
+		static const int numofKeys = 256;
+		static BOOL keys[numofKeys];
+		void init();
+
 	public:
 		BOOL isValid;
 		class _winmsg
@@ -25,11 +32,17 @@ namespace RollingBall
 		Event() = delete;
 		Event(UINT m_iMsg, WPARAM m_wParam, LPARAM m_lParam)
 		{ 
+			init();
 			isValid = TRUE;
 			winmsg.iMsg = m_iMsg;
 			winmsg.wParam = m_wParam;
 			winmsg.lParam = m_lParam;
 		}
+		Event(const Event& e) 
+			: Event(e.winmsg.iMsg, e.winmsg.wParam, e.winmsg.lParam) {}
+
+		//키보드 눌린 상태 반환
+		BOOL isKeyDown(WPARAM VK_msg);
 	};
 
 
@@ -59,21 +72,13 @@ namespace RollingBall
 	{
 		friend class EventProducer;
 	private:
-		static BOOL isInit;
-		static const int numofKeys = 256;
-		static BOOL keys[numofKeys];
-
 		void key_down(WPARAM VK_msg);
 		void key_up(WPARAM VK_msg);
-		void init();
 	public:
 		KeyboardEvent(UINT m_iMsg = 0, WPARAM m_wParam = 0, LPARAM m_lParam = 0)
-			: Event(m_iMsg, m_wParam, m_lParam)
-		{ init(); }
+			: Event(m_iMsg, m_wParam, m_lParam) {}
 		KeyboardEvent(const Event& e)
-			: Event(e)
-		{ init(); }
-		BOOL isKeyDown(WPARAM VK_msg);
+			: Event(e) {}
 	};
 
 
