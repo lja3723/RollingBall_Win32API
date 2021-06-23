@@ -25,7 +25,6 @@ namespace RollingBall
 	class Paint : public EventAcceptable
 	{
 	private:
-		//Scaler scaler;
 		Scaler* scaler;
 		HINSTANCE hInstance;
 		HWND hwnd;
@@ -48,14 +47,6 @@ namespace RollingBall
 				isWindowSizeChanged = FALSE;
 			}
 		} flag;
-
-		//여러가지 기본값을 저장하는 클래스
-		//static const class _default_value
-		//{
-		//public:
-		//	static const int px_rate = 32;
-		//} DEFAULT;
-
 	
 	public:
 		Paint();
@@ -63,13 +54,6 @@ namespace RollingBall
 
 		//PrantManager 클래스 변수를 사용하기 전 반드시 수행해야 한다
 		BOOL init(HINSTANCE m_hInstance, HWND m_hwnd, Scaler* _scaler);
-	
-		//scaler 설정 함수집합
-		//void set_px_rate(pixel px_rate);
-		//void set_fix_point(PhysicalVector fix_point);
-		//void set_fix_point(PixelCoord fix_point);
-		//Scaler get_scaler();
-
 
 		//페인트를 시작한다
 		void begin();
@@ -98,7 +82,6 @@ namespace RollingBall
 		*********************************/
 		void init_res_vectors(int res_count);
 		void register_scaler(Scaler* scaler);
-		//void init_scaler();
 
 
 		/********************************
@@ -140,13 +123,10 @@ namespace RollingBall
 		void paint_background_tobuffer(RollingBallObject& background);
 		void paint_background_ruller_tobuffer();
 		void paint_tobuffer(RollingBallObject& object);
-
 		void paint_info_tobuffer(RollingBallObject& object, int yPos = 0);
-
 		void paint_text_tobuffer(LPCTSTR text, pixel x, pixel y);
 		//버퍼에 그려진 그림을 윈도우로 출력
 		void flush_buffer();
-
 
 
 

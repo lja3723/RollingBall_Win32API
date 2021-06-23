@@ -33,26 +33,9 @@ BOOL Paint::init(HINSTANCE m_hInstance, HWND m_hwnd, Scaler* _scaler)
 	init_res_vectors(hBitmap.res_count());
 	//scaler 등록
 	register_scaler(_scaler);
-	//init_scaler();
 
 	return TRUE;
 }
-//void Paint::set_px_rate(pixel px_rate)
-//{
-//	scaler.px_rate(px_rate);
-//}
-//void Paint::set_fix_point(PhysicalVector fix_point)
-//{
-//	scaler.fix_point_physical(fix_point);
-//}
-//void Paint::set_fix_point(PixelCoord fix_point)
-//{
-//	scaler.fix_point_pixel(fix_point);
-//}
-//Scaler Paint::get_scaler()
-//{
-//	return scaler;
-//}
 void Paint::begin()
 {
 	hDC.window.mode.set_BeginPaint();
@@ -100,15 +83,6 @@ void RollingBall::Paint::register_scaler(Scaler* _scaler)
 {
 	scaler = _scaler;
 }
-//void Paint::init_scaler()
-//{
-	//프로그램 화면 정중앙과 물리좌표 (0, 0)이 일치하도록 초기화함
-//	scaler.px_rate(DEFAULT.px_rate);
-//	GetClientRect(hwnd, &windowRect);
-//	scaler.fix_point_pixel(PixelCoord(windowRect.right / 2, windowRect.bottom / 2));
-//	scaler.fix_point_physical(PhysicalVector(0, 0));
-//}
-
 
 
 /********************************
@@ -349,31 +323,6 @@ void Paint::event_all(Event e)
 			flag.isWindowSizeChanged = TRUE;
 			break;
 		}
-	}
-
-	if (e.winmsg.iMsg == WM_TIMER)
-	{
-		KeyboardEvent ek = e;
-
-		PhysicalVector ppos = scaler->fix_point_physical();
-		double zoom_in_out_rate = 0.03;
-		cm_val move_distance = 0.2;
-
-		if (ek.isKeyDown('O'))
-			if (scaler->px_rate() > 20)
-				scaler->px_rate(scaler->px_rate() * (1 - zoom_in_out_rate));
-		if (ek.isKeyDown('P'))
-			if (scaler->px_rate() < 720)
-				scaler->px_rate(scaler->px_rate() * (1 + zoom_in_out_rate));
-
-		if (ek.isKeyDown('W'))
-			scaler->fix_point_physical(ppos(ppos.x, ppos.y + move_distance));
-		if (ek.isKeyDown('A'))
-			scaler->fix_point_physical(ppos(ppos.x - move_distance, ppos.y));
-		if (ek.isKeyDown('S'))
-			scaler->fix_point_physical(ppos(ppos.x, ppos.y - move_distance));
-		if (ek.isKeyDown('D'))
-			scaler->fix_point_physical(ppos(ppos.x + move_distance, ppos.y));
 	}
 }
 

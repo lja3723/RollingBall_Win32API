@@ -42,9 +42,9 @@ namespace RollingBall
 
 		void init_scaler(int px_rate);
 
-
 		void update_window();
 		void update_state();
+		void update_scaler(Event& e);
 
 		void set_timer(UINT frame_update_interval)
 		{
