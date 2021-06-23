@@ -11,6 +11,7 @@
 #include "controller.h"
 #include "object.h"
 #include "event.h"
+#include "scaler.h"
 
 using namespace std::chrono;
 
@@ -19,12 +20,16 @@ namespace RollingBall
 	class RollingBallClass : public EventAcceptable
 	{
 	private:
+		//scaler의 기본 px_rate
+		static const int DEFAULT_PX_RATE = 320;
+
 		struct {
 			HINSTANCE hInstance;
 			HWND hwnd;
 		} winAPI;
 		BOOL isInitTimer;
 
+		Scaler scaler;
 		Paint paint;
 		Controller controller;
 		vector<Ball> ball;
@@ -34,6 +39,8 @@ namespace RollingBall
 			system_clock::time_point start;
 		public:
 		} time;
+
+		void init_scaler(int px_rate);
 
 
 		void update_window();

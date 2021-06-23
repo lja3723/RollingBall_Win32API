@@ -3,6 +3,17 @@
 
 using namespace RollingBall;
 
+void RollingBall::RollingBallClass::init_scaler(int px_rate)
+{
+	//프로그램 화면 정중앙과 물리좌표 (0, 0)이 일치하도록 초기화함
+	scaler.px_rate(px_rate);
+
+	RECT windowRect;
+	GetClientRect(winAPI.hwnd, &windowRect);
+	scaler.fix_point_pixel(PixelCoord(windowRect.right / 2, windowRect.bottom / 2));
+	scaler.fix_point_physical(PhysicalVector(0, 0));
+}
+
 void RollingBallClass::update_window()
 {
 	paint.begin();
@@ -34,7 +45,7 @@ void RollingBallClass::update_window()
 	paint.text(buff, 300, 30);
 	_stprintf_s(buff, 256, _T("ball count:%d"), (int)ball.size());
 	paint.text(buff, 300, 50);
-	PhysicalVector cen = paint.get_scaler().fix_point_physical();
+	PhysicalVector cen = scaler.fix_point_physical();
 	_stprintf_s(buff, 256, _T("center position:(%3.2f, %3.2f)"), cen.x, cen.y);
 	paint.text(buff, 300, 70);
 
@@ -77,11 +88,12 @@ BOOL RollingBallClass::init(HINSTANCE m_hInstance, HWND m_hwnd, UINT frame_updat
 	winAPI.hInstance = m_hInstance;
 	winAPI.hwnd = m_hwnd;
 	set_timer(frame_update_interval);
+	init_scaler(DEFAULT_PX_RATE);
 
 	if (!ObjectBitmapInfoVector::Load(winAPI.hwnd, _T("res\\bmp\\object_bmp_info.txt")))
 		return FALSE;
 
-	if (!paint.init(winAPI.hInstance, winAPI.hwnd)) return FALSE;
+	if (!paint.init(winAPI.hInstance, winAPI.hwnd, &scaler)) return FALSE;
 
 	Ball _ball;
 	ball.push_back(_ball);

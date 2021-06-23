@@ -25,7 +25,8 @@ namespace RollingBall
 	class Paint : public EventAcceptable
 	{
 	private:
-		Scaler scaler;
+		//Scaler scaler;
+		Scaler* scaler;
 		HINSTANCE hInstance;
 		HWND hwnd;
 		RECT windowRect;
@@ -49,11 +50,11 @@ namespace RollingBall
 		} flag;
 
 		//여러가지 기본값을 저장하는 클래스
-		static const class _default_value
-		{
-		public:
-			static const int px_rate = 32;
-		} DEFAULT;
+		//static const class _default_value
+		//{
+		//public:
+		//	static const int px_rate = 32;
+		//} DEFAULT;
 
 	
 	public:
@@ -61,13 +62,14 @@ namespace RollingBall
 		~Paint();
 
 		//PrantManager 클래스 변수를 사용하기 전 반드시 수행해야 한다
-		BOOL init(HINSTANCE m_hInstance, HWND m_hwnd);
+		BOOL init(HINSTANCE m_hInstance, HWND m_hwnd, Scaler* _scaler);
 	
 		//scaler 설정 함수집합
-		void set_px_rate(pixel px_rate);
-		void set_fix_point(PhysicalVector fix_point);
-		void set_fix_point(PixelCoord fix_point);
-		Scaler get_scaler();
+		//void set_px_rate(pixel px_rate);
+		//void set_fix_point(PhysicalVector fix_point);
+		//void set_fix_point(PixelCoord fix_point);
+		//Scaler get_scaler();
+
 
 		//페인트를 시작한다
 		void begin();
@@ -95,7 +97,8 @@ namespace RollingBall
 		*
 		*********************************/
 		void init_res_vectors(int res_count);
-		void init_scaler();
+		void register_scaler(Scaler* scaler);
+		//void init_scaler();
 
 
 		/********************************

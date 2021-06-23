@@ -19,7 +19,7 @@ Paint::~Paint()
 {
 	doubleBuffering_halt();
 }
-BOOL Paint::init(HINSTANCE m_hInstance, HWND m_hwnd)
+BOOL Paint::init(HINSTANCE m_hInstance, HWND m_hwnd, Scaler* _scaler)
 {
 	//초기화 안된 상태에서만 함수실행
 	if (isInit()) return TRUE;
@@ -31,27 +31,28 @@ BOOL Paint::init(HINSTANCE m_hInstance, HWND m_hwnd)
 	if (!hBitmap.init(hInstance)) return FALSE;
 	//res vector들 초기화
 	init_res_vectors(hBitmap.res_count());
-	//scaler 초기화
-	init_scaler();
+	//scaler 등록
+	register_scaler(_scaler);
+	//init_scaler();
 
 	return TRUE;
 }
-void Paint::set_px_rate(pixel px_rate)
-{
-	scaler.px_rate(px_rate);
-}
-void Paint::set_fix_point(PhysicalVector fix_point)
-{
-	scaler.fix_point_physical(fix_point);
-}
-void Paint::set_fix_point(PixelCoord fix_point)
-{
-	scaler.fix_point_pixel(fix_point);
-}
-Scaler Paint::get_scaler()
-{
-	return scaler;
-}
+//void Paint::set_px_rate(pixel px_rate)
+//{
+//	scaler.px_rate(px_rate);
+//}
+//void Paint::set_fix_point(PhysicalVector fix_point)
+//{
+//	scaler.fix_point_physical(fix_point);
+//}
+//void Paint::set_fix_point(PixelCoord fix_point)
+//{
+//	scaler.fix_point_pixel(fix_point);
+//}
+//Scaler Paint::get_scaler()
+//{
+//	return scaler;
+//}
 void Paint::begin()
 {
 	hDC.window.mode.set_BeginPaint();
@@ -95,14 +96,18 @@ void Paint::init_res_vectors(int res_count)
 	hBitmap.resize_res_vector(res_count);
 	hDC.resize_res_vector(res_count);
 }
-void Paint::init_scaler()
+void RollingBall::Paint::register_scaler(Scaler* _scaler)
 {
-	//프로그램 화면 정중앙과 물리좌표 (0, 0)이 일치하도록 초기화함
-	scaler.px_rate(DEFAULT.px_rate);
-	GetClientRect(hwnd, &windowRect);
-	scaler.fix_point_pixel(PixelCoord(windowRect.right / 2, windowRect.bottom / 2));
-	scaler.fix_point_physical(PhysicalVector(0, 0));
+	scaler = _scaler;
 }
+//void Paint::init_scaler()
+//{
+	//프로그램 화면 정중앙과 물리좌표 (0, 0)이 일치하도록 초기화함
+//	scaler.px_rate(DEFAULT.px_rate);
+//	GetClientRect(hwnd, &windowRect);
+//	scaler.fix_point_pixel(PixelCoord(windowRect.right / 2, windowRect.bottom / 2));
+//	scaler.fix_point_physical(PhysicalVector(0, 0));
+//}
 
 
 
@@ -184,7 +189,7 @@ void Paint::doubleBuffering_start()
 		hDC.mem.windowBuffer.select(hBitmap);
 
 		PixelCoord p(windowRect.right / 2, windowRect.bottom / 2);
-		scaler.fix_point_pixel(p);
+		scaler->fix_point_pixel(p);
 
 		flag.isWindowSizeChanged = FALSE;
 	}
@@ -223,9 +228,9 @@ void Paint::paint_background_tobuffer(RollingBallObject& background)
 
 	GetClientRect(hwnd, &windowRect);
 
-	pixel px_size = scaler.px(background.physical.size);
-	pixel tsize = background.texture_size(scaler);
-	PixelCoord px_pos = scaler.transform(background.physical.pos);
+	pixel px_size = scaler->px(background.physical.size);
+	pixel tsize = background.texture_size(*scaler);
+	PixelCoord px_pos = scaler->transform(background.physical.pos);
 	px_pos.x %= px_size;
 	px_pos.y %= px_size;
 
@@ -236,7 +241,7 @@ void Paint::paint_background_tobuffer(RollingBallObject& background)
 			StretchBlt(
 				hDC.mem.windowBuffer,
 				i * px_size + px_pos.x, j * px_size + px_pos.y, px_size, px_size,
-				hDC.mem.res(hBitmap.bmpidx(background, scaler)), 0, 0, tsize, tsize,
+				hDC.mem.res(hBitmap.bmpidx(background, *scaler)), 0, 0, tsize, tsize,
 				SRCCOPY
 			);
 		}
@@ -249,30 +254,30 @@ void Paint::paint_background_ruller_tobuffer()
 
 	//x축, y축 그리기
 	p(-cm, 0);
-	MoveToEx(winBuff, scaler.transform(p).x, scaler.transform(p).y, NULL);
+	MoveToEx(winBuff, scaler->transform(p).x, scaler->transform(p).y, NULL);
 	p(cm, 0);
-	LineTo(winBuff, scaler.transform(p).x, scaler.transform(p).y);
+	LineTo(winBuff, scaler->transform(p).x, scaler->transform(p).y);
 	p(0, -cm);
-	MoveToEx(winBuff, scaler.transform(p).x, scaler.transform(p).y, NULL);
+	MoveToEx(winBuff, scaler->transform(p).x, scaler->transform(p).y, NULL);
 	p(0, cm);
-	LineTo(winBuff, scaler.transform(p).x, scaler.transform(p).y);
+	LineTo(winBuff, scaler->transform(p).x, scaler->transform(p).y);
 
 	//x축 눈금 그리기
 	for (int i = -30; i < 30; i++)
 	{
 		p(i, 0.5);
-		MoveToEx(winBuff, scaler.transform(p).x, scaler.transform(p).y, NULL);
+		MoveToEx(winBuff, scaler->transform(p).x, scaler->transform(p).y, NULL);
 		p(i, -0.5);
-		LineTo(winBuff, scaler.transform(p).x, scaler.transform(p).y);
+		LineTo(winBuff, scaler->transform(p).x, scaler->transform(p).y);
 	}
 
 	//y축 눈금 그리기
 	for (int i = -30; i < 30; i++)
 	{
 		p(0.5, i);
-		MoveToEx(winBuff, scaler.transform(p).x, scaler.transform(p).y, NULL);
+		MoveToEx(winBuff, scaler->transform(p).x, scaler->transform(p).y, NULL);
 		p(-0.5, i);
-		LineTo(winBuff, scaler.transform(p).x, scaler.transform(p).y);
+		LineTo(winBuff, scaler->transform(p).x, scaler->transform(p).y);
 	}
 }
 void Paint::paint_tobuffer(RollingBallObject& object)
@@ -297,14 +302,14 @@ void Paint::paint_tobuffer(RollingBallObject& object)
 			else if (i == 1)
 				mask = FALSE, paintmode = SRCPAINT;
 
-			pixel px_size = scaler.px(object.physical.size);
-			pixel tsize = object.texture_size(scaler);
-			PixelCoord px_pos = scaler.transform(object.physical.pos);
+			pixel px_size = scaler->px(object.physical.size);
+			pixel tsize = object.texture_size(*scaler);
+			PixelCoord px_pos = scaler->transform(object.physical.pos);
 			SetStretchBltMode(hDC.mem.windowBuffer, COLORONCOLOR);
 			StretchBlt(
 				hDC.mem.windowBuffer,
 				px_pos.x - px_size / 2, px_pos.y - px_size / 2, px_size, px_size,
-				hDC.mem.res(hBitmap.bmpidx(object, scaler, mask)), 0, 0, tsize, tsize,
+				hDC.mem.res(hBitmap.bmpidx(object, *scaler, mask)), 0, 0, tsize, tsize,
 				paintmode
 			);
 		}
@@ -350,25 +355,25 @@ void Paint::event_all(Event e)
 	{
 		KeyboardEvent ek = e;
 
-		PhysicalVector ppos = scaler.fix_point_physical();
+		PhysicalVector ppos = scaler->fix_point_physical();
 		double zoom_in_out_rate = 0.03;
 		cm_val move_distance = 0.2;
 
 		if (ek.isKeyDown('O'))
-			if (scaler.px_rate() > 20)
-				scaler.px_rate(scaler.px_rate() * (1 - zoom_in_out_rate));
+			if (scaler->px_rate() > 20)
+				scaler->px_rate(scaler->px_rate() * (1 - zoom_in_out_rate));
 		if (ek.isKeyDown('P'))
-			if (scaler.px_rate() < 720)
-				scaler.px_rate(scaler.px_rate() * (1 + zoom_in_out_rate));
+			if (scaler->px_rate() < 720)
+				scaler->px_rate(scaler->px_rate() * (1 + zoom_in_out_rate));
 
 		if (ek.isKeyDown('W'))
-			scaler.fix_point_physical(ppos(ppos.x, ppos.y + move_distance));
+			scaler->fix_point_physical(ppos(ppos.x, ppos.y + move_distance));
 		if (ek.isKeyDown('A'))
-			scaler.fix_point_physical(ppos(ppos.x - move_distance, ppos.y));
+			scaler->fix_point_physical(ppos(ppos.x - move_distance, ppos.y));
 		if (ek.isKeyDown('S'))
-			scaler.fix_point_physical(ppos(ppos.x, ppos.y - move_distance));
+			scaler->fix_point_physical(ppos(ppos.x, ppos.y - move_distance));
 		if (ek.isKeyDown('D'))
-			scaler.fix_point_physical(ppos(ppos.x + move_distance, ppos.y));
+			scaler->fix_point_physical(ppos(ppos.x + move_distance, ppos.y));
 	}
 }
 
