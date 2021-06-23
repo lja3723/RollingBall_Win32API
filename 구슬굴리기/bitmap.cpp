@@ -90,9 +90,9 @@ HBITMAP RollingBall::Bitmap::get(int index)
 	if (!(0 <= index && index < file_count())) index = 0;
 	return hBitmap[index];
 }
-HBITMAP RollingBall::Bitmap::get(RollingBallObject& object, Scaler& scale, BOOL mask_texture)
+HBITMAP RollingBall::Bitmap::get(RollingBallObject& object, Scaler& scaler, BOOL mask_texture)
 {
-	return hBitmap[idx(object, scale, mask_texture)];
+	return hBitmap[idx(object, scaler, mask_texture)];
 }
 
 HBITMAP RollingBall::Bitmap::operator()(int index)
@@ -100,12 +100,12 @@ HBITMAP RollingBall::Bitmap::operator()(int index)
 	return get(index);
 }
 
-HBITMAP RollingBall::Bitmap::operator()(RollingBallObject& object, Scaler& scale, BOOL mask_texture)
+HBITMAP RollingBall::Bitmap::operator()(RollingBallObject& object, Scaler& scaler, BOOL mask_texture)
 {
-	return get(object, scale, mask_texture);
+	return get(object, scaler, mask_texture);
 }
 
-int RollingBall::Bitmap::idx(RollingBallObject& object, Scaler& scale, BOOL mask_texture)
+int RollingBall::Bitmap::idx(RollingBallObject& object, Scaler& scaler, BOOL mask_texture)
 {
 	int idx = 0;
 	int idx_object = object.index_object();
@@ -122,7 +122,7 @@ int RollingBall::Bitmap::idx(RollingBallObject& object, Scaler& scale, BOOL mask
 	if (mask_texture == TRUE) idx += object.count_texture_size();
 
 	//size에 따른 idx 탐색
-	idx += object.index_texture_size(scale);
+	idx += object.index_texture_size(scaler);
 
 	//구한 idx가 범위에 벗어나면 0으로 초기화
 	if (!(0 <= idx && idx < file_count())) idx = 0;

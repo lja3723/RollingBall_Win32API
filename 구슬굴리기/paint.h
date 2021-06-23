@@ -25,7 +25,7 @@ namespace RollingBall
 	class Paint : public EventAcceptable
 	{
 	private:
-		Scaler scale;
+		Scaler scaler;
 		HINSTANCE hInstance;
 		HWND hwnd;
 		RECT windowRect;

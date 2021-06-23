@@ -160,14 +160,14 @@ namespace RollingBall
 		//pixel round_texture_size(pixel texture_size);
 
 		//scaler를 기반으로 오브젝트 size를 가장 잘 표현하는 texture size를 반환한다
-		pixel texture_size(Scaler& scale);
+		pixel texture_size(Scaler& scaler);
 		//오브젝트의 인덱스를 반환한다
 		int index_object();
 		//오브젝트의 텍스쳐 인덱스를 반환한다
 		int index_texture();
 
 		//scaler를 기반으로 오브젝트 size를 가장 잘 표현하는 텍스쳐 사이즈의 인덱스를 반환한다
-		int index_texture_size(Scaler& scale);
+		int index_texture_size(Scaler& scaler);
 
 
 	};

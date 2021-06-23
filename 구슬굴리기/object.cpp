@@ -393,9 +393,9 @@ void RollingBall::RollingBallObject::texture(LPCTSTR texture_name)
 		}
 	idx.texture = 0;
 }
-pixel RollingBall::RollingBallObject::texture_size(Scaler& scale)
+pixel RollingBall::RollingBallObject::texture_size(Scaler& scaler)
 {
-	return bmpInfo.texture_size(index_texture_size(scale));
+	return bmpInfo.texture_size(index_texture_size(scaler));
 }
 
 int RollingBall::RollingBallObject::index_object()
@@ -406,11 +406,11 @@ int RollingBall::RollingBallObject::index_texture()
 {
 	return idx.texture;
 }
-int RollingBall::RollingBallObject::index_texture_size(Scaler& scale)
+int RollingBall::RollingBallObject::index_texture_size(Scaler& scaler)
 {
 	int i;
 	for (i = 0; i < count_texture_size(); i++)
-		if (scale.px(physical.size) <= bmpInfo.texture_size(i))
+		if (scaler.px(physical.size) <= bmpInfo.texture_size(i))
 			return i;
 	return i - 1;	//가장 큰 텍스쳐 크기의 인덱스를 리턴한다
 }
