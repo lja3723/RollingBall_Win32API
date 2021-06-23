@@ -215,32 +215,41 @@ void Paint::paint_background_ruller_tobuffer()
 	int cm = 40;
 	auto winBuff = hDC.mem.windowBuffer;
 
+	//물리좌표계를 픽셀좌표로 쉽게 변환시키는 도우미 클래스
+	class _t{
+	private:
+		Scaler* scaler;
+	public:
+		_t(Scaler* _s) { scaler = _s; }
+		PixelCoord&& operator()(PhysicalVector& v) { return scaler->transform(v); }
+	} t(scaler);
+
 	//x축, y축 그리기
 	p(-cm, 0);
-	MoveToEx(winBuff, scaler->transform(p).x, scaler->transform(p).y, NULL);
+	MoveToEx(winBuff, t(p).x, t(p).y, NULL);
 	p(cm, 0);
-	LineTo(winBuff, scaler->transform(p).x, scaler->transform(p).y);
+	LineTo(winBuff, t(p).x, t(p).y);
 	p(0, -cm);
-	MoveToEx(winBuff, scaler->transform(p).x, scaler->transform(p).y, NULL);
+	MoveToEx(winBuff, t(p).x, t(p).y, NULL);
 	p(0, cm);
-	LineTo(winBuff, scaler->transform(p).x, scaler->transform(p).y);
+	LineTo(winBuff, t(p).x, t(p).y);
 
 	//x축 눈금 그리기
 	for (int i = -30; i < 30; i++)
 	{
 		p(i, 0.5);
-		MoveToEx(winBuff, scaler->transform(p).x, scaler->transform(p).y, NULL);
+		MoveToEx(winBuff, t(p).x, t(p).y, NULL);
 		p(i, -0.5);
-		LineTo(winBuff, scaler->transform(p).x, scaler->transform(p).y);
+		LineTo(winBuff, t(p).x, t(p).y);
 	}
 
 	//y축 눈금 그리기
 	for (int i = -30; i < 30; i++)
 	{
 		p(0.5, i);
-		MoveToEx(winBuff, scaler->transform(p).x, scaler->transform(p).y, NULL);
+		MoveToEx(winBuff, t(p).x, t(p).y, NULL);
 		p(-0.5, i);
-		LineTo(winBuff, scaler->transform(p).x, scaler->transform(p).y);
+		LineTo(winBuff, t(p).x, t(p).y);
 	}
 }
 void Paint::paint_tobuffer(RollingBallObject& object)
