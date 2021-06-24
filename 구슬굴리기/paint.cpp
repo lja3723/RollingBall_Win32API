@@ -221,7 +221,7 @@ void Paint::paint_background_ruller_tobuffer()
 		Scaler* scaler;
 	public:
 		_t(Scaler* _s) { scaler = _s; }
-		PixelCoord&& operator()(PhysicalVector& v) { return scaler->transform(v); }
+		PixelCoord operator()(PhysicalVector& v) { return scaler->transform(v); }
 	} t(scaler);
 
 	//x축, y축 그리기
