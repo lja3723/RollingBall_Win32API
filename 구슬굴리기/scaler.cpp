@@ -2,7 +2,7 @@
 
 using namespace RollingBall;
 
-RollingBall::Scaler::Scaler(double m_px_rate)
+Scaler::Scaler(double m_px_rate)
 {
 	px_rate(m_px_rate);
 	_fix_point_physical(0, 0);
@@ -13,7 +13,7 @@ void Scaler::px_rate(double px)
 {
 	_px_rate = px;
 }
-double RollingBall::Scaler::px_rate()
+double Scaler::px_rate()
 {
 	return _px_rate;
 }
@@ -27,33 +27,33 @@ cm_val Scaler::cm(pixel px)
 	return (cm_val)px / _px_rate;
 }
 
-void RollingBall::Scaler::set_fix_point(PhysicalVector& point)
+void Scaler::set_fix_point(PhysicalVector& point)
 {
 	_fix_point_physical = point;
 }
-void RollingBall::Scaler::set_fix_point(PhysicalVector&& point)
+void Scaler::set_fix_point(PhysicalVector&& point)
 {
 	set_fix_point(point);
 }
-PhysicalVector& RollingBall::Scaler::get_fix_point_physical()
+PhysicalVector& Scaler::get_fix_point_physical()
 {
 	return _fix_point_physical;
 }
 
-void RollingBall::Scaler::set_fix_point(PixelCoord& point)
+void Scaler::set_fix_point(PixelCoord& point)
 {
 	_fix_point_pixel = point;
 }
-void RollingBall::Scaler::set_fix_point(PixelCoord&& point)
+void Scaler::set_fix_point(PixelCoord&& point)
 {
 	set_fix_point(point);
 }
-PixelCoord& RollingBall::Scaler::get_fix_point_pixel()
+PixelCoord& Scaler::get_fix_point_pixel()
 {
 	return _fix_point_pixel;
 }
 
-PhysicalVector RollingBall::Scaler::transform(PixelCoord& point)
+PhysicalVector Scaler::transform(PixelCoord& point)
 {
 	PhysicalVector result = _fix_point_physical;
 
@@ -62,11 +62,11 @@ PhysicalVector RollingBall::Scaler::transform(PixelCoord& point)
 
 	return result;
 }
-PhysicalVector RollingBall::Scaler::transform(PixelCoord&& point)
+PhysicalVector Scaler::transform(PixelCoord&& point)
 {
 	return transform(point);
 }
-PixelCoord RollingBall::Scaler::transform(PhysicalVector& point)
+PixelCoord Scaler::transform(PhysicalVector& point)
 {
 	PixelCoord result = _fix_point_pixel;
 
@@ -75,7 +75,7 @@ PixelCoord RollingBall::Scaler::transform(PhysicalVector& point)
 
 	return result;
 }
-PixelCoord RollingBall::Scaler::transform(PhysicalVector&& point)
+PixelCoord Scaler::transform(PhysicalVector&& point)
 {
 	return transform(point);
 }
