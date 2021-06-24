@@ -67,20 +67,20 @@ void RollingBall::Controller::force_to(Ball& ball, double accel)
 	cm_val& accel_y = ball.physical.accel.y;
 
 	KeyboardEvent e;
-	if (e.isKeyDown(VK_SPACE))
+	if (e.isKeyPressed(VK_SPACE))
 	{
 		fraction = 25 * 0.005;
 
 		speed_x *= (1 - fraction);
 		speed_y *= (1 - fraction);
 	}
-	else if (e.isKeyDown('H'))
+	else if (e.isKeyPressed('H'))
 	{
 		//RECT rt;
 		//GetClientRect(hwnd, &rt);
 		pos_x = 0;
 		pos_y = 0;
-		if (e.isKeyDown(VK_CONTROL))
+		if (e.isKeyPressed(VK_CONTROL))
 		{
 			initialize_ball_data(ball);
 			pos_x = 0;
@@ -89,12 +89,12 @@ void RollingBall::Controller::force_to(Ball& ball, double accel)
 	}
 	else
 	{
-		if (e.isKeyDown(VK_LEFT)) accel_x = -accel;
-		else if (e.isKeyDown(VK_RIGHT)) accel_x = accel;
+		if (e.isKeyPressed(VK_LEFT)) accel_x = -accel;
+		else if (e.isKeyPressed(VK_RIGHT)) accel_x = accel;
 		else accel_x = 0;
 
-		if (e.isKeyDown(VK_UP)) accel_y = accel;
-		else if (e.isKeyDown(VK_DOWN)) accel_y = -accel;
+		if (e.isKeyPressed(VK_UP)) accel_y = accel;
+		else if (e.isKeyPressed(VK_DOWN)) accel_y = -accel;
 		else accel_y = 0;
 	}
 }

@@ -10,10 +10,10 @@ using std::sort;
 //	Event class
 // 
 /////////////////////////
-BOOL Event::isInitKeysArray = FALSE;
-BOOL Event::keys[numofKeys];
+BOOL Event::_keyboard::isInitKeysArray = FALSE;
+BOOL Event::_keyboard::keys[numofKeys];
 
-void Event::initKeysArray()
+void Event::_keyboard::initKeysArray()
 {
 	if (!isInitKeysArray)
 	{
@@ -37,15 +37,15 @@ BOOL RollingBall::Event::isValid()
 /////////////////////////
 void KeyboardEvent::key_down(WPARAM VK_msg)
 {
-	keys[VK_msg] = TRUE;
+	keyboard.keys[VK_msg] = TRUE;
 }
 void KeyboardEvent::key_up(WPARAM VK_msg)
 {
-	keys[VK_msg] = FALSE;
+	keyboard.keys[VK_msg] = FALSE;
 }
-BOOL KeyboardEvent::isKeyDown(WPARAM VK_msg)
+BOOL KeyboardEvent::isKeyPressed(WPARAM VK_msg)
 {
-	return keys[VK_msg];
+	return keyboard.keys[VK_msg];
 }
 
 

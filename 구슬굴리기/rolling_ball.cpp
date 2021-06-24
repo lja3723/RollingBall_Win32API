@@ -33,13 +33,13 @@ void RollingBallClass::update_window()
 	int d_keyViewer = 18;
 
 	KeyboardEvent e;
-	if (e.isKeyDown(VK_DOWN))
+	if (e.isKeyPressed(VK_DOWN))
 		paint.text(_T("↓"), keyViewer.x, keyViewer.y);
-	if (e.isKeyDown(VK_UP))
+	if (e.isKeyPressed(VK_UP))
 		paint.text(_T("↑"), keyViewer.x, keyViewer.y - d_keyViewer);
-	if (e.isKeyDown(VK_LEFT))
+	if (e.isKeyPressed(VK_LEFT))
 		paint.text(_T("←"), keyViewer.x - d_keyViewer, keyViewer.y);
-	if (e.isKeyDown(VK_RIGHT))
+	if (e.isKeyPressed(VK_RIGHT))
 		paint.text(_T("→"), keyViewer.x + d_keyViewer, keyViewer.y);
 
 	//기타 정보 그리기
@@ -98,20 +98,20 @@ void RollingBallClass::update_scaler()
 	cm_val move_distance = 0.2;
 
 	KeyboardEvent e;
-	if (e.isKeyDown('O'))
+	if (e.isKeyPressed('O'))
 		if (scaler.px_rate() > 20)
 			scaler.px_rate(scaler.px_rate() * (1 - zoom_in_out_rate));
-	if (e.isKeyDown('P'))
+	if (e.isKeyPressed('P'))
 		if (scaler.px_rate() < 720)
 			scaler.px_rate(scaler.px_rate() * (1 + zoom_in_out_rate));
 
-	if (e.isKeyDown('W'))
+	if (e.isKeyPressed('W'))
 		scaler.set_fix_point(ppos(ppos.x, ppos.y + move_distance));
-	if (e.isKeyDown('A'))
+	if (e.isKeyPressed('A'))
 		scaler.set_fix_point(ppos(ppos.x - move_distance, ppos.y));
-	if (e.isKeyDown('S'))
+	if (e.isKeyPressed('S'))
 		scaler.set_fix_point(ppos(ppos.x, ppos.y - move_distance));
-	if (e.isKeyDown('D'))
+	if (e.isKeyPressed('D'))
 		scaler.set_fix_point(ppos(ppos.x + move_distance, ppos.y));
 }
 
@@ -138,7 +138,7 @@ void RollingBallClass::event_keyboard(KeyboardEvent e)
 	static const int ballSwitch = 0;
 
 	static BOOL isProcessed = FALSE;
-	if (!isProcessed && e.isKeyDown('C'))
+	if (!isProcessed && e.isKeyPressed('C'))
 	{
 		ball[ballSwitch].physical.accel = { 0, 0 };
 		//그림자 효과를 위해 주석처리
@@ -146,7 +146,7 @@ void RollingBallClass::event_keyboard(KeyboardEvent e)
 		//if (ballSwitch == ball.size()) ballSwitch = 0;
 		isProcessed = TRUE;
 	}
-	else if (!e.isKeyDown('C'))
+	else if (!e.isKeyPressed('C'))
 		isProcessed = FALSE;
 }
 void RollingBallClass::event_mouse(MouseEvent e)
