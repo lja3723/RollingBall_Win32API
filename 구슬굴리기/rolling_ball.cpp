@@ -155,7 +155,7 @@ void RollingBallClass::event_mouse(MouseEvent e)
 void RollingBallClass::event_all(Event e)
 {
 	static int k = 1;
-	switch (e.winMsg_iMsg())
+	switch (e.winMsg.iMsg())
 	{
 	case WM_PAINT:
 		update_window();

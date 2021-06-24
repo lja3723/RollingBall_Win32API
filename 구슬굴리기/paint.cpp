@@ -319,9 +319,9 @@ void Paint::flush_buffer()
 *********************************/
 void Paint::event_all(Event e)
 {
-	if (e.winMsg_iMsg() == WM_SIZE)
+	if (e.winMsg.iMsg() == WM_SIZE)
 	{
-		switch (e.winMsg_wParam())
+		switch (e.winMsg.wParam())
 		{
 		case SIZE_RESTORED:
 		case SIZE_MAXIMIZED:

@@ -10,16 +10,16 @@ using std::sort;
 //	Event class
 // 
 /////////////////////////
-BOOL Event::isInit = FALSE;
+BOOL Event::isInitKeysArray = FALSE;
 BOOL Event::keys[numofKeys];
 
-void Event::init()
+void Event::initKeysArray()
 {
-	if (!isInit)
+	if (!isInitKeysArray)
 	{
 		for (int i = 0; i < numofKeys; i++)
 			keys[i] = FALSE;
-		isInit = TRUE;
+		isInitKeysArray = TRUE;
 	}
 }
 
@@ -143,7 +143,6 @@ void EventProducer::translate_windowEvent(UINT iMsg, WPARAM wParam, LPARAM lPara
 //	EventAcceptable class
 // 
 /////////////////////////////
-int EventAcceptable::object_count = 0;
 vector<EventAcceptable*> EventAcceptable::object_ref = vector<EventAcceptable*>();
 
 EventAcceptable::EventAcceptable()
