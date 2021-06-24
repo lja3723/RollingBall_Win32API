@@ -39,9 +39,6 @@ namespace RollingBall
 				wParam = m_wParam;
 				lParam = m_lParam;
 			}
-			UINT getiMsg() { return iMsg; }
-			WPARAM getwParam() { return wParam; }
-			LPARAM getlParam() { return lParam; }
 		} m_winMsg;
 
 	public:
@@ -52,9 +49,9 @@ namespace RollingBall
 			_m_winMsg* winMsg;
 		public:
 			_winMsg(_m_winMsg* m_winMsg) { winMsg = m_winMsg; }
-			BOOL iMsg(UINT iMsg) { return winMsg->getiMsg() == iMsg; }
-			BOOL wParam(WPARAM wParam) { return winMsg->getwParam() == wParam; }
-			BOOL lParam(LPARAM lParam) { return winMsg->getlParam() == lParam; }
+			BOOL iMsg(UINT iMsg) { return winMsg->iMsg == iMsg; }
+			BOOL wParam(WPARAM wParam) { return winMsg->wParam == wParam; }
+			BOOL lParam(LPARAM lParam) { return winMsg->lParam == lParam; }
 		} isWinMsg;
 
 		//이벤트가 유효한지 확인
