@@ -98,21 +98,25 @@ namespace RollingBall
 			static const int MButton		= 1;
 			static const int RButton		= 2;
 
-			static BOOL Buttons[numofButtons];
+			static BOOL buttons[numofButtons];
 			static BOOL isInitButtonsArray;
 
-			_state() { initButtonsArray(); }
-			static void initButtonsArray();
-		} state;
 
-		//마우스 포인터 위치
-		POINT pos;
-		//마우스 스크롤 회전 방향
-		int scroll;
-		void init() {
-			pos = { 0, 0 };
-			scroll = 0;
-		}
+			//마우스 포인터 위치
+			POINT pos;
+			//마우스 스크롤 회전 방향
+			int scroll;
+
+		public:
+			_state() { 
+				initButtonsArray();
+				pos = { 0, 0 };
+				scroll = 0;
+			}
+			static void initButtonsArray();
+			void button_down(int button_idx);
+			void button_up(int button_idx);
+		} state;
 
 	public:
 		//////////////////
@@ -167,15 +171,21 @@ namespace RollingBall
 		// //////////////
 		//winMsg 요소로 이벤트 생성
 		MouseEvent(UINT iMsg = 0, WPARAM wParam = 0, LPARAM lParam = 0)
-			: Event(iMsg, wParam, lParam), eventType(this) { init(); }
+			: Event(iMsg, wParam, lParam), eventType(this) {}
 		//Event로의 형변환 생성자
 		MouseEvent(const Event& e)
-			: Event(e), eventType(this) { init(); }
+			: Event(e), eventType(this) {}
 		//복사 생성자
 		MouseEvent(const MouseEvent& e)
 			: MouseEvent(e.m_winMsg.iMsg, e.m_winMsg.wParam, e.m_winMsg.lParam) {
 			this->m_isValid = e.m_isValid;
+			state = e.state;
 		}
+
+		POINT pos();
+		BOOL isLButtonDown();
+		BOOL isMButtonDown();
+		BOOL isRButtonDown();
 	};
 
 	class KeyboardEvent : public Event
@@ -197,6 +207,7 @@ namespace RollingBall
 			static void initKeysArray();
 			//키보드 배열 초기화 여부 저장
 			static BOOL isInitKeysArray;
+			WPARAM changedKey;
 			_state() { initKeysArray(); }
 		} state;
 
@@ -212,7 +223,7 @@ namespace RollingBall
 		//	inner class
 		//////////////////
 		//event가 어떤 요소로 발생했는지 표현함
-		class _keyboardEventType : public _eventType
+		class _eventType
 		{
 		private:
 			KeyboardEvent* e;
@@ -224,7 +235,7 @@ namespace RollingBall
 		
 		//해당 event의 eventType이 무엇인지 알려주는 함수 선언
 		public:
-			_keyboardEventType(KeyboardEvent* e) : _eventType(e) { this->e = e; }
+			_eventType(KeyboardEvent* e) { this->e = e; }
 			BOOL isKeyDown() { return e->isWinMsg.iMsg(KeyDown); }
 			BOOL isKeyUp() { return e->isWinMsg.iMsg(KeyUp); }
 		} eventType;
@@ -243,11 +254,18 @@ namespace RollingBall
 		KeyboardEvent(const KeyboardEvent& e)
 			: KeyboardEvent(e.m_winMsg.iMsg, e.m_winMsg.wParam, e.m_winMsg.lParam) {
 			this->m_isValid = e.m_isValid;
+			state = e.state;
 		}
 
 
 		//키보드 눌린 상태 반환
 		BOOL isKeyPressed(WPARAM VK_msg);
+		//상태가 변화한 키보드 키 반환
+		BOOL isKeyStateChanged(WPARAM VK_msg);
+		//키를 눌렀는지 반환
+		BOOL isKeyDown(WPARAM VK_msg);
+		//키를 뗐는 지 반환
+		BOOL isKeyUp(WPARAM VK_msg);
 	};
 
 	/*

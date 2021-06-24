@@ -22,7 +22,7 @@ BOOL RollingBall::Event::isValid()
 //	MouseEvent class
 // 
 /////////////////////////
-BOOL MouseEvent::_state::Buttons[numofButtons];
+BOOL MouseEvent::_state::buttons[numofButtons];
 BOOL MouseEvent::_state::isInitButtonsArray = FALSE;
 
 void RollingBall::MouseEvent::_state::initButtonsArray()
@@ -30,9 +30,39 @@ void RollingBall::MouseEvent::_state::initButtonsArray()
 	if (!isInitButtonsArray)
 	{
 		for (int i = 0; i < numofButtons; i++)
-			Buttons[i] = FALSE;
+			buttons[i] = FALSE;
 		isInitButtonsArray = TRUE;
 	}
+}
+
+void RollingBall::MouseEvent::_state::button_down(int button_idx)
+{
+	buttons[button_idx] = TRUE;
+}
+
+void RollingBall::MouseEvent::_state::button_up(int button_idx)
+{
+	buttons[button_idx] = FALSE;
+}
+
+POINT RollingBall::MouseEvent::pos()
+{
+	return state.pos;
+}
+
+BOOL RollingBall::MouseEvent::isLButtonDown()
+{
+	return state.buttons[state.LButton];
+}
+
+BOOL RollingBall::MouseEvent::isMButtonDown()
+{
+	return state.buttons[state.MButton];
+}
+
+BOOL RollingBall::MouseEvent::isRButtonDown()
+{
+	return state.buttons[state.RButton];
 }
 
 
@@ -67,6 +97,21 @@ BOOL KeyboardEvent::isKeyPressed(WPARAM VK_msg)
 	return state.keys[VK_msg];
 }
 
+BOOL RollingBall::KeyboardEvent::isKeyStateChanged(WPARAM VK_msg)
+{
+	return state.changedKey == VK_msg;
+}
+
+BOOL RollingBall::KeyboardEvent::isKeyDown(WPARAM VK_msg)
+{
+	return eventType.isKeyDown() && isKeyStateChanged(VK_msg);
+}
+
+BOOL RollingBall::KeyboardEvent::isKeyUp(WPARAM VK_msg)
+{
+	return eventType.isKeyUp() && isKeyStateChanged(VK_msg);
+}
+
 
 
 /////////////////////////
@@ -78,43 +123,30 @@ MouseEvent EventProducer::produce_mouseEvent(UINT iMsg, WPARAM wParam, LPARAM lP
 {
 	MouseEvent e(iMsg, wParam, lParam);
 
+	e.state.pos.x = LOWORD(lParam);
+	e.state.pos.y = HIWORD(lParam);
+
 	if (e.eventType.isLButtonDown())
-	{
-	}
+		e.state.button_down(e.state.LButton);
 	else if (e.eventType.isLButtonUp())
-	{
-	}
-	else if (e.eventType.isLButtonDoubleClick())
-	{
-	}
+		e.state.button_up(e.state.LButton);
+	else if (e.eventType.isLButtonDoubleClick());
 
 	else if (e.eventType.isMButtonDown())
-	{
-	}
+		e.state.button_down(e.state.MButton);
 	else if (e.eventType.isMButtonUp())
-	{
-	}
-	else if (e.eventType.isMButtonDoubleClick())
-	{
-	}
+		e.state.button_up(e.state.MButton);
+	else if (e.eventType.isMButtonDoubleClick());
 
 	else if (e.eventType.isRButtonDown())
-	{
-	}
+		e.state.button_down(e.state.RButton);
 	else if (e.eventType.isRButtonUp())
-	{
-	}
-	else if (e.eventType.isRButtonDoubleClick())
-	{
-	}
+		e.state.button_up(e.state.RButton);
+	else if (e.eventType.isRButtonDoubleClick());
 
-	else if (e.eventType.isMouseMove())
-	{
-	}
+	else if (e.eventType.isMouseMove());
 	else if (e.eventType.isMouseWheel())
-	{
-		e.scroll = (short)HIWORD(wParam);
-	}
+		e.state.scroll = (short)HIWORD(wParam);
 	else
 		e.m_isValid = FALSE;
 
@@ -124,10 +156,14 @@ KeyboardEvent EventProducer::produce_keyboardEvent(UINT iMsg, WPARAM wParam, LPA
 {
 	KeyboardEvent e(iMsg, wParam, lParam);
 
-	if (e.eventType.isKeyDown())
+	if (e.eventType.isKeyDown()) {
 		e.key_down(wParam);
-	else if (e.eventType.isKeyUp())
+		e.state.changedKey = wParam;
+	}
+	else if (e.eventType.isKeyUp()) {
 		e.key_up(wParam);
+		e.state.changedKey = wParam;
+	}
 	else
 		e.m_isValid = FALSE;
 
