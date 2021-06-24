@@ -19,6 +19,26 @@ BOOL RollingBall::Event::isValid()
 
 /////////////////////////
 // 
+//	MouseEvent class
+// 
+/////////////////////////
+BOOL MouseEvent::_state::Buttons[numofButtons];
+BOOL MouseEvent::_state::isInitButtonsArray = FALSE;
+
+void RollingBall::MouseEvent::_state::initButtonsArray()
+{
+	if (!isInitButtonsArray)
+	{
+		for (int i = 0; i < numofButtons; i++)
+			Buttons[i] = FALSE;
+		isInitButtonsArray = TRUE;
+	}
+}
+
+
+
+/////////////////////////
+// 
 //	KeyboardEvent class
 // 
 /////////////////////////

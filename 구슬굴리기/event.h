@@ -17,25 +17,6 @@ namespace RollingBall
 		friend class EventProducer;
 
 	protected:
-
-		//마우스 이벤트 상태 저장
-		class _mouse
-		{
-			class _flag
-			{
-			public:
-				BOOL LButton;
-				BOOL MButton;
-				BOOL RButton;
-				_flag() {
-					LButton = FALSE;
-					MButton = FALSE;
-					RButton = FALSE;
-				}
-			} isPressed;
-		public:
-		} mouse;
-
 		//이벤트의 유효성 저장
 		BOOL m_isValid;
 		//캡슐화된 진짜 winMsg 정보
@@ -91,6 +72,21 @@ namespace RollingBall
 		//EventProducer가 MouseEvent를 초기화할 것임
 		friend class EventProducer;
 	protected:
+		//마우스 이벤트 상태 저장
+		class _state
+		{
+		public:
+			static const int numofButtons = 3;
+			static const int LButton = 0;
+			static const int MButton = 1;
+			static const int RButton = 2;
+
+			static BOOL Buttons[numofButtons];
+			static BOOL isInitButtonsArray;
+
+			void initButtonsArray();
+		} state;
+
 		void init() {
 			pos = { 0, 0 };
 			scroll = 0;
