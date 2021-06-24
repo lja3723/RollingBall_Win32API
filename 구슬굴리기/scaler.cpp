@@ -27,28 +27,28 @@ cm_val Scaler::cm(pixel px)
 	return (cm_val)px / _px_rate;
 }
 
-void RollingBall::Scaler::fix_point_physical(PhysicalVector& point)
+void RollingBall::Scaler::set_fix_point(PhysicalVector& point)
 {
 	_fix_point_physical = point;
 }
-void RollingBall::Scaler::fix_point_physical(PhysicalVector&& point)
+void RollingBall::Scaler::set_fix_point(PhysicalVector&& point)
 {
-	fix_point_physical(point);
+	set_fix_point(point);
 }
-PhysicalVector& RollingBall::Scaler::fix_point_physical()
+PhysicalVector& RollingBall::Scaler::get_fix_point_physical()
 {
 	return _fix_point_physical;
 }
 
-void RollingBall::Scaler::fix_point_pixel(PixelCoord& point)
+void RollingBall::Scaler::set_fix_point(PixelCoord& point)
 {
 	_fix_point_pixel = point;
 }
-void RollingBall::Scaler::fix_point_pixel(PixelCoord&& point)
+void RollingBall::Scaler::set_fix_point(PixelCoord&& point)
 {
-	fix_point_pixel(point);
+	set_fix_point(point);
 }
-PixelCoord& RollingBall::Scaler::fix_point_pixel()
+PixelCoord& RollingBall::Scaler::get_fix_point_pixel()
 {
 	return _fix_point_pixel;
 }

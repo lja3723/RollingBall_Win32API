@@ -10,8 +10,8 @@ void RollingBallClass::init_scaler(int px_rate)
 
 	RECT windowRect;
 	GetClientRect(winAPI.hwnd, &windowRect);
-	scaler.fix_point_pixel(PixelCoord(windowRect.right / 2, windowRect.bottom / 2));
-	scaler.fix_point_physical(PhysicalVector(0, 0));
+	scaler.set_fix_point(PixelCoord(windowRect.right / 2, windowRect.bottom / 2));
+	scaler.set_fix_point(PhysicalVector(0, 0));
 }
 
 void RollingBallClass::update_window()
@@ -47,7 +47,7 @@ void RollingBallClass::update_window()
 	paint.text(buff, 300, 30);
 	_stprintf_s(buff, 256, _T("ball count:%d"), (int)ball.size());
 	paint.text(buff, 300, 50);
-	PhysicalVector cen = scaler.fix_point_physical();
+	PhysicalVector cen = scaler.get_fix_point_physical();
 	_stprintf_s(buff, 256, _T("center position:(%3.2f, %3.2f)"), cen.x, cen.y);
 	paint.text(buff, 300, 70);
 	if (isMouseEvent)
@@ -92,7 +92,7 @@ void RollingBallClass::update_state()
 }
 void RollingBallClass::update_scaler()
 {
-	PhysicalVector ppos = scaler.fix_point_physical();
+	PhysicalVector ppos = scaler.get_fix_point_physical();
 	double zoom_in_out_rate = 0.03;
 	cm_val move_distance = 0.2;
 
@@ -105,13 +105,13 @@ void RollingBallClass::update_scaler()
 			scaler.px_rate(scaler.px_rate() * (1 + zoom_in_out_rate));
 
 	if (e.isKeyDown('W'))
-		scaler.fix_point_physical(ppos(ppos.x, ppos.y + move_distance));
+		scaler.set_fix_point(ppos(ppos.x, ppos.y + move_distance));
 	if (e.isKeyDown('A'))
-		scaler.fix_point_physical(ppos(ppos.x - move_distance, ppos.y));
+		scaler.set_fix_point(ppos(ppos.x - move_distance, ppos.y));
 	if (e.isKeyDown('S'))
-		scaler.fix_point_physical(ppos(ppos.x, ppos.y - move_distance));
+		scaler.set_fix_point(ppos(ppos.x, ppos.y - move_distance));
 	if (e.isKeyDown('D'))
-		scaler.fix_point_physical(ppos(ppos.x + move_distance, ppos.y));
+		scaler.set_fix_point(ppos(ppos.x + move_distance, ppos.y));
 }
 
 void RollingBallClass::set_timer(UINT frame_update_interval)

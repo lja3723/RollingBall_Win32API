@@ -152,7 +152,7 @@ void Paint::doubleBuffering_start()
 		hDC.mem.windowBuffer.select(hBitmap);
 
 		PixelCoord p(windowRect.right / 2, windowRect.bottom / 2);
-		scaler->fix_point_pixel(p);
+		scaler->set_fix_point(p);
 
 		flag.isWindowSizeChanged = FALSE;
 	}

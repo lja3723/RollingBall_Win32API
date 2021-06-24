@@ -43,18 +43,18 @@ namespace RollingBall
 		cm_val cm(pixel px);
 
 		//물리 좌표계의 고정점을 설정한다
-		void fix_point_physical(PhysicalVector& point);
-		void fix_point_physical(PhysicalVector&& point);
+		void set_fix_point(PhysicalVector& point);
+		void set_fix_point(PhysicalVector&& point);
 
 		//물리 좌표계의 고정점을 반환한다
-		PhysicalVector& fix_point_physical();
+		PhysicalVector& get_fix_point_physical();
 
 		//픽셀 좌표계의 고정점을 설정한다
-		void fix_point_pixel(PixelCoord& point);
-		void fix_point_pixel(PixelCoord&& point);
+		void set_fix_point(PixelCoord& point);
+		void set_fix_point(PixelCoord&& point);
 
 		//픽셀 좌표계의 고정점을 반환한다
-		PixelCoord& fix_point_pixel();
+		PixelCoord& get_fix_point_pixel();
 
 		//픽셀 좌표계를 물리 좌표계로 변환한다
 		PhysicalVector transform(PixelCoord& point);
