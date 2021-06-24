@@ -84,7 +84,7 @@ namespace RollingBall
 			static BOOL Buttons[numofButtons];
 			static BOOL isInitButtonsArray;
 
-			void initButtonsArray();
+			static void initButtonsArray();
 		} state;
 
 		void init() {
@@ -120,7 +120,7 @@ namespace RollingBall
 			static const int numofKeys = 256;
 			static BOOL keys[numofKeys];
 			//키보드 배열 초기화 수행
-			void initKeysArray();
+			static void initKeysArray();
 			//키보드 배열 초기화 여부 저장
 			static BOOL isInitKeysArray;
 		} state;
