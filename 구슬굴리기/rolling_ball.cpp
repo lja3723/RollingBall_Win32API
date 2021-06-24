@@ -58,6 +58,17 @@ void RollingBallClass::update_window()
 		paint.text(mouseEventTestBuff, 300, 150);
 		isMouseEvent = FALSE;
 	}
+	MouseEvent em;
+	if (em.isLButtonDown())
+	{
+		_stprintf_s(buff, 256, _T("LButton is pressing"));
+		paint.text(buff, 300, 170);
+		POINT p = em.pos();
+		PixelCoord px(p.x, p.y);
+		//아래는 로직이 잘못되었으니
+		//나중에 다시수정할것
+		scaler.set_fix_point(scaler.transform(px));
+	}
 
 	//공 그리기
 	for (int i = 0; i < ball.size(); i++)
