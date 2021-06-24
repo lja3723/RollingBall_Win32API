@@ -132,7 +132,7 @@ namespace RollingBall
 		*
 		*********************************/
 		//기타 이벤트 처리
-		virtual void event_all(Event e);
+		void event_all(Event e);
 	};
 }
 

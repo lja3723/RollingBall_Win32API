@@ -29,17 +29,17 @@ namespace RollingBall
 			WPARAM wParam;
 			LPARAM lParam;
 		} winmsg;
-		Event() = delete;
-		Event(UINT m_iMsg, WPARAM m_wParam, LPARAM m_lParam)
+		//Event() = delete;
+		Event(UINT m_iMsg = 0, WPARAM m_wParam = 0, LPARAM m_lParam = 0, BOOL m_isValid = TRUE)
 		{ 
 			init();
-			isValid = TRUE;
+			isValid = m_isValid;
 			winmsg.iMsg = m_iMsg;
 			winmsg.wParam = m_wParam;
 			winmsg.lParam = m_lParam;
 		}
-		Event(const Event& e) 
-			: Event(e.winmsg.iMsg, e.winmsg.wParam, e.winmsg.lParam) {}
+		Event(const Event& e)
+			: Event(e.winmsg.iMsg, e.winmsg.wParam, e.winmsg.lParam, e.isValid) {}
 
 		//키보드 눌린 상태 반환
 		BOOL isKeyDown(WPARAM VK_msg);
