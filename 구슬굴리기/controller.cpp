@@ -3,44 +3,6 @@
 
 using namespace RollingBall;
 
-void Controller::event_keyboard(KeyboardEvent e)
-{
-	BOOL flag_key = FALSE;
-	if (e.winmsg.iMsg == WM_KEYDOWN)
-		flag_key = TRUE;
-	else if (e.winmsg.iMsg == WM_KEYUP)
-		flag_key = FALSE;
-	else return;
-
-	switch (e.winmsg.wParam)
-	{
-	case VK_LEFT:
-		isPushed.key._left = flag_key;
-		break;
-	case VK_RIGHT:
-		isPushed.key._right = flag_key;
-		break;
-	case VK_UP:
-		isPushed.key._up = flag_key;
-		break;
-	case VK_DOWN:
-		isPushed.key._down = flag_key;
-		break;
-	case VK_SPACE:
-		isPushed.key._space = flag_key;
-		break;
-	case _T('H'):
-		isPushed.key._H = flag_key;
-		break;
-	case _T('C'):
-		isPushed.key._C = flag_key;
-		break;
-	case VK_CONTROL:
-		isPushed.key._control = flag_key;
-		break;
-	}
-}
-
 void Controller::update_ballPos(Ball& ball)
 {
 	double fraction = 0.005;
@@ -104,20 +66,21 @@ void RollingBall::Controller::force_to(Ball& ball, double accel)
 	cm_val& accel_x = ball.physical.accel.x;
 	cm_val& accel_y = ball.physical.accel.y;
 
-	if (isPushed.key.space())
+	KeyboardEvent e;
+	if (e.isKeyDown(VK_SPACE))
 	{
 		fraction = 25 * 0.005;
 
 		speed_x *= (1 - fraction);
 		speed_y *= (1 - fraction);
 	}
-	else if (isPushed.key.H())
+	else if (e.isKeyDown('H'))
 	{
 		//RECT rt;
 		//GetClientRect(hwnd, &rt);
 		pos_x = 0;
 		pos_y = 0;
-		if (isPushed.key.control())
+		if (e.isKeyDown(VK_CONTROL))
 		{
 			initialize_ball_data(ball);
 			pos_x = 0;
@@ -126,12 +89,12 @@ void RollingBall::Controller::force_to(Ball& ball, double accel)
 	}
 	else
 	{
-		if (isPushed.key.left()) accel_x = -accel;
-		else if (isPushed.key.right()) accel_x = accel;
+		if (e.isKeyDown(VK_LEFT)) accel_x = -accel;
+		else if (e.isKeyDown(VK_RIGHT)) accel_x = accel;
 		else accel_x = 0;
 
-		if (isPushed.key.up()) accel_y = accel;
-		else if (isPushed.key.down()) accel_y = -accel;
+		if (e.isKeyDown(VK_UP)) accel_y = accel;
+		else if (e.isKeyDown(VK_DOWN)) accel_y = -accel;
 		else accel_y = 0;
 	}
 }
@@ -142,67 +105,4 @@ void Controller::initialize_ball_data(Ball& ball)
 	ball.physical.pos.y = 0;
 	ball.physical.speed.x = 0;
 	ball.physical.speed.y = 0;
-}
-
-RollingBall::Controller::_isPushed::_key::_key()
-{
-	_left = FALSE;
-	_right = FALSE;
-	_up = FALSE;
-	_down = FALSE;
-	_space = FALSE;
-	_H = FALSE;
-	_C = FALSE;
-	_control = FALSE;
-}
-
-BOOL RollingBall::Controller::_isPushed::_key::left()
-{
-	return _left;
-}
-BOOL RollingBall::Controller::_isPushed::_key::right()
-{
-	return _right;
-}
-BOOL RollingBall::Controller::_isPushed::_key::up()
-{
-	return _up;
-}
-BOOL RollingBall::Controller::_isPushed::_key::down()
-{
-	return _down;
-}
-BOOL RollingBall::Controller::_isPushed::_key::space()
-{
-	return _space;
-}
-BOOL RollingBall::Controller::_isPushed::_key::H()
-{
-	return _H;
-}
-BOOL RollingBall::Controller::_isPushed::_key::C()
-{
-	return _C;
-}
-BOOL RollingBall::Controller::_isPushed::_key::control()
-{
-	return _control;
-}
-RollingBall::Controller::_isPushed::_mouse::_mouse()
-{
-	_lButton = FALSE;
-	_mButton = FALSE;
-	_rButton = FALSE;
-}
-BOOL RollingBall::Controller::_isPushed::_mouse::lButton()
-{
-	return _lButton;
-}
-BOOL RollingBall::Controller::_isPushed::_mouse::mButton()
-{
-	return _mButton;
-}
-BOOL RollingBall::Controller::_isPushed::_mouse::rButton()
-{
-	return _rButton;
 }

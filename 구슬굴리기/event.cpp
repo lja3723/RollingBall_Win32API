@@ -22,9 +22,10 @@ void Event::init()
 		isInit = TRUE;
 	}
 }
-BOOL Event::isKeyDown(WPARAM VK_msg)
+
+BOOL RollingBall::Event::isValid()
 {
-	return keys[VK_msg];
+	return m_isValid;
 }
 
 
@@ -41,6 +42,10 @@ void KeyboardEvent::key_down(WPARAM VK_msg)
 void KeyboardEvent::key_up(WPARAM VK_msg)
 {
 	keys[VK_msg] = FALSE;
+}
+BOOL KeyboardEvent::isKeyDown(WPARAM VK_msg)
+{
+	return keys[VK_msg];
 }
 
 
@@ -79,7 +84,7 @@ MouseEvent EventProducer::produce_mouseEvent(UINT iMsg, WPARAM wParam, LPARAM lP
 		e.scroll = (short)HIWORD(wParam);
 		break;
 	default:
-		e.isValid = FALSE;
+		e.m_isValid = FALSE;
 		break;
 	}
 
@@ -98,7 +103,7 @@ KeyboardEvent EventProducer::produce_keyboardEvent(UINT iMsg, WPARAM wParam, LPA
 		e.key_up(wParam);
 		break;
 	default:
-		e.isValid = FALSE;
+		e.m_isValid = FALSE;
 	}
 
 	return e;
@@ -110,7 +115,7 @@ Event EventProducer::produce_Event(UINT iMsg, WPARAM wParam, LPARAM lParam)
 void EventProducer::translate_windowEvent(UINT iMsg, WPARAM wParam, LPARAM lParam)
 {
 	MouseEvent em = produce_mouseEvent(iMsg, wParam, lParam);
-	if (em.isValid)
+	if (em.m_isValid)
 	{
 		//마우스 좌표에 존재하는 모든 EventAcceptable 객체에 마우스 이벤트를 보낸다
 		// -> 나중에 우선순위를 참고해 하나의 객체에 이벤트를 보내게 수정할 것임
@@ -121,7 +126,7 @@ void EventProducer::translate_windowEvent(UINT iMsg, WPARAM wParam, LPARAM lPara
 	}
 
 	KeyboardEvent ek = produce_keyboardEvent(iMsg, wParam, lParam);
-	if (ek.isValid)
+	if (ek.m_isValid)
 	{
 		//모든 EventAcceptable 객체에 키보드 이벤트를 보낸다
 		for (int i = 0; i < EventAcceptable::object_ref.size(); i++)

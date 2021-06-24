@@ -30,13 +30,15 @@ void RollingBallClass::update_window()
 	//방향키 뷰어 그리기
 	POINT keyViewer = { 300, 120 };
 	int d_keyViewer = 18;
-	if (controller.isPushed.key.down())
+
+	KeyboardEvent e;
+	if (e.isKeyDown(VK_DOWN))
 		paint.text(_T("↓"), keyViewer.x, keyViewer.y);
-	if (controller.isPushed.key.up())
+	if (e.isKeyDown(VK_UP))
 		paint.text(_T("↑"), keyViewer.x, keyViewer.y - d_keyViewer);
-	if (controller.isPushed.key.left())
+	if (e.isKeyDown(VK_LEFT))
 		paint.text(_T("←"), keyViewer.x - d_keyViewer, keyViewer.y);
-	if (controller.isPushed.key.right())
+	if (e.isKeyDown(VK_RIGHT))
 		paint.text(_T("→"), keyViewer.x + d_keyViewer, keyViewer.y);
 
 	//기타 정보 그리기
@@ -88,12 +90,13 @@ void RollingBallClass::update_state()
 	else if (1 < ball.size() && posPrev == posNow)
 		ball.erase(ball.begin() + 1);
 }
-void RollingBallClass::update_scaler(Event& e)
+void RollingBallClass::update_scaler()
 {
 	PhysicalVector ppos = scaler.fix_point_physical();
 	double zoom_in_out_rate = 0.03;
 	cm_val move_distance = 0.2;
 
+	KeyboardEvent e;
 	if (e.isKeyDown('O'))
 		if (scaler.px_rate() > 20)
 			scaler.px_rate(scaler.px_rate() * (1 - zoom_in_out_rate));
@@ -159,7 +162,7 @@ void RollingBallClass::event_all(Event e)
 		return;
 	case WM_TIMER:
 		update_state();
-		update_scaler(e);
+		update_scaler();
 		InvalidateRgn(winAPI.hwnd, NULL, FALSE);
 		return;
 	}

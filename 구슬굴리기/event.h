@@ -13,15 +13,16 @@ namespace RollingBall
 	*/
 	class Event
 	{
+		friend class EventProducer;
 	//키보드 눌림 저장
 	protected:
 		static BOOL isInit;
 		static const int numofKeys = 256;
 		static BOOL keys[numofKeys];
 		void init();
+		BOOL m_isValid;
 
 	public:
-		BOOL isValid;
 		class _winmsg
 		{
 		public:
@@ -29,20 +30,19 @@ namespace RollingBall
 			WPARAM wParam;
 			LPARAM lParam;
 		} winmsg;
+
+		BOOL isValid();
 		//Event() = delete;
 		Event(UINT m_iMsg = 0, WPARAM m_wParam = 0, LPARAM m_lParam = 0, BOOL m_isValid = TRUE)
 		{ 
 			init();
-			isValid = m_isValid;
+			m_isValid = m_isValid;
 			winmsg.iMsg = m_iMsg;
 			winmsg.wParam = m_wParam;
 			winmsg.lParam = m_lParam;
 		}
 		Event(const Event& e)
-			: Event(e.winmsg.iMsg, e.winmsg.wParam, e.winmsg.lParam, e.isValid) {}
-
-		//키보드 눌린 상태 반환
-		BOOL isKeyDown(WPARAM VK_msg);
+			: Event(e.winmsg.iMsg, e.winmsg.wParam, e.winmsg.lParam, e.m_isValid) {}
 	};
 
 	/*
@@ -50,7 +50,8 @@ namespace RollingBall
 	*/
 	class MouseEvent : public Event
 	{
-	private:
+		friend class EventProducer;
+	protected:
 		void init() {
 			pos = { 0, 0 };
 			scroll = 0;
@@ -70,7 +71,7 @@ namespace RollingBall
 	class KeyboardEvent : public Event
 	{
 		friend class EventProducer;
-	private:
+	protected:
 		void key_down(WPARAM VK_msg);
 		void key_up(WPARAM VK_msg);
 	public:
@@ -78,6 +79,9 @@ namespace RollingBall
 			: Event(m_iMsg, m_wParam, m_lParam) {}
 		KeyboardEvent(const Event& e)
 			: Event(e) {}
+
+		//키보드 눌린 상태 반환
+		BOOL isKeyDown(WPARAM VK_msg);
 	};
 
 	/*

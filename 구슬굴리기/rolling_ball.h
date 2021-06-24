@@ -38,7 +38,7 @@ namespace RollingBall
 
 		void update_window();
 		void update_state();
-		void update_scaler(Event& e);
+		void update_scaler();
 
 		void set_timer(UINT frame_update_interval);
 		void kill_timer();
