@@ -33,16 +33,18 @@ namespace RollingBall
 
 		BOOL isValid();
 		//Event() = delete;
-		Event(UINT m_iMsg = 0, WPARAM m_wParam = 0, LPARAM m_lParam = 0, BOOL m_isValid = TRUE)
+		Event(UINT m_iMsg = 0, WPARAM m_wParam = 0, LPARAM m_lParam = 0)
 		{ 
 			init();
-			m_isValid = m_isValid;
+			m_isValid = FALSE;
 			winmsg.iMsg = m_iMsg;
 			winmsg.wParam = m_wParam;
 			winmsg.lParam = m_lParam;
 		}
 		Event(const Event& e)
-			: Event(e.winmsg.iMsg, e.winmsg.wParam, e.winmsg.lParam, e.m_isValid) {}
+			: Event(e.winmsg.iMsg, e.winmsg.wParam, e.winmsg.lParam) {
+			m_isValid = e.m_isValid;
+		}
 	};
 
 	/*
@@ -59,8 +61,11 @@ namespace RollingBall
 	public:
 		POINT pos;
 		int scroll;
-		MouseEvent(UINT m_iMsg = 0, WPARAM m_wParam = 0, LPARAM m_lParam = 0, BOOL m_isValid = TRUE)
-			: Event(m_iMsg, m_wParam, m_lParam, m_isValid) { init(); }
+		MouseEvent(UINT m_iMsg = 0, WPARAM m_wParam = 0, LPARAM m_lParam = 0)
+			: Event(m_iMsg, m_wParam, m_lParam) { 
+			m_isValid = TRUE;
+			init(); 
+		}
 		MouseEvent(const Event& e)
 			: Event(e) { init(); }
 	};
