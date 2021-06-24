@@ -4,7 +4,6 @@
 
 #include <Windows.h>
 #include <vector>
-#include <chrono>
 
 #include "paint.h"
 #include "physics.h"
@@ -12,8 +11,6 @@
 #include "object.h"
 #include "event.h"
 #include "scaler.h"
-
-using namespace std::chrono;
 
 namespace RollingBall
 {
@@ -29,16 +26,13 @@ namespace RollingBall
 		} winAPI;
 		BOOL isInitTimer;
 
+		BOOL isMouseEvent;
+
 		Scaler scaler;
 		Paint paint;
 		Controller controller;
 		vector<Ball> ball;
-
-		class _time {
-		private:
-			system_clock::time_point start;
-		public:
-		} time;
+		int ballSwitch;
 
 		void init_scaler(int px_rate);
 
@@ -46,37 +40,18 @@ namespace RollingBall
 		void update_state();
 		void update_scaler(Event& e);
 
-		void set_timer(UINT frame_update_interval)
-		{
-			if (isInitTimer) kill_timer();
-			SetTimer(winAPI.hwnd, 1, frame_update_interval, NULL);
-			isInitTimer = TRUE;
-		}
-		void kill_timer() { 
-			if (!isInitTimer) return;
-			KillTimer(winAPI.hwnd, 1);
-			isInitTimer = FALSE;
-		}
-
-		int ballSwitch;
-
+		void set_timer(UINT frame_update_interval);
+		void kill_timer();
 		/*
 		*	이벤트 처리 메서드
 		*/
+		void event_mouse(MouseEvent e);
 		void event_all(Event e);
 		void event_keyboard(KeyboardEvent e);
 
 	public:
-		RollingBallClass() { 
-			winAPI = { NULL, NULL }; 
-			isInitTimer = FALSE; 
-			ballSwitch = 0;
-		}
-		~RollingBallClass() { 
-			if (isInitTimer)
-				kill_timer(); 
-		}
-
+		RollingBallClass();
+		~RollingBallClass();
 		//RollingBallClass 변수를 사용하기 전 반드시 수행해야 함
 		BOOL init(HINSTANCE m_hInstance, HWND m_hwnd, UINT frame_update_interval = 5);
 		//윈도우 이벤트를 rollingBall프로그램이 받아들임

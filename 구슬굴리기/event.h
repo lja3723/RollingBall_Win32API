@@ -45,25 +45,24 @@ namespace RollingBall
 		BOOL isKeyDown(WPARAM VK_msg);
 	};
 
-
-
 	/*
 	* 마우스 이벤트가 발생하면 그와 관련된 정보를 전달할 이벤트 객체
 	*/
 	class MouseEvent : public Event
 	{
+	private:
+		void init() {
+			pos = { 0, 0 };
+			scroll = 0;
+		}
 	public:
 		POINT pos;
 		int scroll;
-		MouseEvent(UINT m_iMsg = 0, WPARAM m_wParam = 0, LPARAM m_lParam = 0) 
-			: Event(m_iMsg, m_wParam, m_lParam)
-		{ 
-			pos = { 0, 0 }; 
-			scroll = 0;
-		}
+		MouseEvent(UINT m_iMsg = 0, WPARAM m_wParam = 0, LPARAM m_lParam = 0, BOOL m_isValid = TRUE)
+			: Event(m_iMsg, m_wParam, m_lParam, m_isValid) { init(); }
+		MouseEvent(const Event& e)
+			: Event(e) { init(); }
 	};
-
-
 
 	/*
 	* 키보드 이벤트가 발생하면 그와 관련된 정보를 전달할 이벤트 객체
@@ -80,8 +79,6 @@ namespace RollingBall
 		KeyboardEvent(const Event& e)
 			: Event(e) {}
 	};
-
-
 
 	/*
 	* WinAPI의 WM 메세지를 이벤트 객체로 해석한 뒤,
@@ -120,12 +117,12 @@ namespace RollingBall
 		//기타 이벤트를 받아들이기 위해 오버로딩 필요
 		virtual void event_all(Event e) {}
 
-		virtual BOOL isObjectArea(POINT& pos) { return FALSE; }
+		//virtual BOOL isObjectArea(POINT& pos) { return FALSE; }
 
 		//이벤트 우선순위를 결정해주는 함수
 		//this가 우선순위이면 음수, 동일 우선순위이면 0, 
 		//object가 우선순위이면 양수를 반환
-		virtual BOOL event_priority(EventAcceptable& object) { return FALSE; }
+		//virtual BOOL event_priority(EventAcceptable& object) { return FALSE; }
 
 	public:
 		EventAcceptable();

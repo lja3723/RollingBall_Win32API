@@ -115,8 +115,8 @@ void EventProducer::translate_windowEvent(UINT iMsg, WPARAM wParam, LPARAM lPara
 		//마우스 좌표에 존재하는 모든 EventAcceptable 객체에 마우스 이벤트를 보낸다
 		// -> 나중에 우선순위를 참고해 하나의 객체에 이벤트를 보내게 수정할 것임
 		for (int i = 0; i < EventAcceptable::object_ref.size(); i++)
-			if (EventAcceptable::object_ref[i]->isObjectArea(em.pos))
-				EventAcceptable::object_ref[i]->event_mouse(em);
+			//if (EventAcceptable::object_ref[i]->isObjectArea(em.pos))
+			EventAcceptable::object_ref[i]->event_mouse(em);
 		return;
 	}
 

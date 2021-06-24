@@ -48,6 +48,12 @@ void RollingBallClass::update_window()
 	PhysicalVector cen = scaler.fix_point_physical();
 	_stprintf_s(buff, 256, _T("center position:(%3.2f, %3.2f)"), cen.x, cen.y);
 	paint.text(buff, 300, 70);
+	if (isMouseEvent)
+	{
+		_stprintf_s(buff, 256, _T("MouseEvent Occurred"));
+		paint.text(buff, 300, 150);
+		isMouseEvent = FALSE;
+	}
 
 	//공 그리기
 	for (int i = 0; i < ball.size(); i++)
@@ -105,6 +111,77 @@ void RollingBallClass::update_scaler(Event& e)
 		scaler.fix_point_physical(ppos(ppos.x + move_distance, ppos.y));
 }
 
+void RollingBallClass::set_timer(UINT frame_update_interval)
+{
+	if (isInitTimer) kill_timer();
+	SetTimer(winAPI.hwnd, 1, frame_update_interval, NULL);
+	isInitTimer = TRUE;
+}
+void RollingBallClass::kill_timer()
+{
+	if (!isInitTimer) return;
+	KillTimer(winAPI.hwnd, 1);
+	isInitTimer = FALSE;
+}
+
+
+/////////////////////////////////
+//	event processing
+/////////////////////////////////
+void RollingBallClass::event_keyboard(KeyboardEvent e)
+{
+	//그림자 효과를 위해 static 클래스 변수 ballSwitch를 가림
+	static const int ballSwitch = 0;
+
+	static BOOL isProcessed = FALSE;
+	if (!isProcessed && e.isKeyDown('C'))
+	{
+		ball[ballSwitch].physical.accel = { 0, 0 };
+		//그림자 효과를 위해 주석처리
+		//ballSwitch++;
+		//if (ballSwitch == ball.size()) ballSwitch = 0;
+		isProcessed = TRUE;
+	}
+	else if (!e.isKeyDown('C'))
+		isProcessed = FALSE;
+}
+void RollingBallClass::event_mouse(MouseEvent e)
+{
+	isMouseEvent = TRUE;
+}
+void RollingBallClass::event_all(Event e)
+{
+	static int k = 1;
+	switch (e.winmsg.iMsg)
+	{
+	case WM_PAINT:
+		update_window();
+		return;
+	case WM_TIMER:
+		update_state();
+		update_scaler(e);
+		InvalidateRgn(winAPI.hwnd, NULL, FALSE);
+		return;
+	}
+}
+
+
+///////////////////////////////////
+//	public interface
+///////////////////////////////////
+RollingBallClass::RollingBallClass()
+{
+	winAPI = { NULL, NULL };
+	isInitTimer = FALSE;
+	ballSwitch = 0;
+
+	isMouseEvent = FALSE;
+}
+RollingBallClass::~RollingBallClass()
+{
+	if (isInitTimer)
+		kill_timer();
+}
 BOOL RollingBallClass::init(HINSTANCE m_hInstance, HWND m_hwnd, UINT frame_update_interval)
 {
 	winAPI.hInstance = m_hInstance;
@@ -125,37 +202,4 @@ BOOL RollingBallClass::init(HINSTANCE m_hInstance, HWND m_hwnd, UINT frame_updat
 void RollingBallClass::set_frame_update_interval(UINT millisecond)
 {
 	set_timer(millisecond);
-}
-
-void RollingBallClass::event_keyboard(KeyboardEvent e)
-{
-	//그림자 효과를 위해 static 클래스 변수 ballSwitch를 가림
-	static const int ballSwitch = 0;
-
-	static BOOL isProcessed = FALSE;
-	if (!isProcessed && e.isKeyDown('C'))
-	{
-		ball[ballSwitch].physical.accel = { 0, 0 };
-		//그림자 효과를 위해 주석처리
-		//ballSwitch++;
-		//if (ballSwitch == ball.size()) ballSwitch = 0;
-		isProcessed = TRUE;
-	}
-	else if (!e.isKeyDown('C'))
-		isProcessed = FALSE;
-}
-void RollingBallClass::event_all(Event e)
-{
-	static int k = 1;
-	switch (e.winmsg.iMsg)
-	{
-	case WM_PAINT:
-		update_window();
-		return;
-	case WM_TIMER:
-		update_state();
-		update_scaler(e);
-		InvalidateRgn(winAPI.hwnd, NULL, FALSE);
-		return;
-	}
 }

@@ -60,7 +60,7 @@ namespace RollingBall
 			_mouse mouse;
 		};
 
-		virtual void event_keyboard(KeyboardEvent e);
+		void event_keyboard(KeyboardEvent e);
 
 	public:
 		_isPushed isPushed;
