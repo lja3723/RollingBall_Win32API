@@ -51,10 +51,11 @@ void RollingBallClass::update_window()
 	PhysicalVector cen = scaler.get_fix_point_physical();
 	_stprintf_s(buff, 256, _T("center position:(%3.2f, %3.2f)"), cen.x, cen.y);
 	paint.text(buff, 300, 70);
+
+	//mouseEvent 테스트 로직
 	if (isMouseEvent)
 	{
-		_stprintf_s(buff, 256, _T("MouseEvent Occurred"));
-		paint.text(buff, 300, 150);
+		paint.text(mouseEventTestBuff, 300, 150);
 		isMouseEvent = FALSE;
 	}
 
@@ -151,6 +152,20 @@ void RollingBallClass::event_keyboard(KeyboardEvent e)
 }
 void RollingBallClass::event_mouse(MouseEvent e)
 {
+	TCHAR* eventType = (TCHAR*)_T("");
+	if (e.eventType.isMouseMove())
+		eventType = (TCHAR*)_T("MouseMove");
+	else if (e.eventType.isMouseWheel())
+		eventType = (TCHAR*)_T("MouseWheel");
+	else if (e.eventType.isLButtonDown())
+		eventType = (TCHAR*)_T("LButtonDown");
+	else if (e.eventType.isMButtonDown())
+	{
+		eventType = (TCHAR*)_T("MButtonDown");
+	}
+	else if (e.eventType.isRButtonDown())
+		eventType = (TCHAR*)_T("RButtonDown");
+	_stprintf_s(mouseEventTestBuff, 256, _T("MouseEvent Occurred(%s)"), eventType);
 	isMouseEvent = TRUE;
 }
 void RollingBallClass::event_all(Event e)

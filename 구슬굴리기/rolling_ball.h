@@ -26,7 +26,9 @@ namespace RollingBall
 		} winAPI;
 		BOOL isInitTimer;
 
+		//mouseEvent 테스트 변수
 		BOOL isMouseEvent;
+		TCHAR mouseEventTestBuff[256];
 
 		Scaler scaler;
 		Paint paint;
