@@ -21,28 +21,30 @@ namespace RollingBall
 		static BOOL keys[numofKeys];
 		void init();
 		BOOL m_isValid;
-
-	public:
-		class _winmsg
+		class _m_winMsg
 		{
 		public:
 			UINT iMsg;
 			WPARAM wParam;
 			LPARAM lParam;
-		} winmsg;
+		} m_winMsg;
 
+	public:
+		UINT winMsg_iMsg() { return m_winMsg.iMsg; }
+		WPARAM winMsg_wParam() { return m_winMsg.wParam; }
+		LPARAM winMsg_lParam() { return m_winMsg.lParam; }
 		BOOL isValid();
 		//Event() = delete;
 		Event(UINT m_iMsg = 0, WPARAM m_wParam = 0, LPARAM m_lParam = 0)
 		{ 
 			init();
 			m_isValid = FALSE;
-			winmsg.iMsg = m_iMsg;
-			winmsg.wParam = m_wParam;
-			winmsg.lParam = m_lParam;
+			m_winMsg.iMsg = m_iMsg;
+			m_winMsg.wParam = m_wParam;
+			m_winMsg.lParam = m_lParam;
 		}
 		Event(const Event& e)
-			: Event(e.winmsg.iMsg, e.winmsg.wParam, e.winmsg.lParam) {
+			: Event(e.m_winMsg.iMsg, e.m_winMsg.wParam, e.m_winMsg.lParam) {
 			m_isValid = e.m_isValid;
 		}
 	};
