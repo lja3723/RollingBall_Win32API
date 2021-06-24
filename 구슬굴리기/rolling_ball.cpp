@@ -24,7 +24,8 @@ void RollingBallClass::update_window()
 	paint(background);
 
 	//공 정보 그리기
-	for (int i = 0; i < ball.size(); i++)
+	//for (int i = 0; i < ball.size(); i++)
+	for (int i = 0; i < ball.size() && i < 1; i++)
 		paint.info(ball[i], i * 20);
 
 	//방향키 뷰어 그리기
@@ -44,9 +45,9 @@ void RollingBallClass::update_window()
 	//기타 정보 그리기
 	TCHAR buff[256];
 	_stprintf_s(buff, 256, _T("ballSwitch:%d"), ballSwitch);
-	paint.text(buff, 300, 30);
+	//paint.text(buff, 300, 30);
 	_stprintf_s(buff, 256, _T("ball count:%d"), (int)ball.size());
-	paint.text(buff, 300, 50);
+	//paint.text(buff, 300, 50);
 	PhysicalVector cen = scaler.get_fix_point_physical();
 	_stprintf_s(buff, 256, _T("center position:(%3.2f, %3.2f)"), cen.x, cen.y);
 	paint.text(buff, 300, 70);
