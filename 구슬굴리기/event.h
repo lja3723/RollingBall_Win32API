@@ -17,18 +17,6 @@ namespace RollingBall
 		friend class EventProducer;
 
 	protected:
-		//키보드 이벤트 상태 저장
-		class _keyboard
-		{
-		public:
-			//키보드 배열(키보드의 눌림여부 저장)
-			static const int numofKeys = 256;
-			static BOOL keys[numofKeys];
-			//키보드 배열 초기화 수행
-			void initKeysArray();
-			//키보드 배열 초기화 여부 저장
-			static BOOL isInitKeysArray;
-		} keyboard;
 
 		//마우스 이벤트 상태 저장
 		class _mouse
@@ -85,7 +73,6 @@ namespace RollingBall
 		Event(UINT m_iMsg = 0, WPARAM m_wParam = 0, LPARAM m_lParam = 0)
 			: m_winMsg(m_iMsg, m_wParam, m_lParam), isWinMsg(&m_winMsg)
 		{ 
-			keyboard.initKeysArray();
 			//winMsg 요소로 초기화할 경우 항상 유효함
 			m_isValid = TRUE;
 		}
@@ -129,15 +116,31 @@ namespace RollingBall
 		//EventProducer가 KeyboardEvent를 초기화할 것임
 		friend class EventProducer;
 	protected:
+		//키보드 이벤트 상태 저장
+		class _state
+		{
+		public:
+			//키보드 배열(키보드의 눌림여부 저장)
+			static const int numofKeys = 256;
+			static BOOL keys[numofKeys];
+			//키보드 배열 초기화 수행
+			void initKeysArray();
+			//키보드 배열 초기화 여부 저장
+			static BOOL isInitKeysArray;
+		} state;
 		void key_down(WPARAM VK_msg);
 		void key_up(WPARAM VK_msg);
 	public:
 		//winMsg 요소로 이벤트 생성
 		KeyboardEvent(UINT m_iMsg = 0, WPARAM m_wParam = 0, LPARAM m_lParam = 0)
-			: Event(m_iMsg, m_wParam, m_lParam) {}
+			: Event(m_iMsg, m_wParam, m_lParam) {
+			state.initKeysArray();
+		}
 		//Event로의 형변환 생성자
 		KeyboardEvent(const Event& e)
-			: Event(e) {}
+			: Event(e) {
+			state.initKeysArray();
+		}
 
 		//키보드 눌린 상태 반환
 		BOOL isKeyPressed(WPARAM VK_msg);

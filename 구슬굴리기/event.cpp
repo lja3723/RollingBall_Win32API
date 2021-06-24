@@ -10,19 +10,6 @@ using std::sort;
 //	Event class
 // 
 /////////////////////////
-BOOL Event::_keyboard::isInitKeysArray = FALSE;
-BOOL Event::_keyboard::keys[numofKeys];
-
-void Event::_keyboard::initKeysArray()
-{
-	if (!isInitKeysArray)
-	{
-		for (int i = 0; i < numofKeys; i++)
-			keys[i] = FALSE;
-		isInitKeysArray = TRUE;
-	}
-}
-
 BOOL RollingBall::Event::isValid()
 {
 	return m_isValid;
@@ -35,17 +22,29 @@ BOOL RollingBall::Event::isValid()
 //	KeyboardEvent class
 // 
 /////////////////////////
+BOOL KeyboardEvent::_state::isInitKeysArray = FALSE;
+BOOL KeyboardEvent::_state::keys[numofKeys];
+
+void KeyboardEvent::_state::initKeysArray()
+{
+	if (!isInitKeysArray)
+	{
+		for (int i = 0; i < numofKeys; i++)
+			keys[i] = FALSE;
+		isInitKeysArray = TRUE;
+	}
+}
 void KeyboardEvent::key_down(WPARAM VK_msg)
 {
-	keyboard.keys[VK_msg] = TRUE;
+	state.keys[VK_msg] = TRUE;
 }
 void KeyboardEvent::key_up(WPARAM VK_msg)
 {
-	keyboard.keys[VK_msg] = FALSE;
+	state.keys[VK_msg] = FALSE;
 }
 BOOL KeyboardEvent::isKeyPressed(WPARAM VK_msg)
 {
-	return keyboard.keys[VK_msg];
+	return state.keys[VK_msg];
 }
 
 
