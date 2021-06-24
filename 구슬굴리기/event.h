@@ -38,7 +38,7 @@ namespace RollingBall
 		Event(UINT m_iMsg = 0, WPARAM m_wParam = 0, LPARAM m_lParam = 0)
 		{ 
 			init();
-			m_isValid = FALSE;
+			m_isValid = TRUE;
 			m_winMsg.iMsg = m_iMsg;
 			m_winMsg.wParam = m_wParam;
 			m_winMsg.lParam = m_lParam;
@@ -64,8 +64,7 @@ namespace RollingBall
 		POINT pos;
 		int scroll;
 		MouseEvent(UINT m_iMsg = 0, WPARAM m_wParam = 0, LPARAM m_lParam = 0)
-			: Event(m_iMsg, m_wParam, m_lParam) { 
-			m_isValid = TRUE;
+			: Event(m_iMsg, m_wParam, m_lParam) {
 			init(); 
 		}
 		MouseEvent(const Event& e)
