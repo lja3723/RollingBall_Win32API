@@ -52,17 +52,17 @@ namespace RollingBall
 			_m_winMsg* winMsg;
 		public:
 			_winMsg(_m_winMsg* m_winMsg) { winMsg = m_winMsg; }
-			const UINT iMsg() { return winMsg->getiMsg(); }
-			const WPARAM wParam() { return winMsg->getwParam(); }
-			const LPARAM lParam() { return winMsg->getlParam(); }
-		} winMsg;
+			BOOL iMsg(UINT iMsg) { return winMsg->getiMsg() == iMsg; }
+			BOOL wParam(WPARAM wParam) { return winMsg->getwParam() == wParam; }
+			BOOL lParam(LPARAM lParam) { return winMsg->getlParam() == lParam; }
+		} isWinMsg;
 
 		//이벤트가 유효한지 확인
 		BOOL isValid();
 
 		//winMsg 요소로 이벤트 생성
 		Event(UINT m_iMsg = 0, WPARAM m_wParam = 0, LPARAM m_lParam = 0)
-			: m_winMsg(m_iMsg, m_wParam, m_lParam), winMsg(&m_winMsg)
+			: m_winMsg(m_iMsg, m_wParam, m_lParam), isWinMsg(&m_winMsg)
 		{ 
 			initKeysArray();
 			//winMsg 요소로 초기화할 경우 항상 유효함

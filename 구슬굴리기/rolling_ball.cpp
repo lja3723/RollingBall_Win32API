@@ -154,17 +154,13 @@ void RollingBallClass::event_mouse(MouseEvent e)
 }
 void RollingBallClass::event_all(Event e)
 {
-	static int k = 1;
-	switch (e.winMsg.iMsg())
-	{
-	case WM_PAINT:
+	if (e.isWinMsg.iMsg(WM_PAINT)) {
 		update_window();
-		return;
-	case WM_TIMER:
+	}
+	else if (e.isWinMsg.iMsg(WM_TIMER)) {
 		update_state();
 		update_scaler();
 		InvalidateRgn(winAPI.hwnd, NULL, FALSE);
-		return;
 	}
 }
 
