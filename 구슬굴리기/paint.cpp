@@ -319,11 +319,13 @@ void Paint::flush_buffer()
 *********************************/
 void Paint::event_all(Event e)
 {
-	if (e.isWinMsg.iMsg(WM_SIZE))
-		if 
-		(e.isWinMsg.wParam(SIZE_RESTORED)	||
-		e.isWinMsg.wParam(SIZE_MAXIMIZED)	||
+	if (e.eventType.isEquals(WM_SIZE))
+	{
+		if
+		(e.isWinMsg.wParam(SIZE_RESTORED) ||
+		e.isWinMsg.wParam(SIZE_MAXIMIZED) ||
 		e.isWinMsg.wParam(SIZE_MAXSHOW))
 			flag.isWindowSizeChanged = TRUE;
+	}
 }
 

@@ -44,7 +44,6 @@ void RollingBall::MouseEvent::_state::initButtonsArray()
 /////////////////////////
 BOOL KeyboardEvent::_state::isInitKeysArray = FALSE;
 BOOL KeyboardEvent::_state::keys[numofKeys];
-
 void KeyboardEvent::_state::initKeysArray()
 {
 	if (!isInitKeysArray)
@@ -54,6 +53,7 @@ void KeyboardEvent::_state::initKeysArray()
 		isInitKeysArray = TRUE;
 	}
 }
+
 void KeyboardEvent::key_down(WPARAM VK_msg)
 {
 	state.keys[VK_msg] = TRUE;
@@ -77,35 +77,46 @@ BOOL KeyboardEvent::isKeyPressed(WPARAM VK_msg)
 MouseEvent EventProducer::produce_mouseEvent(UINT iMsg, WPARAM wParam, LPARAM lParam)
 {
 	MouseEvent e(iMsg, wParam, lParam);
-	switch (iMsg)
+
+	if (e.eventType.isLButtonDown())
 	{
-	case WM_LBUTTONDOWN:
-		break;
-	case WM_LBUTTONUP:
-		break;
-	case WM_LBUTTONDBLCLK:
-		break;
-	case WM_MOUSEMOVE:
-		break;
-	case WM_RBUTTONDOWN:
-		break;
-	case WM_RBUTTONUP:
-		break;
-	case WM_RBUTTONDBLCLK:
-		break;
-	case WM_MBUTTONDOWN:
-		break;
-	case WM_MBUTTONUP:
-		break;
-	case WM_MBUTTONDBLCLK:
-		break;
-	case WM_MOUSEWHEEL:
-		e.scroll = (short)HIWORD(wParam);
-		break;
-	default:
-		e.m_isValid = FALSE;
-		break;
 	}
+	else if (e.eventType.isLButtonUp())
+	{
+	}
+	else if (e.eventType.isLButtonDoubleClick())
+	{
+	}
+
+	else if (e.eventType.isMButtonDown())
+	{
+	}
+	else if (e.eventType.isMButtonUp())
+	{
+	}
+	else if (e.eventType.isMButtonDoubleClick())
+	{
+	}
+
+	else if (e.eventType.isRButtonDown())
+	{
+	}
+	else if (e.eventType.isRButtonUp())
+	{
+	}
+	else if (e.eventType.isRButtonDoubleClick())
+	{
+	}
+
+	else if (e.eventType.isMouseMove())
+	{
+	}
+	else if (e.eventType.isMouseWheel())
+	{
+		e.scroll = (short)HIWORD(wParam);
+	}
+	else
+		e.m_isValid = FALSE;
 
 	return e;
 }
@@ -113,17 +124,12 @@ KeyboardEvent EventProducer::produce_keyboardEvent(UINT iMsg, WPARAM wParam, LPA
 {
 	KeyboardEvent e(iMsg, wParam, lParam);
 
-	switch (iMsg)
-	{
-	case WM_KEYDOWN:
+	if (e.eventType.isKeyDown())
 		e.key_down(wParam);
-		break;
-	case WM_KEYUP:
+	else if (e.eventType.isKeyUp())
 		e.key_up(wParam);
-		break;
-	default:
+	else
 		e.m_isValid = FALSE;
-	}
 
 	return e;
 }

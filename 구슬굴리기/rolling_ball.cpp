@@ -155,10 +155,10 @@ void RollingBallClass::event_mouse(MouseEvent e)
 }
 void RollingBallClass::event_all(Event e)
 {
-	if (e.isWinMsg.iMsg(WM_PAINT)) {
+	if (e.eventType.isEquals(WM_PAINT)) {
 		update_window();
 	}
-	else if (e.isWinMsg.iMsg(WM_TIMER)) {
+	else if (e.eventType.isEquals(WM_TIMER)) {
 		update_state();
 		update_scaler();
 		InvalidateRgn(winAPI.hwnd, NULL, FALSE);
