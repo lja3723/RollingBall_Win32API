@@ -27,10 +27,10 @@ namespace RollingBall
 			WPARAM wParam;
 			LPARAM lParam;
 
-			_m_winMsg(UINT m_iMsg = 0, WPARAM m_wParam = 0, LPARAM m_lParam = 0) {
-				iMsg = m_iMsg;
-				wParam = m_wParam;
-				lParam = m_lParam;
+			_m_winMsg(UINT iMsg = 0, WPARAM wParam = 0, LPARAM lParam = 0) {
+				this->iMsg = iMsg;
+				this->wParam = wParam;
+				this->lParam = lParam;
 			}
 		} m_winMsg;
 
@@ -42,15 +42,15 @@ namespace RollingBall
 		class _isWinMsg
 		{
 		private:
-			_m_winMsg* winMsg;
+			Event* e;
 		public:
-			_isWinMsg(_m_winMsg* m_winMsg) { winMsg = m_winMsg; }
-			BOOL iMsg(UINT iMsg) { return winMsg->iMsg == iMsg; }
-			BOOL wParam(WPARAM wParam) { return winMsg->wParam == wParam; }
-			BOOL lParam(LPARAM lParam) { return winMsg->lParam == lParam; }
+			_isWinMsg(Event* e) { this->e = e; }
+			BOOL iMsg(UINT iMsg) { return e->m_winMsg.iMsg == iMsg; }
+			BOOL wParam(WPARAM wParam) { return e->m_winMsg.wParam == wParam; }
+			BOOL lParam(LPARAM lParam) { return e->m_winMsg.lParam == lParam; }
 		} isWinMsg;
 
-		//event가 어떤 요소로 발생했는지 표현함
+		//event가 어떤 요소로 발생했는지 표현
 		class _eventType
 		{
 		private:
@@ -68,8 +68,8 @@ namespace RollingBall
 		BOOL isValid();
 
 		//winMsg 요소로 이벤트 생성
-		Event(UINT m_iMsg = 0, WPARAM m_wParam = 0, LPARAM m_lParam = 0)
-			: m_winMsg(m_iMsg, m_wParam, m_lParam), isWinMsg(&m_winMsg), eventType(this)
+		Event(UINT iMsg = 0, WPARAM wParam = 0, LPARAM lParam = 0)
+			: m_winMsg(iMsg, wParam, lParam), isWinMsg(this), eventType(this)
 		{ 
 			//winMsg 요소로 초기화할 경우 항상 유효함
 			m_isValid = TRUE;
@@ -93,55 +93,57 @@ namespace RollingBall
 		class _state
 		{
 		public:
-			static const int numofButtons = 3;
-			static const int LButton = 0;
-			static const int MButton = 1;
-			static const int RButton = 2;
+			static const int numofButtons	= 3;
+			static const int LButton		= 0;
+			static const int MButton		= 1;
+			static const int RButton		= 2;
 
 			static BOOL Buttons[numofButtons];
 			static BOOL isInitButtonsArray;
 
+			_state() { initButtonsArray(); }
 			static void initButtonsArray();
 		} state;
 
-		void init() {
-			pos = { 0, 0 };
-			scroll = 0;
-		}
 		//마우스 포인터 위치
 		POINT pos;
 		//마우스 스크롤 회전 방향
 		int scroll;
+		void init() {
+			pos = { 0, 0 };
+			scroll = 0;
+		}
 
 	public:
 		//////////////////
 		//	inner class
 		//////////////////
-		class _mouseEventType : public _eventType
+		//event가 어떤 타입으로 발생했는지 표현
+		class _eventType
 		{
 		private:
 			MouseEvent* e;
 
+		public:
 			//eventType을 표현하는 상수 선언
+			static const UINT LButtonDown			= WM_LBUTTONDOWN;
+			static const UINT LButtonUp				= WM_LBUTTONUP;
+			static const UINT LButtonDoubleClick	= WM_LBUTTONDBLCLK;
+
+			static const UINT MButtonDown			= WM_MBUTTONDOWN;
+			static const UINT MButtonUp				= WM_MBUTTONUP;
+			static const UINT MButtonDoubleClick	= WM_MBUTTONDBLCLK;
+
+			static const UINT RButtonDown			= WM_RBUTTONDOWN;
+			static const UINT RButtonUp				= WM_RBUTTONUP;
+			static const UINT RButtonDoubleClick	= WM_RBUTTONDBLCLK;
+
+			static const UINT MouseMove				= WM_MOUSEMOVE;
+			static const UINT MouseWheel			= WM_MOUSEWHEEL;
+
 		public:
-			static const UINT LButtonDown = WM_LBUTTONDOWN;
-			static const UINT LButtonUp = WM_LBUTTONUP;
-			static const UINT LButtonDoubleClick = WM_LBUTTONDBLCLK;
-
-			static const UINT MButtonDown = WM_MBUTTONDOWN;
-			static const UINT MButtonUp = WM_MBUTTONUP;
-			static const UINT MButtonDoubleClick = WM_MBUTTONDBLCLK;
-
-			static const UINT RButtonDown = WM_RBUTTONDOWN;
-			static const UINT RButtonUp = WM_RBUTTONUP;
-			static const UINT RButtonDoubleClick = WM_RBUTTONDBLCLK;
-
-			static const UINT MouseMove = WM_MOUSEMOVE;
-			static const UINT MouseWheel = WM_MOUSEWHEEL;
-
 			//해당 event의 eventType이 무엇인지 알려주는 함수 선언
-		public:
-			_mouseEventType(MouseEvent* e) : _eventType(e) { this->e = e; }
+			_eventType(MouseEvent* e) { this->e = e; }
 
 			BOOL isLButtonDown()		{ return e->isWinMsg.iMsg(LButtonDown); }
 			BOOL isLButtonUp()			{ return e->isWinMsg.iMsg(LButtonUp); }
@@ -164,11 +166,16 @@ namespace RollingBall
 		//	interface
 		// //////////////
 		//winMsg 요소로 이벤트 생성
-		MouseEvent(UINT m_iMsg = 0, WPARAM m_wParam = 0, LPARAM m_lParam = 0)
-			: Event(m_iMsg, m_wParam, m_lParam), eventType(this) { init(); }
+		MouseEvent(UINT iMsg = 0, WPARAM wParam = 0, LPARAM lParam = 0)
+			: Event(iMsg, wParam, lParam), eventType(this) { init(); }
 		//Event로의 형변환 생성자
 		MouseEvent(const Event& e)
 			: Event(e), eventType(this) { init(); }
+		//복사 생성자
+		MouseEvent(const MouseEvent& e)
+			: MouseEvent(e.m_winMsg.iMsg, e.m_winMsg.wParam, e.m_winMsg.lParam) {
+			this->m_isValid = e.m_isValid;
+		}
 	};
 
 	class KeyboardEvent : public Event
@@ -227,11 +234,16 @@ namespace RollingBall
 		//	interface
 		///////////////////
 		//winMsg 요소로 이벤트 생성
-		KeyboardEvent(UINT m_iMsg = 0, WPARAM m_wParam = 0, LPARAM m_lParam = 0)
-			: Event(m_iMsg, m_wParam, m_lParam), eventType(this) {}
+		KeyboardEvent(UINT iMsg = 0, WPARAM wParam = 0, LPARAM lParam = 0)
+			: Event(iMsg, wParam, lParam), eventType(this) {}
 		//Event로의 형변환 생성자
 		KeyboardEvent(const Event& e)
 			: Event(e), eventType(this) {}
+		//복사 생성자
+		KeyboardEvent(const KeyboardEvent& e)
+			: KeyboardEvent(e.m_winMsg.iMsg, e.m_winMsg.wParam, e.m_winMsg.lParam) {
+			this->m_isValid = e.m_isValid;
+		}
 
 
 		//키보드 눌린 상태 반환
