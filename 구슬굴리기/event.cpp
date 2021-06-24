@@ -67,6 +67,21 @@ BOOL KeyboardEvent::isKeyPressed(WPARAM VK_msg)
 	return state.keys[VK_msg];
 }
 
+BOOL RollingBall::KeyboardEvent::isKeyStateChanged(WPARAM VK_msg)
+{
+	return state.changedKey == VK_msg;
+}
+
+BOOL RollingBall::KeyboardEvent::isKeyDown(WPARAM VK_msg)
+{
+	return eventType.isKeyDown() && isKeyStateChanged(VK_msg);
+}
+
+BOOL RollingBall::KeyboardEvent::isKeyUp(WPARAM VK_msg)
+{
+	return eventType.isKeyUp() && isKeyStateChanged(VK_msg);
+}
+
 
 
 /////////////////////////
@@ -124,10 +139,14 @@ KeyboardEvent EventProducer::produce_keyboardEvent(UINT iMsg, WPARAM wParam, LPA
 {
 	KeyboardEvent e(iMsg, wParam, lParam);
 
-	if (e.eventType.isKeyDown())
+	if (e.eventType.isKeyDown()) {
 		e.key_down(wParam);
-	else if (e.eventType.isKeyUp())
+		e.state.changedKey = wParam;
+	}
+	else if (e.eventType.isKeyUp()) {
 		e.key_up(wParam);
+		e.state.changedKey = wParam;
+	}
 	else
 		e.m_isValid = FALSE;
 

@@ -149,6 +149,9 @@ void RollingBallClass::event_keyboard(KeyboardEvent e)
 	}
 	else if (!e.isKeyPressed('C'))
 		isProcessed = FALSE;
+
+	if (e.isKeyDown('R'))
+		debuggerMessage("You're typed 'R' key.");
 }
 void RollingBallClass::event_mouse(MouseEvent e)
 {

@@ -197,6 +197,7 @@ namespace RollingBall
 			static void initKeysArray();
 			//키보드 배열 초기화 여부 저장
 			static BOOL isInitKeysArray;
+			WPARAM changedKey;
 			_state() { initKeysArray(); }
 		} state;
 
@@ -212,7 +213,7 @@ namespace RollingBall
 		//	inner class
 		//////////////////
 		//event가 어떤 요소로 발생했는지 표현함
-		class _keyboardEventType : public _eventType
+		class _eventType
 		{
 		private:
 			KeyboardEvent* e;
@@ -224,7 +225,7 @@ namespace RollingBall
 		
 		//해당 event의 eventType이 무엇인지 알려주는 함수 선언
 		public:
-			_keyboardEventType(KeyboardEvent* e) : _eventType(e) { this->e = e; }
+			_eventType(KeyboardEvent* e) { this->e = e; }
 			BOOL isKeyDown() { return e->isWinMsg.iMsg(KeyDown); }
 			BOOL isKeyUp() { return e->isWinMsg.iMsg(KeyUp); }
 		} eventType;
@@ -243,11 +244,18 @@ namespace RollingBall
 		KeyboardEvent(const KeyboardEvent& e)
 			: KeyboardEvent(e.m_winMsg.iMsg, e.m_winMsg.wParam, e.m_winMsg.lParam) {
 			this->m_isValid = e.m_isValid;
+			state.changedKey = e.state.changedKey;
 		}
 
 
 		//키보드 눌린 상태 반환
 		BOOL isKeyPressed(WPARAM VK_msg);
+		//상태가 변화한 키보드 키 반환
+		BOOL isKeyStateChanged(WPARAM VK_msg);
+		//키를 눌렀는지 반환
+		BOOL isKeyDown(WPARAM VK_msg);
+		//키를 뗐는 지 반환
+		BOOL isKeyUp(WPARAM VK_msg);
 	};
 
 	/*
