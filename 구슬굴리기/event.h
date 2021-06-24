@@ -45,7 +45,7 @@ namespace RollingBall
 		} m_winMsg;
 
 	public:
-		//winMsg 요소를 read only할 수 있는 public interface
+		//event의 winMsg 요소가 전달된 파라미터와 일치하는지 알려줌
 		class _winMsg
 		{
 		private:
