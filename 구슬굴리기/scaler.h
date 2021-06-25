@@ -3,6 +3,7 @@
 #define __scaler_h__
 
 #include "physics.h"
+#include <Windows.h>
 
 namespace RollingBall
 {
@@ -16,6 +17,27 @@ namespace RollingBall
 		pixel y;
 
 		PixelCoord(pixel _x = 0, pixel _y = 0) { x = _x, y = _y; }
+
+		PixelCoord(const POINT& p) : PixelCoord(p.x, p.y) {}
+
+		PixelCoord& operator+=(const PixelCoord& p) { 
+			x += p.x;
+			y += p.y;
+			return *this;
+		}
+		PixelCoord& operator-=(const PixelCoord& p) {
+			x -= p.x;
+			y -= p.y;
+			return *this;
+		}
+		PixelCoord operator+(const PixelCoord& p) {
+			PixelCoord result(x + p.x, y + p.y);
+			return result;
+		}
+		PixelCoord operator-(const PixelCoord& p) {
+			PixelCoord result(x - p.x, y - p.y);
+			return result;
+		}
 
 		PixelCoord& operator()(pixel _x, pixel _y) { x = _x, y = _y; return *this; }
 	};

@@ -55,7 +55,7 @@ void RollingBallClass::update_window()
 	//mouseEvent 테스트 로직
 	if (isMouseEvent)
 	{
-		paint.text(mouseEventTestBuff, 300, 150);
+		paint.text(mouseEventTestBuff[0], 300, 150);
 		isMouseEvent = FALSE;
 	}
 	MouseEvent em;
@@ -63,12 +63,8 @@ void RollingBallClass::update_window()
 	{
 		_stprintf_s(buff, 256, _T("LButton is pressing"));
 		paint.text(buff, 300, 170);
-		POINT p = em.pos();
-		PixelCoord px(p.x, p.y);
-		//아래는 로직이 잘못되었으니
-		//나중에 다시수정할것
-		scaler.set_fix_point(scaler.transform(px));
 	}
+	paint.text(mouseEventTestBuff[1], 300, 190);
 
 	//공 그리기
 	for (int i = 0; i < ball.size(); i++)
@@ -180,7 +176,7 @@ void RollingBallClass::event_mouse(MouseEvent e)
 	}
 	else if (e.eventType.isRButtonDown())
 		eventType = (TCHAR*)_T("RButtonDown");
-	_stprintf_s(mouseEventTestBuff, 256, _T("MouseEvent Occurred(%s)"), eventType);
+	_stprintf_s(mouseEventTestBuff[0], 256, _T("MouseEvent Occurred(%s)"), eventType);
 
 	if (e.eventType.isLButtonDoubleClick())
 		debuggerMessage("You are double clicked the LButton.");
@@ -188,6 +184,20 @@ void RollingBallClass::event_mouse(MouseEvent e)
 		debuggerMessage("You are double clicked the MButton.");
 	if (e.eventType.isRButtonDoubleClick())
 		debuggerMessage("You are double clicked the RButton.");
+
+	if (e.isLButtonDown())
+	{
+		static PixelCoord prevPos;
+		if (!e.eventType.isMouseMove())
+			prevPos = e.pos();
+		else
+		{
+			PixelCoord curPos(e.pos());
+			PhysicalVector diff = scaler.transform(curPos) - scaler.transform(prevPos);
+			scaler.set_fix_point(scaler.get_fix_point_physical() - diff);
+			prevPos = curPos;
+		}
+	}
 
 	isMouseEvent = TRUE;
 }

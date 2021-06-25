@@ -21,6 +21,12 @@ namespace RollingBall
 		BasicPhysicalVector<Length>& operator()(const BasicPhysicalVector<Length>& v) { return operator()(v.x, v.y); }
 		BasicPhysicalVector<Length>& operator+=(BasicPhysicalVector<Length>& v);
 		BasicPhysicalVector<Length>& operator-=(BasicPhysicalVector<Length>& v);
+		BasicPhysicalVector<Length> operator+(const BasicPhysicalVector<Length>& v) {
+			return BasicPhysicalVector<Length>(x + v.x, y + v.y);
+		}
+		BasicPhysicalVector<Length> operator-(const BasicPhysicalVector<Length>& v) {
+			return BasicPhysicalVector<Length>(x - v.x, y - v.y);
+		}
 		int operator==(BasicPhysicalVector<Length>& v)
 		{
 			return x == v.x && y == v.y;

@@ -28,7 +28,7 @@ namespace RollingBall
 
 		//mouseEvent 테스트 변수
 		BOOL isMouseEvent;
-		TCHAR mouseEventTestBuff[256];
+		TCHAR mouseEventTestBuff[2][256];
 
 		Scaler scaler;
 		Paint paint;
