@@ -165,8 +165,10 @@ void RollingBallClass::event_mouse(MouseEvent e)
 	TCHAR* eventType = (TCHAR*)_T("");
 	if (e.eventType.isMouseMove())
 		eventType = (TCHAR*)_T("MouseMove");
-	else if (e.eventType.isMouseWheel())
-		eventType = (TCHAR*)_T("MouseWheel");
+	else if (e.eventType.isMouseWheelUp())
+		eventType = (TCHAR*)_T("MouseWheelUp");
+	else if (e.eventType.isMouseWheelDown())
+		eventType = (TCHAR*)_T("MouseWheelDown");
 	else if (e.eventType.isLButtonDown())
 		eventType = (TCHAR*)_T("LButtonDown");
 	else if (e.eventType.isMButtonDown())
@@ -199,6 +201,12 @@ void RollingBallClass::event_mouse(MouseEvent e)
 			prevPos = curPos;
 		}
 	}
+
+	//휠로 맵 확대 축소하기
+	if (e.eventType.isMouseWheelUp())
+		scaler.px_rate(scaler.px_rate() * 1.1);
+	if (e.eventType.isMouseWheelDown())
+		scaler.px_rate(scaler.px_rate() * 0.9);
 
 	isMouseEvent = TRUE;
 }

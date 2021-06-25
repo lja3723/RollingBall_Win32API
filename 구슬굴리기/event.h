@@ -163,6 +163,8 @@ namespace RollingBall
 
 			BOOL isMouseMove()			{ return e->isWinMsg.iMsg(MouseMove); }
 			BOOL isMouseWheel()			{ return e->isWinMsg.iMsg(MouseWheel); }
+			BOOL isMouseWheelUp()		{ return e->isWinMsg.iMsg(MouseWheel) && e->state.scroll > 0; }
+			BOOL isMouseWheelDown()		{ return e->isWinMsg.iMsg(MouseWheel) && e->state.scroll < 0; }
 		} eventType;
 
 	public:
