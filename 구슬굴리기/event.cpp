@@ -5,6 +5,7 @@ using namespace RollingBall;
 using std::find;
 using std::sort;
 
+
 /////////////////////////
 // 
 //	Event class
@@ -13,6 +14,10 @@ using std::sort;
 BOOL RollingBall::Event::isValid()
 {
 	return m_isValid;
+}
+void RollingBall::Event::productEventFrom(WindowMessage& wm)
+{
+	m_isValid = TRUE;
 }
 
 
@@ -25,6 +30,38 @@ BOOL RollingBall::Event::isValid()
 BOOL MouseEvent::_state::buttons[numofButtons];
 BOOL MouseEvent::_state::isInitButtonsArray = FALSE;
 
+void RollingBall::MouseEvent::productEventFrom(WindowMessage& wm)
+{
+	m_isValid = TRUE;
+
+	state.pos.x = LOWORD(wm.lParam);
+	state.pos.y = HIWORD(wm.lParam);
+
+	if (eventType.isLButtonDown())
+		state.button_down(state.LButton);
+	else if (eventType.isLButtonUp())
+		state.button_up(state.LButton);
+	else if (eventType.isLButtonDoubleClick());
+
+	else if (eventType.isMButtonDown())
+		state.button_down(state.MButton);
+	else if (eventType.isMButtonUp())
+		state.button_up(state.MButton);
+	else if (eventType.isMButtonDoubleClick());
+
+	else if (eventType.isRButtonDown())
+		state.button_down(state.RButton);
+	else if (eventType.isRButtonUp())
+		state.button_up(state.RButton);
+	else if (eventType.isRButtonDoubleClick());
+
+	else if (eventType.isMouseMove());
+	else if (eventType.isMouseWheel())
+		state.scroll = (short)HIWORD(wm.wParam);
+	else
+		m_isValid = FALSE;
+
+}
 void RollingBall::MouseEvent::_state::initButtonsArray()
 {
 	if (!isInitButtonsArray)
@@ -74,6 +111,23 @@ BOOL RollingBall::MouseEvent::isRButtonDown()
 /////////////////////////
 BOOL KeyboardEvent::_state::isInitKeysArray = FALSE;
 BOOL KeyboardEvent::_state::keys[numofKeys];
+
+void RollingBall::KeyboardEvent::productEventFrom(WindowMessage& wm)
+{
+	m_isValid = TRUE;
+
+	if (eventType.isKeyDown()) {
+		key_down(wm.wParam);
+		state.changedKey = wm.wParam;
+	}
+	else if (eventType.isKeyUp()) {
+		key_up(wm.wParam);
+		state.changedKey = wm.wParam;
+	}
+	else
+		m_isValid = FALSE;
+
+}
 void KeyboardEvent::_state::initKeysArray()
 {
 	if (!isInitKeysArray)
@@ -119,7 +173,7 @@ BOOL RollingBall::KeyboardEvent::isKeyUp(WPARAM VK_msg)
 //	EventProducer class
 // 
 /////////////////////////
-MouseEvent EventProducer::produce_mouseEvent(UINT iMsg, WPARAM wParam, LPARAM lParam)
+MouseEvent EventProducer::__old_produce_mouseEvent(UINT iMsg, WPARAM wParam, LPARAM lParam)
 {
 	MouseEvent e(iMsg, wParam, lParam);
 
@@ -152,7 +206,7 @@ MouseEvent EventProducer::produce_mouseEvent(UINT iMsg, WPARAM wParam, LPARAM lP
 
 	return e;
 }
-KeyboardEvent EventProducer::produce_keyboardEvent(UINT iMsg, WPARAM wParam, LPARAM lParam)
+KeyboardEvent EventProducer::__old_produce_keyboardEvent(UINT iMsg, WPARAM wParam, LPARAM lParam)
 {
 	KeyboardEvent e(iMsg, wParam, lParam);
 
@@ -169,13 +223,13 @@ KeyboardEvent EventProducer::produce_keyboardEvent(UINT iMsg, WPARAM wParam, LPA
 
 	return e;
 }
-Event EventProducer::produce_Event(UINT iMsg, WPARAM wParam, LPARAM lParam)
+Event EventProducer::__old_produce_Event(UINT iMsg, WPARAM wParam, LPARAM lParam)
 {
 	return Event(iMsg, wParam, lParam);
 }
 void EventProducer::translate_windowEvent(UINT iMsg, WPARAM wParam, LPARAM lParam)
 {
-	MouseEvent em = produce_mouseEvent(iMsg, wParam, lParam);
+	MouseEvent em = __old_produce_mouseEvent(iMsg, wParam, lParam);
 	if (em.m_isValid)
 	{
 		//모든 EventAcceptable 객체에 마우스 이벤트를 보낸다
@@ -184,7 +238,7 @@ void EventProducer::translate_windowEvent(UINT iMsg, WPARAM wParam, LPARAM lPara
 		return;
 	}
 
-	KeyboardEvent ek = produce_keyboardEvent(iMsg, wParam, lParam);
+	KeyboardEvent ek = __old_produce_keyboardEvent(iMsg, wParam, lParam);
 	if (ek.m_isValid)
 	{
 		//모든 EventAcceptable 객체에 키보드 이벤트를 보낸다
@@ -193,7 +247,7 @@ void EventProducer::translate_windowEvent(UINT iMsg, WPARAM wParam, LPARAM lPara
 		return;
 	}
 
-	Event e = produce_Event(iMsg, wParam, lParam);
+	Event e = __old_produce_Event(iMsg, wParam, lParam);
 		for (int i = 0; i < EventAcceptable::object_ref.size(); i++)
 			EventAcceptable::object_ref[i]->event_all(e);
 }

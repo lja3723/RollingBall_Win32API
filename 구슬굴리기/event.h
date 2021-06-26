@@ -8,6 +8,21 @@ using std::vector;
 
 namespace RollingBall
 {
+	//윈도우 메세지 저장 클래스
+	class WindowMessage
+	{
+	public:
+		UINT iMsg;
+		WPARAM wParam;
+		LPARAM lParam;
+
+		WindowMessage(UINT iMsg = 0, WPARAM wParam = 0, LPARAM lParam = 0)
+		{
+			this->iMsg = iMsg;
+			this->wParam = wParam;
+			this->lParam = lParam;
+		}
+	};
 	/*
 	* WM 메세지를 편의성이 높도록 가공한 Event 객체 클래스
 	*/
@@ -20,19 +35,8 @@ namespace RollingBall
 		//이벤트의 유효성 저장
 		BOOL m_isValid;
 		//캡슐화된 진짜 winMsg 정보
-		class _m_winMsg
-		{
-		public:
-			UINT iMsg;
-			WPARAM wParam;
-			LPARAM lParam;
-
-			_m_winMsg(UINT iMsg = 0, WPARAM wParam = 0, LPARAM lParam = 0) {
-				this->iMsg = iMsg;
-				this->wParam = wParam;
-				this->lParam = lParam;
-			}
-		} m_winMsg;
+		WindowMessage m_winMsg;
+		virtual void productEventFrom(WindowMessage& wm);
 
 	public:
 		///////////////////
@@ -71,8 +75,8 @@ namespace RollingBall
 		Event(UINT iMsg = 0, WPARAM wParam = 0, LPARAM lParam = 0)
 			: m_winMsg(iMsg, wParam, lParam), isWinMsg(this), eventType(this)
 		{ 
-			//winMsg 요소로 초기화할 경우 항상 유효함
-			m_isValid = TRUE;
+			//winMsg 요소로 초기화할 경우 항상 유효함 ............? nope
+			m_isValid = FALSE;
 		}
 		//복사 생성자
 		Event(const Event& e)
@@ -117,6 +121,8 @@ namespace RollingBall
 			void button_down(int button_idx);
 			void button_up(int button_idx);
 		} state;
+
+		void productEventFrom(WindowMessage& wm) override;
 
 	public:
 		//////////////////
@@ -219,6 +225,7 @@ namespace RollingBall
 		//////////////////
 		void key_down(WPARAM VK_msg);
 		void key_up(WPARAM VK_msg);
+		void productEventFrom(WindowMessage& wm) override;
 
 	public:
 		//////////////////
@@ -277,9 +284,9 @@ namespace RollingBall
 	class EventProducer
 	{
 	private:
-		static MouseEvent produce_mouseEvent(UINT iMsg, WPARAM wParam, LPARAM lParam);
-		static KeyboardEvent produce_keyboardEvent(UINT iMsg, WPARAM wParam, LPARAM lParam);
-		static Event produce_Event(UINT iMsg, WPARAM wParam, LPARAM lParam);
+		static MouseEvent __old_produce_mouseEvent(UINT iMsg, WPARAM wParam, LPARAM lParam);
+		static KeyboardEvent __old_produce_keyboardEvent(UINT iMsg, WPARAM wParam, LPARAM lParam);
+		static Event __old_produce_Event(UINT iMsg, WPARAM wParam, LPARAM lParam);
 	public:
 		static void translate_windowEvent(UINT iMsg, WPARAM wParam, LPARAM lParam);
 	};
