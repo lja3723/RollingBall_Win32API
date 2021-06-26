@@ -1,5 +1,6 @@
 ﻿#include "controller.h"
 #include <tchar.h>
+#include <cmath>
 
 using namespace RollingBall;
 
@@ -27,10 +28,13 @@ void Controller::update_ballPos(Ball& ball)
 	speed_x *= (1 - fraction);
 	speed_y *= (1 - fraction);
 
-	if (-0.01 < speed_x && speed_x < 0.01)
+	auto speed = sqrt(pow(speed_x, 2) + pow(speed_y, 2));
+
+	if (-pow(10, -3) < speed && speed < pow(10, -3))
+	{
 		speed_x = 0;
-	if (-0.01 < speed_y && speed_y < 0.01)
 		speed_y = 0;
+	}
 
 	/*
 	RECT rt;

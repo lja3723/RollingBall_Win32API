@@ -290,7 +290,7 @@ void Paint::paint_tobuffer(RollingBallObject& object)
 void Paint::paint_info_tobuffer(RollingBallObject& object, int yPos)
 {
 	TCHAR buff[256];
-	_stprintf_s(buff, 256, _T("좌표(%lf, %lf)"), object.physical.pos.x, object.physical.pos.y);
+	_stprintf_s(buff, 256, _T("좌표(%.3lf, %.3lf)"), object.physical.pos.x, object.physical.pos.y);
 	paint_text_tobuffer(buff, 0, yPos);
 }
 void Paint::paint_text_tobuffer(LPCTSTR text, pixel x, pixel y)

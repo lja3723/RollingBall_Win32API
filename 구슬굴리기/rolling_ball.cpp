@@ -20,7 +20,7 @@ void RollingBallClass::update_window()
 
 	//배경 그리기
 	Background background;
-	background.physical.size = 10;
+	background.physical.size = 25;
 	paint(background);
 
 	//공 정보 그리기
@@ -89,6 +89,7 @@ void RollingBallClass::update_state()
 	{
 		Ball _ball;
 		_ball.physical.pos = posPrev;
+		_ball.physical.size = ball[0].physical.size;
 		ball.push_back(_ball);
 	}
 
@@ -252,6 +253,7 @@ BOOL RollingBallClass::init(HINSTANCE m_hInstance, HWND m_hwnd, UINT frame_updat
 	if (!paint.init(winAPI.hInstance, winAPI.hwnd, &scaler)) return FALSE;
 
 	Ball _ball;
+	_ball.physical.size = 2;
 	ball.push_back(_ball);
 
 	return TRUE;
