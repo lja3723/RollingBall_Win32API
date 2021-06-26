@@ -211,15 +211,18 @@ void RollingBallClass::event_mouse(MouseEvent e)
 
 	isMouseEvent = TRUE;
 }
-void RollingBallClass::event_all(Event e)
+void RollingBallClass::event_else(Event e)
 {
-	if (e.eventType.isEquals(WM_PAINT)) {
+	switch (e.winMsg.iMsg())
+	{
+	case WM_PAINT:
 		update_window();
-	}
-	else if (e.eventType.isEquals(WM_TIMER)) {
+		break;
+	case WM_TIMER:
 		update_state();
 		update_scaler();
 		InvalidateRgn(winAPI.hwnd, NULL, FALSE);
+		break;
 	}
 }
 

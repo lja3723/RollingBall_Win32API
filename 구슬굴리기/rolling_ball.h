@@ -48,7 +48,7 @@ namespace RollingBall
 		*	이벤트 처리 메서드
 		*/
 		void event_mouse(MouseEvent e);
-		void event_all(Event e);
+		void event_else(Event e);
 		void event_keyboard(KeyboardEvent e);
 
 	public:

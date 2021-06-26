@@ -11,13 +11,14 @@ using std::sort;
 //	Event class
 // 
 /////////////////////////
-BOOL RollingBall::Event::isValid()
+BOOL Event::isValid()
 {
 	return m_isValid;
 }
-void RollingBall::Event::productEventFrom(WindowMessage& wm)
+void Event::init()
 {
-	m_isValid = TRUE;
+	//wm 멤버가 모두 0이면 FALSE, 그렇지 않으면 TRUE로 초기화
+	m_isValid = !!(m_winMsg.iMsg | m_winMsg.wParam | m_winMsg.lParam);
 }
 
 
@@ -27,42 +28,40 @@ void RollingBall::Event::productEventFrom(WindowMessage& wm)
 //	MouseEvent class
 // 
 /////////////////////////
-BOOL MouseEvent::_state::buttons[numofButtons];
-BOOL MouseEvent::_state::isInitButtonsArray = FALSE;
+BOOL MouseEvent::_staticState::buttons[numofButtons];
+BOOL MouseEvent::_staticState::isInitButtonsArray = FALSE;
 
-void RollingBall::MouseEvent::productEventFrom(WindowMessage& wm)
+void MouseEvent::init()
 {
-	m_isValid = TRUE;
-
-	state.pos.x = LOWORD(wm.lParam);
-	state.pos.y = HIWORD(wm.lParam);
+	localState.pos.x = LOWORD(winMsg.lParam());
+	localState.pos.y = HIWORD(winMsg.lParam());
 
 	if (eventType.isLButtonDown())
-		state.button_down(state.LButton);
+		staticState.button_down(staticState.LButton);
 	else if (eventType.isLButtonUp())
-		state.button_up(state.LButton);
+		staticState.button_up(staticState.LButton);
 	else if (eventType.isLButtonDoubleClick());
 
 	else if (eventType.isMButtonDown())
-		state.button_down(state.MButton);
+		staticState.button_down(staticState.MButton);
 	else if (eventType.isMButtonUp())
-		state.button_up(state.MButton);
+		staticState.button_up(staticState.MButton);
 	else if (eventType.isMButtonDoubleClick());
 
 	else if (eventType.isRButtonDown())
-		state.button_down(state.RButton);
+		staticState.button_down(staticState.RButton);
 	else if (eventType.isRButtonUp())
-		state.button_up(state.RButton);
+		staticState.button_up(staticState.RButton);
 	else if (eventType.isRButtonDoubleClick());
 
 	else if (eventType.isMouseMove());
 	else if (eventType.isMouseWheel())
-		state.scroll = (short)HIWORD(wm.wParam);
+		localState.scroll = (short)HIWORD(winMsg.wParam());
 	else
 		m_isValid = FALSE;
 
 }
-void RollingBall::MouseEvent::_state::initButtonsArray()
+void MouseEvent::_staticState::initButtonsArray()
 {
 	if (!isInitButtonsArray)
 	{
@@ -71,35 +70,30 @@ void RollingBall::MouseEvent::_state::initButtonsArray()
 		isInitButtonsArray = TRUE;
 	}
 }
-
-void RollingBall::MouseEvent::_state::button_down(int button_idx)
+void MouseEvent::_staticState::button_down(int button_idx)
 {
 	buttons[button_idx] = TRUE;
 }
-
-void RollingBall::MouseEvent::_state::button_up(int button_idx)
+void MouseEvent::_staticState::button_up(int button_idx)
 {
 	buttons[button_idx] = FALSE;
 }
 
-POINT RollingBall::MouseEvent::pos()
+POINT MouseEvent::pos()
 {
-	return state.pos;
+	return localState.pos;
 }
-
-BOOL RollingBall::MouseEvent::isLButtonDown()
+BOOL MouseEvent::isLButtonDown()
 {
-	return state.buttons[state.LButton];
+	return staticState.buttons[staticState.LButton];
 }
-
-BOOL RollingBall::MouseEvent::isMButtonDown()
+BOOL MouseEvent::isMButtonDown()
 {
-	return state.buttons[state.MButton];
+	return staticState.buttons[staticState.MButton];
 }
-
-BOOL RollingBall::MouseEvent::isRButtonDown()
+BOOL MouseEvent::isRButtonDown()
 {
-	return state.buttons[state.RButton];
+	return staticState.buttons[staticState.RButton];
 }
 
 
@@ -109,26 +103,21 @@ BOOL RollingBall::MouseEvent::isRButtonDown()
 //	KeyboardEvent class
 // 
 /////////////////////////
-BOOL KeyboardEvent::_state::isInitKeysArray = FALSE;
-BOOL KeyboardEvent::_state::keys[numofKeys];
+BOOL KeyboardEvent::_staticState::isInitKeysArray = FALSE;
+BOOL KeyboardEvent::_staticState::keys[numofKeys];
 
-void RollingBall::KeyboardEvent::productEventFrom(WindowMessage& wm)
+void KeyboardEvent::init()
 {
-	m_isValid = TRUE;
-
-	if (eventType.isKeyDown()) {
-		key_down(wm.wParam);
-		state.changedKey = wm.wParam;
-	}
-	else if (eventType.isKeyUp()) {
-		key_up(wm.wParam);
-		state.changedKey = wm.wParam;
-	}
+	localState.changedKey = winMsg.wParam();
+	if (eventType.isKeyDown())
+		key_down(localState.changedKey);
+	else if (eventType.isKeyUp())
+		key_up(localState.changedKey);
 	else
 		m_isValid = FALSE;
 
 }
-void KeyboardEvent::_state::initKeysArray()
+void KeyboardEvent::_staticState::initKeysArray()
 {
 	if (!isInitKeysArray)
 	{
@@ -140,28 +129,26 @@ void KeyboardEvent::_state::initKeysArray()
 
 void KeyboardEvent::key_down(WPARAM VK_msg)
 {
-	state.keys[VK_msg] = TRUE;
+	staticState.keys[VK_msg] = TRUE;
 }
 void KeyboardEvent::key_up(WPARAM VK_msg)
 {
-	state.keys[VK_msg] = FALSE;
+	staticState.keys[VK_msg] = FALSE;
 }
 BOOL KeyboardEvent::isKeyPressed(WPARAM VK_msg)
 {
-	return state.keys[VK_msg];
+	return staticState.keys[VK_msg];
 }
 
-BOOL RollingBall::KeyboardEvent::isKeyStateChanged(WPARAM VK_msg)
+BOOL KeyboardEvent::isKeyStateChanged(WPARAM VK_msg)
 {
-	return state.changedKey == VK_msg;
+	return localState.changedKey == VK_msg;
 }
-
-BOOL RollingBall::KeyboardEvent::isKeyDown(WPARAM VK_msg)
+BOOL KeyboardEvent::isKeyDown(WPARAM VK_msg)
 {
 	return eventType.isKeyDown() && isKeyStateChanged(VK_msg);
 }
-
-BOOL RollingBall::KeyboardEvent::isKeyUp(WPARAM VK_msg)
+BOOL KeyboardEvent::isKeyUp(WPARAM VK_msg)
 {
 	return eventType.isKeyUp() && isKeyStateChanged(VK_msg);
 }
@@ -170,87 +157,35 @@ BOOL RollingBall::KeyboardEvent::isKeyUp(WPARAM VK_msg)
 
 /////////////////////////
 // 
-//	EventProducer class
+//	EventSender class
 // 
 /////////////////////////
-MouseEvent EventProducer::__old_produce_mouseEvent(UINT iMsg, WPARAM wParam, LPARAM lParam)
+void EventSender::translate_windowEvent(UINT iMsg, WPARAM wParam, LPARAM lParam)
 {
-	MouseEvent e(iMsg, wParam, lParam);
-
-	e.state.pos.x = LOWORD(lParam);
-	e.state.pos.y = HIWORD(lParam);
-
-	if (e.eventType.isLButtonDown())
-		e.state.button_down(e.state.LButton);
-	else if (e.eventType.isLButtonUp())
-		e.state.button_up(e.state.LButton);
-	else if (e.eventType.isLButtonDoubleClick());
-
-	else if (e.eventType.isMButtonDown())
-		e.state.button_down(e.state.MButton);
-	else if (e.eventType.isMButtonUp())
-		e.state.button_up(e.state.MButton);
-	else if (e.eventType.isMButtonDoubleClick());
-
-	else if (e.eventType.isRButtonDown())
-		e.state.button_down(e.state.RButton);
-	else if (e.eventType.isRButtonUp())
-		e.state.button_up(e.state.RButton);
-	else if (e.eventType.isRButtonDoubleClick());
-
-	else if (e.eventType.isMouseMove());
-	else if (e.eventType.isMouseWheel())
-		e.state.scroll = (short)HIWORD(wParam);
-	else
-		e.m_isValid = FALSE;
-
-	return e;
-}
-KeyboardEvent EventProducer::__old_produce_keyboardEvent(UINT iMsg, WPARAM wParam, LPARAM lParam)
-{
-	KeyboardEvent e(iMsg, wParam, lParam);
-
-	if (e.eventType.isKeyDown()) {
-		e.key_down(wParam);
-		e.state.changedKey = wParam;
-	}
-	else if (e.eventType.isKeyUp()) {
-		e.key_up(wParam);
-		e.state.changedKey = wParam;
-	}
-	else
-		e.m_isValid = FALSE;
-
-	return e;
-}
-Event EventProducer::__old_produce_Event(UINT iMsg, WPARAM wParam, LPARAM lParam)
-{
-	return Event(iMsg, wParam, lParam);
-}
-void EventProducer::translate_windowEvent(UINT iMsg, WPARAM wParam, LPARAM lParam)
-{
-	MouseEvent em = __old_produce_mouseEvent(iMsg, wParam, lParam);
-	if (em.m_isValid)
+	WindowMessage wm(iMsg, wParam, lParam);
+	if (MouseEvent(wm).isValid())
 	{
+		MouseEvent e(wm);
 		//모든 EventAcceptable 객체에 마우스 이벤트를 보낸다
 		for (int i = 0; i < EventAcceptable::object_ref.size(); i++)
-			EventAcceptable::object_ref[i]->event_mouse(em);
+			EventAcceptable::object_ref[i]->event_mouse(e);
 		return;
 	}
 
-	KeyboardEvent ek = __old_produce_keyboardEvent(iMsg, wParam, lParam);
-	if (ek.m_isValid)
+	if (KeyboardEvent(wm).isValid())
 	{
+		KeyboardEvent e(wm);
 		//모든 EventAcceptable 객체에 키보드 이벤트를 보낸다
 		for (int i = 0; i < EventAcceptable::object_ref.size(); i++)
-			EventAcceptable::object_ref[i]->event_keyboard(ek);
+			EventAcceptable::object_ref[i]->event_keyboard(e);
 		return;
 	}
 
-	Event e = __old_produce_Event(iMsg, wParam, lParam);
-		for (int i = 0; i < EventAcceptable::object_ref.size(); i++)
-			EventAcceptable::object_ref[i]->event_all(e);
+	Event e(wm);
+	for (int i = 0; i < EventAcceptable::object_ref.size(); i++)
+		EventAcceptable::object_ref[i]->event_else(e);
 }
+
 
 
 /////////////////////////////
@@ -259,7 +194,6 @@ void EventProducer::translate_windowEvent(UINT iMsg, WPARAM wParam, LPARAM lPara
 // 
 /////////////////////////////
 vector<EventAcceptable*> EventAcceptable::object_ref = vector<EventAcceptable*>();
-
 EventAcceptable::EventAcceptable()
 {
 	object_ref.push_back(this);
