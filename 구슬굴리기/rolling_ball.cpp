@@ -62,7 +62,7 @@ void RollingBallClass::update_state()
 {
 	PhysicalVector posPrev = ball[ballSwitch].physical.pos;
 	for (int i = 0; i < ball.size(); i++) {
-		controller.force_to(ball[ballSwitch], 0.015 + 0.001 * ballSwitch);
+		controller.force_to(ball[ballSwitch], 0.015);
 		controller.update_ballPos(ball[i]);
 	}
 	PhysicalVector& posNow = ball[ballSwitch].physical.pos;
@@ -113,11 +113,17 @@ void RollingBallClass::kill_timer()
 /////////////////////////////////
 void RollingBallClass::event_keyboard(KeyboardEvent e)
 {
-	if (e.isKeyPressed(VK_SPACE))
+	if (e.isKeyDown(VK_SPACE))
 	{
-		ball[ballSwitch].physical.accel = { 0, 0 };
-		ballSwitch++;
+		ball[ballSwitch++].physical.accel(0, 0);
 		if (ballSwitch == ball.size()) ballSwitch = 0;
+
+		auto pos = scaler.transform(ball[ballSwitch].physical.pos);
+		auto radius = scaler.px(ball[ballSwitch].physical.size);
+		paint.setModeGetDC();
+		paint.begin();
+		paint.text(_T("↑"), pos.x - 8, pos.y + radius / 2 + 5);
+		paint.end();
 	}
 }
 void RollingBallClass::event_mouse(MouseEvent e)
