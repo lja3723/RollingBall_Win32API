@@ -25,8 +25,7 @@ void RollingBallClass::update_window()
 	paint(background);
 
 	//공 정보 그리기
-	//for (int i = 0; i < ball.size(); i++)
-	for (int i = 0; i < ball.size() && i < 1; i++)
+	for (int i = 0; i < ball.size(); i++)
 		paint.info(ball[i], i * 20);
 
 	//방향키 뷰어 그리기
@@ -46,9 +45,9 @@ void RollingBallClass::update_window()
 	//기타 정보 그리기
 	TCHAR buff[256];
 	_stprintf_s(buff, 256, _T("ballSwitch:%d"), ballSwitch);
-	//paint.text(buff, 300, 30);
+	paint.text(buff, 300, 30);
 	_stprintf_s(buff, 256, _T("ball count:%d"), (int)ball.size());
-	//paint.text(buff, 300, 50);
+	paint.text(buff, 300, 50);
 	PhysicalVector cen = scaler.get_fix_point_physical();
 	_stprintf_s(buff, 256, _T("center position:(%3.2f, %3.2f)"), cen.x, cen.y);
 	paint.text(buff, 300, 70);
@@ -61,31 +60,12 @@ void RollingBallClass::update_window()
 }
 void RollingBallClass::update_state()
 {
-	//static class 멤버변수 ballSwitch를 가림
-	//그림자 효과를 위해 가렸음
-	static const int ballSwitch = 0;
 	PhysicalVector posPrev = ball[ballSwitch].physical.pos;
 	for (int i = 0; i < ball.size(); i++) {
 		controller.force_to(ball[ballSwitch], 0.015 + 0.001 * ballSwitch);
 		controller.update_ballPos(ball[i]);
 	}
 	PhysicalVector& posNow = ball[ballSwitch].physical.pos;
-
-	//공 위치가 변하면 이전위치에 공(그림자) 생성
-	if (posPrev != posNow)
-	{
-		Ball _ball;
-		_ball.physical.pos = posPrev;
-		_ball.physical.size = ball[0].physical.size;
-		ball.push_back(_ball);
-	}
-
-	//그림자가 길어지면 공 삭제
-	static const int tail_length = 30;
-	if (tail_length < ball.size())
-		ball.erase(ball.begin() + 1);
-	else if (1 < ball.size() && posPrev == posNow)
-		ball.erase(ball.begin() + 1);
 }
 void RollingBallClass::update_scaler(MouseEvent& e)
 {
@@ -133,24 +113,22 @@ void RollingBallClass::kill_timer()
 /////////////////////////////////
 void RollingBallClass::event_keyboard(KeyboardEvent e)
 {
-	//그림자 효과를 위해 static 클래스 변수 ballSwitch를 가림
-	static const int ballSwitch = 0;
-
-	static BOOL isProcessed = FALSE;
-	if (!isProcessed && e.isKeyPressed('C'))
+	if (e.isKeyPressed(VK_SPACE))
 	{
 		ball[ballSwitch].physical.accel = { 0, 0 };
-		//그림자 효과를 위해 주석처리
-		//ballSwitch++;
-		//if (ballSwitch == ball.size()) ballSwitch = 0;
-		isProcessed = TRUE;
+		ballSwitch++;
+		if (ballSwitch == ball.size()) ballSwitch = 0;
 	}
-	else if (!e.isKeyPressed('C'))
-		isProcessed = FALSE;
 }
 void RollingBallClass::event_mouse(MouseEvent e)
 {
 	update_scaler(e);
+	if (e.eventType.isLButtonDoubleClick())
+	{
+		Ball b;
+		b.physical.pos(scaler.transform(e.pos()));
+		ball.push_back(b);
+	}
 }
 void RollingBallClass::event_else(Event e)
 {
