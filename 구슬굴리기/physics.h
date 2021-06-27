@@ -1,6 +1,7 @@
 ﻿#pragma once
 #ifndef __physics_h__
 #define __physics_h__
+#include <cmath>
 
 typedef double g_val;
 typedef double kg_val;
@@ -33,6 +34,9 @@ namespace RollingBall
 		}
 		int operator!=(BasicPhysicalVector<Length>& v) {
 			return !operator==(v);
+		}
+		Length distance(const BasicPhysicalVector<Length>& v) {
+			return sqrt(pow((*this - v).x, 2) + pow((*this - v).y, 2));
 		}
 
 	};

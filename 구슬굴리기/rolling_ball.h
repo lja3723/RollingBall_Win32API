@@ -32,11 +32,20 @@ namespace RollingBall
 		vector<Ball> ball;
 		int ballSwitch;
 
+		//볼스위치가 바뀔때 화살표 그리기
+		void paint_BallSwitchArrow();
+		BOOL isBallSwitchChanged;
+
 		void init_scaler(int px_rate);
 
 		void update_window();
 		void update_state();
 		void update_scaler(MouseEvent& e);
+		
+		void ball_add(MouseEvent& e);
+		void ball_select(MouseEvent& e);
+		void ball_move(MouseEvent& e);
+		BOOL isPosIncluded(const PhysicalVector& v, Ball& ball);
 
 		void set_timer(UINT frame_update_interval);
 		void kill_timer();

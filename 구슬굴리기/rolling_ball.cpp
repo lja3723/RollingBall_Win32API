@@ -3,6 +3,25 @@
 
 using namespace RollingBall;
 
+void RollingBall::RollingBallClass::paint_BallSwitchArrow()
+{
+	const static int fRate = 50;
+	static int frameCount = 0;
+	//볼스위치가 변화하면...
+	if (isBallSwitchChanged)
+	{
+		frameCount = fRate;
+		isBallSwitchChanged = FALSE;
+	}
+	//fRate동안 볼스위치 화살표를 보여줌
+	if (frameCount) {
+		frameCount--;
+		auto pos = scaler.transform(ball[ballSwitch].physical.pos);
+		auto radius = scaler.px(ball[ballSwitch].physical.size);
+		paint.text(_T("↑"), pos.x - 8, pos.y + radius / 2 + 5);
+	}
+}
+
 void RollingBallClass::init_scaler(int px_rate)
 {
 	//프로그램 화면 정중앙과 물리좌표 (0, 0)이 일치하도록 초기화함
@@ -56,6 +75,9 @@ void RollingBallClass::update_window()
 	for (int i = 0; i < ball.size(); i++)
 		paint(ball[i]);
 
+	//볼스위치 표현하기
+	paint_BallSwitchArrow();
+
 	paint.end();
 }
 void RollingBallClass::update_state()
@@ -94,6 +116,55 @@ void RollingBallClass::update_scaler(MouseEvent& e)
 			scaler.px_rate(scaler.px_rate() / zoom_rate);
 }
 
+void RollingBall::RollingBallClass::ball_add(MouseEvent& e)
+{
+	if (e.eventType.isLButtonDoubleClick())
+	{
+		Ball b;
+		b.physical.pos(scaler.transform(e.pos()));
+		ball.push_back(b);
+	}
+}
+
+void RollingBall::RollingBallClass::ball_select(MouseEvent& e)
+{
+	if (e.eventType.isLButtonDown())
+	{
+		PhysicalVector pos = scaler.transform(e.pos());
+		for (int i = 0; i < ball.size(); i++)
+			if (isPosIncluded(pos, ball[i]))
+			{
+				ball[ballSwitch].physical.accel(0, 0);
+				ballSwitch = i;
+				isBallSwitchChanged = TRUE;
+			}
+	}
+}
+void RollingBall::RollingBallClass::ball_move(MouseEvent& e)
+{
+	//로직이 뭔가 이상함
+	//수정필요
+	if (e.isLButtonDown())
+	{
+		static PixelCoord prevPos;
+		if (!e.eventType.isMouseMove())
+			prevPos = e.pos();
+		else
+		{
+			PixelCoord curPos(e.pos());
+			PhysicalVector diff = scaler.transform(curPos) - scaler.transform(prevPos);
+			for (int i = 0; i < ball.size(); i++)
+				if (isPosIncluded(scaler.transform(prevPos), ball[i]))
+					ball[i].physical.pos = ball[i].physical.pos + diff;
+			prevPos = curPos;
+		}
+	}
+}
+BOOL RollingBall::RollingBallClass::isPosIncluded(const PhysicalVector& v, Ball& ball)
+{
+	return ball.physical.pos.distance(v) < ball.physical.size / 2;
+}
+
 void RollingBallClass::set_timer(UINT frame_update_interval)
 {
 	if (isInitTimer) kill_timer();
@@ -111,30 +182,15 @@ void RollingBallClass::kill_timer()
 /////////////////////////////////
 //	event processing
 /////////////////////////////////
-void RollingBallClass::event_keyboard(KeyboardEvent e)
-{
-	if (e.isKeyDown(VK_SPACE))
-	{
-		ball[ballSwitch++].physical.accel(0, 0);
-		if (ballSwitch == ball.size()) ballSwitch = 0;
-
-		auto pos = scaler.transform(ball[ballSwitch].physical.pos);
-		auto radius = scaler.px(ball[ballSwitch].physical.size);
-		paint.setModeGetDC();
-		paint.begin();
-		paint.text(_T("↑"), pos.x - 8, pos.y + radius / 2 + 5);
-		paint.end();
-	}
-}
+void RollingBallClass::event_keyboard(KeyboardEvent e) {}
 void RollingBallClass::event_mouse(MouseEvent e)
 {
 	update_scaler(e);
-	if (e.eventType.isLButtonDoubleClick())
-	{
-		Ball b;
-		b.physical.pos(scaler.transform(e.pos()));
-		ball.push_back(b);
-	}
+	ball_add(e);
+	ball_select(e);
+
+	//로직이 좀 이상하다.
+	//ball_move(e);
 }
 void RollingBallClass::event_else(Event e)
 {
@@ -159,6 +215,7 @@ RollingBallClass::RollingBallClass()
 	winAPI = { NULL, NULL };
 	isInitTimer = FALSE;
 	ballSwitch = 0;
+	isBallSwitchChanged = FALSE;
 }
 RollingBallClass::~RollingBallClass()
 {
