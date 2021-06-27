@@ -153,8 +153,8 @@ namespace RollingBall
 
 			BOOL isMouseMove()			{ return wm->iMsgEquals(MouseMove); }
 			BOOL isMouseWheel()			{ return wm->iMsgEquals(MouseWheel); }
-			BOOL isMouseWheelUp()		{ return wm->iMsgEquals(MouseWheel) && st->scroll > 0; }
-			BOOL isMouseWheelDown()		{ return wm->iMsgEquals(MouseWheel) && st->scroll < 0; }
+			BOOL isMouseWheelUp()		{ return isMouseWheel() && st->scroll > 0; }
+			BOOL isMouseWheelDown()		{ return isMouseWheel() && st->scroll < 0; }
 		} eventType;
 
 	public:

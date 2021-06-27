@@ -93,12 +93,12 @@ void RollingBall::Controller::force_to(Ball& ball, double accel)
 	}
 	else
 	{
-		if (e.isKeyPressed(VK_LEFT)) accel_x = -accel;
-		else if (e.isKeyPressed(VK_RIGHT)) accel_x = accel;
+		if (e.isKeyPressed('A')) accel_x = -accel;
+		else if (e.isKeyPressed('D')) accel_x = accel;
 		else accel_x = 0;
 
-		if (e.isKeyPressed(VK_UP)) accel_y = accel;
-		else if (e.isKeyPressed(VK_DOWN)) accel_y = -accel;
+		if (e.isKeyPressed('W')) accel_y = accel;
+		else if (e.isKeyPressed('S')) accel_y = -accel;
 		else accel_y = 0;
 	}
 }

@@ -26,10 +26,6 @@ namespace RollingBall
 		} winAPI;
 		BOOL isInitTimer;
 
-		//mouseEvent 테스트 변수
-		BOOL isMouseEvent;
-		TCHAR mouseEventTestBuff[2][256];
-
 		Scaler scaler;
 		Paint paint;
 		Controller controller;
@@ -40,7 +36,7 @@ namespace RollingBall
 
 		void update_window();
 		void update_state();
-		void update_scaler();
+		void update_scaler(MouseEvent& e);
 
 		void set_timer(UINT frame_update_interval);
 		void kill_timer();

@@ -16,6 +16,7 @@ void RollingBallClass::init_scaler(int px_rate)
 
 void RollingBallClass::update_window()
 {
+	paint.setModeBeginPaint();
 	paint.begin();
 
 	//배경 그리기
@@ -33,14 +34,14 @@ void RollingBallClass::update_window()
 	int d_keyViewer = 18;
 
 	KeyboardEvent e;
-	if (e.isKeyPressed(VK_DOWN))
-		paint.text(_T("↓"), keyViewer.x, keyViewer.y);
-	if (e.isKeyPressed(VK_UP))
-		paint.text(_T("↑"), keyViewer.x, keyViewer.y - d_keyViewer);
-	if (e.isKeyPressed(VK_LEFT))
-		paint.text(_T("←"), keyViewer.x - d_keyViewer, keyViewer.y);
-	if (e.isKeyPressed(VK_RIGHT))
-		paint.text(_T("→"), keyViewer.x + d_keyViewer, keyViewer.y);
+	if (e.isKeyPressed('S'))
+		paint.text(_T("S"), keyViewer.x, keyViewer.y);
+	if (e.isKeyPressed('W'))
+		paint.text(_T("W"), keyViewer.x, keyViewer.y - d_keyViewer);
+	if (e.isKeyPressed('A'))
+		paint.text(_T("A"), keyViewer.x - d_keyViewer, keyViewer.y);
+	if (e.isKeyPressed('D'))
+		paint.text(_T("D"), keyViewer.x + d_keyViewer, keyViewer.y);
 
 	//기타 정보 그리기
 	TCHAR buff[256];
@@ -51,20 +52,6 @@ void RollingBallClass::update_window()
 	PhysicalVector cen = scaler.get_fix_point_physical();
 	_stprintf_s(buff, 256, _T("center position:(%3.2f, %3.2f)"), cen.x, cen.y);
 	paint.text(buff, 300, 70);
-
-	//mouseEvent 테스트 로직
-	if (isMouseEvent)
-	{
-		paint.text(mouseEventTestBuff[0], 300, 150);
-		isMouseEvent = FALSE;
-	}
-	MouseEvent em;
-	if (em.isLButtonDown())
-	{
-		_stprintf_s(buff, 256, _T("LButton is pressing"));
-		paint.text(buff, 300, 170);
-	}
-	paint.text(mouseEventTestBuff[1], 300, 190);
 
 	//공 그리기
 	for (int i = 0; i < ball.size(); i++)
@@ -100,28 +87,31 @@ void RollingBallClass::update_state()
 	else if (1 < ball.size() && posPrev == posNow)
 		ball.erase(ball.begin() + 1);
 }
-void RollingBallClass::update_scaler()
+void RollingBallClass::update_scaler(MouseEvent& e)
 {
-	PhysicalVector ppos = scaler.get_fix_point_physical();
-	double zoom_in_out_rate = 0.03;
-	cm_val move_distance = 0.2;
+	//드래그로 맵 이동하기
+	if (e.isLButtonDown())
+	{
+		static PixelCoord prevPos;
+		if (!e.eventType.isMouseMove())
+			prevPos = e.pos();
+		else
+		{
+			PixelCoord curPos(e.pos());
+			PhysicalVector diff = scaler.transform(curPos) - scaler.transform(prevPos);
+			scaler.set_fix_point(scaler.get_fix_point_physical() - diff);
+			prevPos = curPos;
+		}
+	}
 
-	KeyboardEvent e;
-	if (e.isKeyPressed('O'))
-		if (scaler.px_rate() > 20)
-			scaler.px_rate(scaler.px_rate() * (1 - zoom_in_out_rate));
-	if (e.isKeyPressed('P'))
-		if (scaler.px_rate() < 720)
-			scaler.px_rate(scaler.px_rate() * (1 + zoom_in_out_rate));
-
-	if (e.isKeyPressed('W'))
-		scaler.set_fix_point(ppos(ppos.x, ppos.y + move_distance));
-	if (e.isKeyPressed('A'))
-		scaler.set_fix_point(ppos(ppos.x - move_distance, ppos.y));
-	if (e.isKeyPressed('S'))
-		scaler.set_fix_point(ppos(ppos.x, ppos.y - move_distance));
-	if (e.isKeyPressed('D'))
-		scaler.set_fix_point(ppos(ppos.x + move_distance, ppos.y));
+	//휠조작으로 맵 확대율 변경하기
+	double zoom_rate = 1.1;
+	if (e.eventType.isMouseWheelUp())
+		if (scaler.px_rate() < 500)
+			scaler.px_rate(scaler.px_rate() * zoom_rate);
+	if (e.eventType.isMouseWheelDown())
+		if (scaler.px_rate() > 5)
+			scaler.px_rate(scaler.px_rate() / zoom_rate);
 }
 
 void RollingBallClass::set_timer(UINT frame_update_interval)
@@ -157,59 +147,10 @@ void RollingBallClass::event_keyboard(KeyboardEvent e)
 	}
 	else if (!e.isKeyPressed('C'))
 		isProcessed = FALSE;
-
-	if (e.isKeyDown('R'))
-		debuggerMessage("You're typed 'R' key.");
 }
 void RollingBallClass::event_mouse(MouseEvent e)
 {
-	TCHAR* eventType = (TCHAR*)_T("");
-	if (e.eventType.isMouseMove())
-		eventType = (TCHAR*)_T("MouseMove");
-	else if (e.eventType.isMouseWheelUp())
-		eventType = (TCHAR*)_T("MouseWheelUp");
-	else if (e.eventType.isMouseWheelDown())
-		eventType = (TCHAR*)_T("MouseWheelDown");
-	else if (e.eventType.isLButtonDown())
-		eventType = (TCHAR*)_T("LButtonDown");
-	else if (e.eventType.isMButtonDown())
-	{
-		//debuggerMessage("MButtonDown");
-		eventType = (TCHAR*)_T("MButtonDown");
-	}
-	else if (e.eventType.isRButtonDown())
-		eventType = (TCHAR*)_T("RButtonDown");
-	_stprintf_s(mouseEventTestBuff[0], 256, _T("MouseEvent Occurred(%s)"), eventType);
-
-	if (e.eventType.isLButtonDoubleClick())
-		debuggerMessage("You are double clicked the LButton.");
-	if (e.eventType.isMButtonDoubleClick())
-		debuggerMessage("You are double clicked the MButton.");
-	if (e.eventType.isRButtonDoubleClick())
-		debuggerMessage("You are double clicked the RButton.");
-
-	//드래그로 맵 이동하기
-	if (e.isLButtonDown())
-	{
-		static PixelCoord prevPos;
-		if (!e.eventType.isMouseMove())
-			prevPos = e.pos();
-		else
-		{
-			PixelCoord curPos(e.pos());
-			PhysicalVector diff = scaler.transform(curPos) - scaler.transform(prevPos);
-			scaler.set_fix_point(scaler.get_fix_point_physical() - diff);
-			prevPos = curPos;
-		}
-	}
-
-	//휠로 맵 확대 축소하기
-	if (e.eventType.isMouseWheelUp())
-		scaler.px_rate(scaler.px_rate() * 1.1);
-	if (e.eventType.isMouseWheelDown())
-		scaler.px_rate(scaler.px_rate() * 0.9);
-
-	isMouseEvent = TRUE;
+	update_scaler(e);
 }
 void RollingBallClass::event_else(Event e)
 {
@@ -220,7 +161,6 @@ void RollingBallClass::event_else(Event e)
 		break;
 	case WM_TIMER:
 		update_state();
-		update_scaler();
 		InvalidateRgn(winAPI.hwnd, NULL, FALSE);
 		break;
 	}
@@ -235,8 +175,6 @@ RollingBallClass::RollingBallClass()
 	winAPI = { NULL, NULL };
 	isInitTimer = FALSE;
 	ballSwitch = 0;
-
-	isMouseEvent = FALSE;
 }
 RollingBallClass::~RollingBallClass()
 {

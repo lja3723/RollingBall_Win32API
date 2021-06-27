@@ -71,6 +71,8 @@ namespace RollingBall
 		//오브젝트 정보를 페인트한다
 		void info(RollingBallObject& obj, int yPos = 0);
 		void text(LPCTSTR text, pixel x, pixel y);
+		void setModeBeginPaint();
+		void setModeGetDC();
 	
 	private:
 		/********************************

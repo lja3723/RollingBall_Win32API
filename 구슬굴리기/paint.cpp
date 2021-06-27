@@ -26,7 +26,6 @@ BOOL Paint::init(HINSTANCE m_hInstance, HWND m_hwnd, Scaler* _scaler)
 }
 void Paint::begin()
 {
-	hDC.window.mode.set_BeginPaint();
 	hDC.window.set(hwnd);
 	doubleBuffering_start();
 }
@@ -52,6 +51,14 @@ void Paint::info(RollingBallObject& obj, int yPos)
 void Paint::text(LPCTSTR text, pixel x, pixel y)
 {
 	paint_text_tobuffer(text, x, y);
+}
+void Paint::setModeBeginPaint()
+{
+	hDC.window.mode.set_BeginPaint();
+}
+void Paint::setModeGetDC()
+{
+	hDC.window.mode.set_GetDC();
 }
 
 
