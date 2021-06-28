@@ -71,7 +71,7 @@ void RollingBall::Controller::force_to(Ball& ball, double accel)
 	cm_val& accel_y = ball.physical.accel.y;
 
 	KeyboardEvent e;
-	if (e.isKeyPressed('B'))
+	if (e.isKeyPressed(VK_SPACE))
 	{
 		fraction = 20 * 0.005;
 

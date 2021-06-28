@@ -173,6 +173,11 @@ namespace RollingBall
 	private:
 	public:
 		Ball(LPCTSTR texture_name = _T("iron1"));
+		//매개좌표가 ball 객체에 포함되었는가?
+		BOOL isPosIncluded(const PhysicalVector& v)
+		{
+			return (physical.pos - v).length() < physical.size / 2;
+		}
 	};
 	class Background : public RollingBallObject
 	{

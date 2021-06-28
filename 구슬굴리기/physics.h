@@ -18,25 +18,46 @@ namespace RollingBall
 		Length y;
 
 		BasicPhysicalVector(Length _x = 0, Length _y = 0) { x = _x, y = _y; }
-		BasicPhysicalVector<Length>& operator()(Length _x = 0, Length _y = 0) { x = _x, y = _y; return *this; }
-		BasicPhysicalVector<Length>& operator()(const BasicPhysicalVector<Length>& v) { return operator()(v.x, v.y); }
-		BasicPhysicalVector<Length>& operator+=(BasicPhysicalVector<Length>& v);
-		BasicPhysicalVector<Length>& operator-=(BasicPhysicalVector<Length>& v);
-		BasicPhysicalVector<Length> operator+(const BasicPhysicalVector<Length>& v) {
+		BasicPhysicalVector<Length>& operator()(Length _x, Length _y) 
+		{ 
+			x = _x, y = _y; 
+			return *this; 
+		}
+		BasicPhysicalVector<Length>& operator()(const BasicPhysicalVector<Length>& v) 
+		{
+			return operator()(v.x, v.y); 
+		}
+		BasicPhysicalVector<Length>& operator+=(BasicPhysicalVector<Length>& v)
+		{
+			x += v.x;
+			y += v.y;
+			return *this;
+		}
+		BasicPhysicalVector<Length>& operator-=(BasicPhysicalVector<Length>& v) 
+		{
+			x -= v.x;
+			y -= v.y;
+			return *this;
+		}
+		BasicPhysicalVector<Length> operator+(const BasicPhysicalVector<Length>& v)
+		{
 			return BasicPhysicalVector<Length>(x + v.x, y + v.y);
 		}
-		BasicPhysicalVector<Length> operator-(const BasicPhysicalVector<Length>& v) {
+		BasicPhysicalVector<Length> operator-(const BasicPhysicalVector<Length>& v) 
+		{
 			return BasicPhysicalVector<Length>(x - v.x, y - v.y);
 		}
 		int operator==(BasicPhysicalVector<Length>& v)
 		{
 			return x == v.x && y == v.y;
 		}
-		int operator!=(BasicPhysicalVector<Length>& v) {
+		int operator!=(BasicPhysicalVector<Length>& v) 
+		{
 			return !operator==(v);
 		}
-		Length distance(const BasicPhysicalVector<Length>& v) {
-			return sqrt(pow((*this - v).x, 2) + pow((*this - v).y, 2));
+		Length length()
+		{
+			return sqrt(pow(x, 2) + pow(y, 2));
 		}
 
 	};

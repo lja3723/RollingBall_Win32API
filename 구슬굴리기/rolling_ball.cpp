@@ -5,14 +5,13 @@ using namespace RollingBall;
 
 void RollingBall::RollingBallClass::paint_BallSwitchArrow()
 {
+	static auto tracing = ballSwitch;
 	const static int fRate = 50;
 	static int frameCount = 0;
 	//볼스위치가 변화하면...
-	if (isBallSwitchChanged)
-	{
+	if (tracing != ballSwitch)
 		frameCount = fRate;
-		isBallSwitchChanged = FALSE;
-	}
+
 	//fRate동안 볼스위치 화살표를 보여줌
 	if (frameCount) {
 		frameCount--;
@@ -20,6 +19,9 @@ void RollingBall::RollingBallClass::paint_BallSwitchArrow()
 		auto radius = scaler.px(ball[ballSwitch].physical.size);
 		paint.text(_T("↑"), pos.x - 8, pos.y + radius / 2 + 5);
 	}
+
+	//ballSwitch를 트레이싱함
+	tracing = ballSwitch;
 }
 
 void RollingBallClass::init_scaler(int px_rate)
@@ -132,11 +134,10 @@ void RollingBall::RollingBallClass::ball_select(MouseEvent& e)
 	{
 		PhysicalVector pos = scaler.transform(e.pos());
 		for (int i = 0; i < ball.size(); i++)
-			if (isPosIncluded(pos, ball[i]))
+			if (ball[i].isPosIncluded(pos))
 			{
 				ball[ballSwitch].physical.accel(0, 0);
 				ballSwitch = i;
-				isBallSwitchChanged = TRUE;
 			}
 	}
 }
@@ -154,15 +155,17 @@ void RollingBall::RollingBallClass::ball_move(MouseEvent& e)
 			PixelCoord curPos(e.pos());
 			PhysicalVector diff = scaler.transform(curPos) - scaler.transform(prevPos);
 			for (int i = 0; i < ball.size(); i++)
-				if (isPosIncluded(scaler.transform(prevPos), ball[i]))
-					ball[i].physical.pos = ball[i].physical.pos + diff;
+			{
+				int r = ball.size() - i - 1;
+				if (ball[r].isPosIncluded(scaler.transform(prevPos)))
+				{
+					ball[r].physical.pos -= diff;
+					break;
+				}
+			}
 			prevPos = curPos;
 		}
 	}
-}
-BOOL RollingBall::RollingBallClass::isPosIncluded(const PhysicalVector& v, Ball& ball)
-{
-	return ball.physical.pos.distance(v) < ball.physical.size / 2;
 }
 
 void RollingBallClass::set_timer(UINT frame_update_interval)
@@ -188,9 +191,7 @@ void RollingBallClass::event_mouse(MouseEvent e)
 	update_scaler(e);
 	ball_add(e);
 	ball_select(e);
-
-	//로직이 좀 이상하다.
-	//ball_move(e);
+	ball_move(e);
 }
 void RollingBallClass::event_else(Event e)
 {
@@ -215,7 +216,6 @@ RollingBallClass::RollingBallClass()
 	winAPI = { NULL, NULL };
 	isInitTimer = FALSE;
 	ballSwitch = 0;
-	isBallSwitchChanged = FALSE;
 }
 RollingBallClass::~RollingBallClass()
 {
