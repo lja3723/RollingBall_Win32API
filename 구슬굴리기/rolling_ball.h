@@ -30,6 +30,8 @@ namespace RollingBall
 		Paint paint;
 		Controller controller;
 		vector<Ball> ball;
+		//ballSwitch를 삭제하고
+		//조작중인 공 인덱스를 0으로 설정하면 좋을 것같다
 		int ballSwitch;
 
 		//볼스위치가 바뀔때 화살표 그리기
