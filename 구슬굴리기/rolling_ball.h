@@ -38,11 +38,18 @@ namespace RollingBall
 
 		void update_window();
 		void update_state();
-		void update_scaler(MouseEvent& e);
+		//드래깅 동작을 수행하는지 추적함
+		void trace_dragging(MouseEvent& e);
+		//드래깅 동작을 했을때 수행할 동작을 작성
+		void dragging_action(PhysicalVector& diff, MouseEvent& e);
+		//diff만큼 맵을 이동
+		void map_move(PhysicalVector& diff);
+		void map_scale(MouseEvent& e);
 		
 		void ball_add(MouseEvent& e);
 		void ball_select(MouseEvent& e);
-		void ball_move(MouseEvent& e);
+		//공을 움직였다면 참, 아니면 거짓 반환
+		BOOL ball_move(PhysicalVector& diff, MouseEvent& e);
 		void set_timer(UINT frame_update_interval);
 		void kill_timer();
 		/*

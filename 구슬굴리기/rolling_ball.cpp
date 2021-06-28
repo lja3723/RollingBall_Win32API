@@ -91,23 +91,34 @@ void RollingBallClass::update_state()
 	}
 	PhysicalVector& posNow = ball[ballSwitch].physical.pos;
 }
-void RollingBallClass::update_scaler(MouseEvent& e)
+void RollingBallClass::trace_dragging(MouseEvent& e)
 {
-	//드래그로 맵 이동하기
 	if (e.isLButtonDown())
 	{
 		static PixelCoord prevPos;
-		if (!e.eventType.isMouseMove())
-			prevPos = e.pos();
-		else
+		if (e.eventType.isMouseMove())
 		{
 			PixelCoord curPos(e.pos());
 			PhysicalVector diff = scaler.transform(curPos) - scaler.transform(prevPos);
-			scaler.set_fix_point(scaler.get_fix_point_physical() - diff);
+			dragging_action(diff, e);
 			prevPos = curPos;
 		}
+		else
+			prevPos = e.pos();
 	}
+}
+void RollingBall::RollingBallClass::dragging_action(PhysicalVector& diff, MouseEvent& e)
+{
+	if (!ball_move(diff, e))
+		map_move(diff);
+}
 
+void RollingBall::RollingBallClass::map_move(PhysicalVector& diff)
+{
+	scaler.set_fix_point(scaler.get_fix_point_physical() - diff);
+}
+void RollingBall::RollingBallClass::map_scale(MouseEvent& e)
+{	
 	//휠조작으로 맵 확대율 변경하기
 	double zoom_rate = 1.1;
 	if (e.eventType.isMouseWheelUp())
@@ -127,7 +138,6 @@ void RollingBall::RollingBallClass::ball_add(MouseEvent& e)
 		ball.push_back(b);
 	}
 }
-
 void RollingBall::RollingBallClass::ball_select(MouseEvent& e)
 {
 	if (e.eventType.isLButtonDown())
@@ -138,34 +148,23 @@ void RollingBall::RollingBallClass::ball_select(MouseEvent& e)
 			{
 				ball[ballSwitch].physical.accel(0, 0);
 				ballSwitch = i;
+				return;
 			}
 	}
 }
-void RollingBall::RollingBallClass::ball_move(MouseEvent& e)
+BOOL RollingBall::RollingBallClass::ball_move(PhysicalVector& diff, MouseEvent& e)
 {
-	//로직이 뭔가 이상함
-	//수정필요
-	if (e.isLButtonDown())
+	
+	for (int i = 0; i < ball.size(); i++)
 	{
-		static PixelCoord prevPos;
-		if (!e.eventType.isMouseMove())
-			prevPos = e.pos();
-		else
+		int r = (int)ball.size() - i - 1;
+		if (ball[r].isPosIncluded(scaler.transform(e.pos())))
 		{
-			PixelCoord curPos(e.pos());
-			PhysicalVector diff = scaler.transform(curPos) - scaler.transform(prevPos);
-			for (int i = 0; i < ball.size(); i++)
-			{
-				int r = ball.size() - i - 1;
-				if (ball[r].isPosIncluded(scaler.transform(prevPos)))
-				{
-					ball[r].physical.pos -= diff;
-					break;
-				}
-			}
-			prevPos = curPos;
+			ball[r].physical.pos += diff;
+			return TRUE;
 		}
 	}
+	return FALSE;
 }
 
 void RollingBallClass::set_timer(UINT frame_update_interval)
@@ -188,10 +187,10 @@ void RollingBallClass::kill_timer()
 void RollingBallClass::event_keyboard(KeyboardEvent e) {}
 void RollingBallClass::event_mouse(MouseEvent e)
 {
-	update_scaler(e);
+	trace_dragging(e);
+	map_scale(e);
 	ball_add(e);
 	ball_select(e);
-	ball_move(e);
 }
 void RollingBallClass::event_else(Event e)
 {
