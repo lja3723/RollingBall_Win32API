@@ -12,6 +12,7 @@ using namespace RollingBall;
 LRESULT CALLBACK WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam);
 BOOL CALLBACK DebuggingDialogProc(HWND hDlg, UINT iMsg, WPARAM wParam, LPARAM lParam);
 BOOL CALLBACK ProgramInfoDialogProc(HWND hDlg, UINT iMsg, WPARAM wParam, LPARAM lParam);
+void CALLBACK TimerProc(HWND hWnd, UINT uMsg, UINT idEvent, DWORD dwTime);
 
 static LPCTSTR WindowClassName = _T("Rolling Ball Class");
 static LPCTSTR WindowTitleName = PROGRAM_NAME;
@@ -45,7 +46,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLi
 
 	//RollingBallClass를 초기화한다
 	const int FrameUpdateInterval = 1;
-	if (!rollingBall.init(hInstance, hwnd, FrameUpdateInterval))
+	if (!rollingBall.init(hInstance, hwnd, FrameUpdateInterval, (TIMERPROC)TimerProc))
 	{
 		MessageBox(hwnd, _T("프로그램을 시작할 수 없습니다."), _T("오류"), MB_OK);
 		return 0;
@@ -161,4 +162,10 @@ BOOL CALLBACK ProgramInfoDialogProc(HWND hDlg, UINT iMsg, WPARAM wParam, LPARAM 
 	}
 
 	return FALSE;
+}
+
+void CALLBACK TimerProc(HWND hWnd, UINT uMsg, UINT idEvent, DWORD dwTime)
+{
+	EventSender::translate_windowEvent(hWnd, uMsg, idEvent, (LPARAM)TimerProc);
+	rollingBall.inner_timer_proc(hWnd, uMsg, idEvent, dwTime);
 }

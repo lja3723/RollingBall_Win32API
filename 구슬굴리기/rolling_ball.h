@@ -52,7 +52,7 @@ namespace RollingBall
 		void ball_select(MouseEvent& e);
 		//공을 움직였다면 참, 아니면 거짓 반환
 		BOOL ball_move(PhysicalVector& diff, MouseEvent& e);
-		void set_timer(UINT frame_update_interval);
+		void set_timer(UINT frame_update_interval, TIMERPROC timerProc);
 		void kill_timer();
 		/*
 		*	이벤트 처리 메서드
@@ -61,13 +61,17 @@ namespace RollingBall
 		void event_else(Event e);
 		void event_keyboard(KeyboardEvent e);
 
+		DWORD dwTime;
+
 	public:
 		RollingBallClass();
 		~RollingBallClass();
 		//RollingBallClass 변수를 사용하기 전 반드시 수행해야 함
-		BOOL init(HINSTANCE m_hInstance, HWND m_hwnd, UINT frame_update_interval = 5);
+		BOOL init(HINSTANCE m_hInstance, HWND m_hwnd, UINT frame_update_interval, TIMERPROC timerProc);
 		//윈도우 이벤트를 rollingBall프로그램이 받아들임
-		void set_frame_update_interval(UINT millisecond);
+		void set_frame_update_interval(UINT millisecond, TIMERPROC timerProc);
+
+		void inner_timer_proc(HWND hWnd, UINT uMsg, UINT idEvent, DWORD dwTime);
 	};
 }
 
