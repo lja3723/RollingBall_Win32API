@@ -1,7 +1,7 @@
 ﻿text of todo list
 
 [기타]
-winAPI의 timer proc의 4번째 인자 실험해보기
+>>>>doing>>>>	winAPI의 timer proc의 4번째 인자 실험해보기
 
 [맵뷰 조작]
 휠 조작으로 맵 크기 변경시 마우스 위치 중심으로 변경되게 하기

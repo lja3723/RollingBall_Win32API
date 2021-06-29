@@ -73,6 +73,10 @@ void RollingBallClass::update_window()
 	_stprintf_s(buff, 256, _T("center position:(%3.2f, %3.2f)"), cen.x, cen.y);
 	paint.text(buff, 300, 70);
 
+	//Timer Test
+	_stprintf_s(buff, 256, _T("dwTime:%d"), dwTime);
+	paint.text(buff, 300, 90);
+
 	//공 그리기
 	for (int i = 0; i < ball.size(); i++)
 		paint(ball[i]);
@@ -167,10 +171,11 @@ BOOL RollingBall::RollingBallClass::ball_move(PhysicalVector& diff, MouseEvent& 
 	return FALSE;
 }
 
-void RollingBallClass::set_timer(UINT frame_update_interval)
+void RollingBallClass::set_timer(UINT frame_update_interval, TIMERPROC timerProc)
 {
 	if (isInitTimer) kill_timer();
-	SetTimer(winAPI.hwnd, 1, frame_update_interval, NULL);
+	//SetTimer(winAPI.hwnd, 1, frame_update_interval, NULL);
+	SetTimer(winAPI.hwnd, 1, frame_update_interval, timerProc);
 	isInitTimer = TRUE;
 }
 void RollingBallClass::kill_timer()
@@ -187,10 +192,6 @@ void RollingBallClass::kill_timer()
 void RollingBallClass::event_keyboard(KeyboardEvent e) {}
 void RollingBallClass::event_mouse(MouseEvent e)
 {
-	if (e.eventType.isMouseWheel())
-	{
-		debuggerMessage("(%d, %d)", e.pos().x, e.pos().y);
-	}
 	trace_dragging(e);
 	map_scale(e);
 	ball_add(e);
@@ -219,17 +220,18 @@ RollingBallClass::RollingBallClass()
 	winAPI = { NULL, NULL };
 	isInitTimer = FALSE;
 	ballSwitch = 0;
+	dwTime = 0;
 }
 RollingBallClass::~RollingBallClass()
 {
 	if (isInitTimer)
 		kill_timer();
 }
-BOOL RollingBallClass::init(HINSTANCE m_hInstance, HWND m_hwnd, UINT frame_update_interval)
+BOOL RollingBallClass::init(HINSTANCE m_hInstance, HWND m_hwnd, UINT frame_update_interval, TIMERPROC timerProc)
 {
 	winAPI.hInstance = m_hInstance;
 	winAPI.hwnd = m_hwnd;
-	set_timer(frame_update_interval);
+	set_timer(frame_update_interval, timerProc);
 	init_scaler(DEFAULT_PX_RATE);
 
 	if (!ObjectBitmapInfoVector::Load(winAPI.hwnd, _T("res\\bmp\\object_bmp_info.txt")))
@@ -243,7 +245,13 @@ BOOL RollingBallClass::init(HINSTANCE m_hInstance, HWND m_hwnd, UINT frame_updat
 
 	return TRUE;
 }
-void RollingBallClass::set_frame_update_interval(UINT millisecond)
+void RollingBallClass::set_frame_update_interval(UINT millisecond, TIMERPROC timerProc)
 {
-	set_timer(millisecond);
+	set_timer(millisecond, timerProc);
+}
+
+
+void RollingBall::RollingBallClass::inner_timer_proc(HWND hWnd, UINT uMsg, UINT idEvent, DWORD dwTime)
+{
+	this->dwTime = dwTime;
 }
