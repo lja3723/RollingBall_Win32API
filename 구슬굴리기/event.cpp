@@ -56,7 +56,10 @@ void MouseEvent::init()
 
 	else if (eventType.isMouseMove());
 	else if (eventType.isMouseWheel())
+	{
+		ScreenToClient(winMsg.hwnd(), &localState.pos);
 		localState.scroll = (short)HIWORD(winMsg.wParam());
+	}
 	else
 		m_isValid = FALSE;
 

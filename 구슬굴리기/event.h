@@ -49,6 +49,7 @@ namespace RollingBall
 			WindowMessage* wm;
 		public:
 			_winMsg(WindowMessage* wm)		 { this->wm = wm; }
+			const HWND hwnd()				 { return wm->hwnd; }
 			const UINT iMsg()				 { return wm->iMsg; }
 			const WPARAM wParam()			 { return wm->wParam; }
 			const LPARAM lParam()			 { return wm->lParam; }
