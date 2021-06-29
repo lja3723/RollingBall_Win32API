@@ -196,6 +196,9 @@
     <ClInclude Include="rolling_ball.h" />
     <ClInclude Include="scaler.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="TODO.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

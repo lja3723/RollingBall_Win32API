@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="기타 파일">
+      <UniqueIdentifier>{2e7d5fa5-e166-4478-9545-38441a1f08e7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="구슬굴리기.rc">
@@ -167,5 +170,10 @@
     <ClInclude Include="paint_hbitmap.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="TODO.txt">
+      <Filter>기타 파일</Filter>
+    </None>
   </ItemGroup>
 </Project>
