@@ -18,7 +18,7 @@ BOOL Event::isValid()
 void Event::init()
 {
 	//wm 멤버가 모두 0이면 FALSE, 그렇지 않으면 TRUE로 초기화
-	m_isValid = !!(m_winMsg.iMsg | m_winMsg.wParam | m_winMsg.lParam);
+	m_isValid = !!((m_winMsg.hwnd != NULL) | m_winMsg.iMsg | m_winMsg.wParam | m_winMsg.lParam);
 }
 
 
@@ -160,9 +160,9 @@ BOOL KeyboardEvent::isKeyUp(WPARAM VK_msg)
 //	EventSender class
 // 
 /////////////////////////
-void EventSender::translate_windowEvent(UINT iMsg, WPARAM wParam, LPARAM lParam)
+void EventSender::translate_windowEvent(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 {
-	WindowMessage wm(iMsg, wParam, lParam);
+	WindowMessage wm(hwnd, iMsg, wParam, lParam);
 	if (MouseEvent(wm).isValid())
 	{
 		MouseEvent e(wm);

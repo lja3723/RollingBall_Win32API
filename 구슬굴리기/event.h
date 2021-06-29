@@ -12,12 +12,14 @@ namespace RollingBall
 	class WindowMessage
 	{
 	public:
+		HWND hwnd;
 		UINT iMsg;
 		WPARAM wParam;
 		LPARAM lParam;
 
-		WindowMessage(UINT iMsg = 0, WPARAM wParam = 0, LPARAM lParam = 0)
+		WindowMessage(HWND hwnd = NULL, UINT iMsg = 0, WPARAM wParam = 0, LPARAM lParam = 0)
 		{
+			this->hwnd = hwnd;
 			this->iMsg = iMsg;
 			this->wParam = wParam;
 			this->lParam = lParam;
@@ -63,9 +65,9 @@ namespace RollingBall
 		BOOL isValid();
 
 		//winMsg 요소로 이벤트 생성
-		Event(UINT iMsg = 0, WPARAM wParam = 0, LPARAM lParam = 0) : winMsg(&m_winMsg) 
-			{ m_winMsg = WindowMessage(iMsg, wParam, lParam); init(); }
-		Event(WindowMessage wm) : Event(wm.iMsg, wm.wParam, wm.lParam) {}
+		Event(HWND hwnd = NULL, UINT iMsg = 0, WPARAM wParam = 0, LPARAM lParam = 0) : winMsg(&m_winMsg) 
+			{ m_winMsg = WindowMessage(hwnd, iMsg, wParam, lParam); init(); }
+		Event(WindowMessage wm) : Event(wm.hwnd, wm.iMsg, wm.wParam, wm.lParam) {}
 	};
 
 	class MouseEvent : public Event
@@ -162,9 +164,9 @@ namespace RollingBall
 		//	interface
 		// //////////////
 		//winMsg 요소로 이벤트 생성
-		MouseEvent(UINT iMsg = 0, WPARAM wParam = 0, LPARAM lParam = 0)
-			: Event(iMsg, wParam, lParam), eventType(&winMsg, &localState) { init(); }
-		MouseEvent(WindowMessage wm) : MouseEvent(wm.iMsg, wm.wParam, wm.lParam) {} 
+		MouseEvent(HWND hwnd = NULL, UINT iMsg = 0, WPARAM wParam = 0, LPARAM lParam = 0)
+			: Event(hwnd, iMsg, wParam, lParam), eventType(&winMsg, &localState) { init(); }
+		MouseEvent(WindowMessage wm) : MouseEvent(wm.hwnd, wm.iMsg, wm.wParam, wm.lParam) {} 
 
 		POINT pos();
 		BOOL isLButtonDown();
@@ -233,9 +235,9 @@ namespace RollingBall
 		//	interface
 		///////////////////
 		//winMsg 요소로 이벤트 생성
-		KeyboardEvent(UINT iMsg = 0, WPARAM wParam = 0, LPARAM lParam = 0)
-			: Event(iMsg, wParam, lParam), eventType(&winMsg) { init(); }
-		KeyboardEvent(WindowMessage wm) : KeyboardEvent(wm.iMsg, wm.wParam, wm.lParam) {}
+		KeyboardEvent(HWND hwnd = NULL, UINT iMsg = 0, WPARAM wParam = 0, LPARAM lParam = 0)
+			: Event(hwnd, iMsg, wParam, lParam), eventType(&winMsg) { init(); }
+		KeyboardEvent(WindowMessage wm) : KeyboardEvent(wm.hwnd, wm.iMsg, wm.wParam, wm.lParam) {}
 
 		//키보드 눌린 상태 반환
 		BOOL isKeyPressed(WPARAM VK_msg);
@@ -256,7 +258,7 @@ namespace RollingBall
 	class EventSender
 	{
 	public:
-		static void translate_windowEvent(UINT iMsg, WPARAM wParam, LPARAM lParam);
+		static void translate_windowEvent(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam);
 	};
 
 

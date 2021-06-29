@@ -112,7 +112,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 		return 0;
 
 	default:
-		EventSender::translate_windowEvent(iMsg, wParam, lParam);
+		EventSender::translate_windowEvent(hwnd, iMsg, wParam, lParam);
 		//rollingBall.event
 		//rollingBall.send_windowEvent(iMsg, wParam, lParam);
 	}
