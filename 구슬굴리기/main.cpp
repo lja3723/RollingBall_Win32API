@@ -44,7 +44,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLi
 	);
 
 	//RollingBallClass를 초기화한다
-	if (!rollingBall.init(hInstance, hwnd, 5))
+	const int FrameUpdateInterval = 1;
+	if (!rollingBall.init(hInstance, hwnd, FrameUpdateInterval))
 	{
 		MessageBox(hwnd, _T("프로그램을 시작할 수 없습니다."), _T("오류"), MB_OK);
 		return 0;
