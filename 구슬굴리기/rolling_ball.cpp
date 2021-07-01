@@ -1,5 +1,4 @@
 ﻿#include "rolling_ball.h"
-#include "debugger.h"
 
 using namespace RollingBall;
 
@@ -187,10 +186,6 @@ void RollingBallClass::kill_timer()
 void RollingBallClass::event_keyboard(KeyboardEvent e) {}
 void RollingBallClass::event_mouse(MouseEvent e)
 {
-	if (e.eventType.isMouseWheel())
-	{
-		debuggerMessage("(%d, %d)", e.pos().x, e.pos().y);
-	}
 	trace_dragging(e);
 	map_scale(e);
 	ball_add(e);
