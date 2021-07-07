@@ -36,27 +36,44 @@ void MouseEvent::init()
 	localState.pos.x = LOWORD(winMsg.lParam());
 	localState.pos.y = HIWORD(winMsg.lParam());
 
-	if (eventType.isLButtonDown())
+	//LButton
+	if (eventType.isLButtonDown()) {
 		staticState.button_down(staticState.LButton);
-	else if (eventType.isLButtonUp())
+		staticState.drag.trace_buttonDown(staticState.LButton, localState.pos.x, localState.pos.y);
+	}
+	else if (eventType.isLButtonUp()) {
 		staticState.button_up(staticState.LButton);
+		staticState.drag.trace_buttonUp(staticState.LButton);
+	}
 	else if (eventType.isLButtonDoubleClick());
 
-	else if (eventType.isMButtonDown())
+	//MButton
+	else if (eventType.isMButtonDown()) {
 		staticState.button_down(staticState.MButton);
-	else if (eventType.isMButtonUp())
+		staticState.drag.trace_buttonDown(staticState.MButton, localState.pos.x, localState.pos.y);
+	}
+	else if (eventType.isMButtonUp()) {
 		staticState.button_up(staticState.MButton);
+		staticState.drag.trace_buttonUp(staticState.MButton);
+	}
 	else if (eventType.isMButtonDoubleClick());
 
-	else if (eventType.isRButtonDown())
+	//RButton
+	else if (eventType.isRButtonDown()) {
 		staticState.button_down(staticState.RButton);
-	else if (eventType.isRButtonUp())
+		staticState.drag.trace_buttonDown(staticState.RButton, localState.pos.x, localState.pos.y);
+	}
+	else if (eventType.isRButtonUp()) {
 		staticState.button_up(staticState.RButton);
+		staticState.drag.trace_buttonUp(staticState.RButton);
+	}
 	else if (eventType.isRButtonDoubleClick());
 
-	else if (eventType.isMouseMove());
-	else if (eventType.isMouseWheel())
-	{
+	//etc
+	else if (eventType.isMouseMove()) {
+		staticState.drag.trace_mouseMove(localState.pos.x, localState.pos.y);
+	}
+	else if (eventType.isMouseWheel()) {
 		ScreenToClient(winMsg.hwnd(), &localState.pos);
 		localState.scroll = (short)HIWORD(winMsg.wParam());
 	}
@@ -81,6 +98,51 @@ void MouseEvent::_staticState::button_up(int button_idx)
 {
 	buttons[button_idx] = FALSE;
 }
+
+
+BOOL MouseEvent::_staticState::_drag::isInitDragState = FALSE;
+BOOL MouseEvent::_staticState::_drag::m_isDragging[numofButtons];
+POINT MouseEvent::_staticState::_drag::startPos[numofButtons];
+POINT MouseEvent::_staticState::_drag::prevPos;
+POINT MouseEvent::_staticState::_drag::curPos;
+void RollingBall::MouseEvent::_staticState::_drag::init()
+{
+	if (!isInitDragState)
+	{
+		for (int i = 0; i < numofButtons; i++)
+		{
+			m_isDragging[i] = FALSE;
+			invalidatePos(startPos[i]);
+		}
+		invalidatePos(prevPos);
+		invalidatePos(curPos);
+		isInitDragState = TRUE;
+	}
+}
+
+void RollingBall::MouseEvent::_staticState::_drag::trace_buttonDown(int button_idx, int posX, int posY)
+{
+	startPos[button_idx] = prevPos = curPos = { posX, posY };
+}
+
+void RollingBall::MouseEvent::_staticState::_drag::trace_buttonUp(int button_idx)
+{
+	m_isDragging[button_idx] = FALSE;
+	invalidatePos(startPos[button_idx]);
+	invalidatePos(prevPos);
+	invalidatePos(curPos);
+}
+
+void RollingBall::MouseEvent::_staticState::_drag::trace_mouseMove(int posX, int posY)
+{
+	prevPos = curPos;
+	for (int i = 0; i < numofButtons; i++)
+		if (m_isDragging[i])
+			curPos = { posX, posY };
+		else if (isPosValid(startPos[i]) && isPosValid(prevPos))
+			m_isDragging[i] = TRUE;
+}
+
 
 POINT MouseEvent::pos()
 {

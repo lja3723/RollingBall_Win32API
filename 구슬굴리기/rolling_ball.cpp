@@ -186,7 +186,13 @@ void RollingBallClass::kill_timer()
 void RollingBallClass::event_keyboard(KeyboardEvent e) {}
 void RollingBallClass::event_mouse(MouseEvent e)
 {
-	trace_dragging(e);
+	//trace_dragging(e);
+	if (e.isLButtonDragging())
+	{
+		PhysicalVector diff = scaler.transform(e.pos()) - scaler.transform(e.drag.getPrevPos());
+		dragging_action(diff, e);
+	}
+	
 	map_scale(e);
 	ball_add(e);
 	ball_select(e);

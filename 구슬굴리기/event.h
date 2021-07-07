@@ -89,11 +89,40 @@ namespace RollingBall
 			static BOOL buttons[numofButtons];
 			static BOOL isInitButtonsArray;
 
+			class _drag {
+			private:
+				static BOOL isInitDragState;
+				//Button이 드래깅하고 있는지 판별함
+				static BOOL m_isDragging[numofButtons];
+
+				//드래그 시작한 좌표 저장			
+				static POINT startPos[numofButtons];
+				static POINT prevPos;
+				static POINT curPos;
+
+				void init();
+
+				//pos에 무효화값을 저장
+				void invalidatePos(POINT& p) { p = { -1, -1 }; }
+			public:
+				_drag() { init(); }
+				void trace_buttonDown(int button_idx, int posX, int posY);
+				void trace_buttonUp(int button_idx);
+				void trace_mouseMove(int posX, int posY);
+
+				BOOL isPosValid(POINT& p) { return !(p.x == -1 || p.y == -1); }
+				BOOL isDragging(int button_idx) { return m_isDragging[button_idx]; }
+				POINT getStartPos(int button_idx) { return startPos[button_idx]; }
+				POINT getPrevPos() { return prevPos; }
+				POINT getCurPos() { return curPos; }
+
+			} drag;
+
 		public:
 			_staticState() { initButtonsArray(); }
 			static void initButtonsArray();
-			void button_down(int button_idx);
-			void button_up(int button_idx);
+			static void button_down(int button_idx);
+			static void button_up(int button_idx);
 		} staticState;
 		class _localState
 		{
@@ -119,7 +148,7 @@ namespace RollingBall
 		{
 		private:
 			_winMsg* wm;
-			_localState* st;
+			_localState* ls;
 
 		public:
 			//eventType을 표현하는 상수 선언
@@ -140,7 +169,7 @@ namespace RollingBall
 
 		public:
 			//해당 event의 eventType이 무엇인지 알려주는 함수 선언
-			_eventType(_winMsg* wm, _localState* st) { this->wm = wm, this->st = st; }
+			_eventType(_winMsg* wm, _localState* ls) { this->wm = wm, this->ls = ls; }
 
 			BOOL isLButtonDown()		{ return wm->iMsgEquals(LButtonDown); }
 			BOOL isLButtonUp()			{ return wm->iMsgEquals(LButtonUp); }
@@ -156,8 +185,8 @@ namespace RollingBall
 
 			BOOL isMouseMove()			{ return wm->iMsgEquals(MouseMove); }
 			BOOL isMouseWheel()			{ return wm->iMsgEquals(MouseWheel); }
-			BOOL isMouseWheelUp()		{ return isMouseWheel() && st->scroll > 0; }
-			BOOL isMouseWheelDown()		{ return isMouseWheel() && st->scroll < 0; }
+			BOOL isMouseWheelUp()		{ return isMouseWheel() && ls->scroll > 0; }
+			BOOL isMouseWheelDown()		{ return isMouseWheel() && ls->scroll < 0; }
 		} eventType;
 
 	public:
@@ -166,8 +195,25 @@ namespace RollingBall
 		// //////////////
 		//winMsg 요소로 이벤트 생성
 		MouseEvent(HWND hwnd = NULL, UINT iMsg = 0, WPARAM wParam = 0, LPARAM lParam = 0)
-			: Event(hwnd, iMsg, wParam, lParam), eventType(&winMsg, &localState) { init(); }
+			: Event(hwnd, iMsg, wParam, lParam), eventType(&winMsg, &localState), drag(&staticState) { init(); }
 		MouseEvent(WindowMessage wm) : MouseEvent(wm.hwnd, wm.iMsg, wm.wParam, wm.lParam) {} 
+
+		class _drag
+		{
+		private:
+			_staticState* ss;
+		public:
+			_drag(_staticState* ss) { this->ss = ss; }
+			POINT getLButtonStartPos() { return ss->drag.getStartPos(ss->LButton); }
+			POINT getMButtonStartPos() { return ss->drag.getStartPos(ss->MButton); }
+			POINT getRButtonStartPos() { return ss->drag.getStartPos(ss->RButton); }
+			POINT getPrevPos()		   { return ss->drag.getPrevPos(); }
+
+		} drag;
+
+		BOOL isLButtonDragging() { return staticState.drag.isDragging(staticState.LButton); }
+		BOOL isMButtonDragging() { return staticState.drag.isDragging(staticState.MButton); }
+		BOOL isRButtonDragging() { return staticState.drag.isDragging(staticState.RButton); }
 
 		POINT pos();
 		BOOL isLButtonDown();
