@@ -31,6 +31,11 @@ void Event::init()
 BOOL MouseEvent::_staticState::buttons[numofButtons];
 BOOL MouseEvent::_staticState::isInitButtonsArray = FALSE;
 
+BOOL MouseEvent::_staticState::_drag::isInitDragState = FALSE;
+BOOL MouseEvent::_staticState::_drag::isDragging[numofButtons];
+POINT MouseEvent::_staticState::_drag::startPos[numofButtons];
+POINT MouseEvent::_staticState::_drag::prevPos[numofButtons];
+
 void MouseEvent::init()
 {
 	localState.pos.x = LOWORD(winMsg.lParam());
