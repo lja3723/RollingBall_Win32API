@@ -89,12 +89,35 @@ namespace RollingBall
 			static BOOL buttons[numofButtons];
 			static BOOL isInitButtonsArray;
 
+			class _drag {
+			private:
+				static BOOL isInitDragState;
+				//Button이 드래깅하고 있는지 판별함
+				static BOOL isDragging[numofButtons];
+
+				//드래그 시작한 좌표 저장			
+				static POINT startPos[numofButtons];
+				static POINT prevPos[numofButtons];
+				static POINT curPos;
+
+				void init();
+
+				//pos에 무효화값을 저장
+				void invalidatePos(POINT& p) { p = { -1, -1 }; }
+				BOOL isPosValid(POINT& p) { return !(p.x == -1 || p.y == -1); }
+			public:
+				_drag() { init(); }
+				void trace_buttonDown(int button_idx, int posX, int posY);
+				void trace_buttonUp(int button_idx);
+				void trace_mouseMove();
+			} static drag;
+
 		public:
 			_staticState() { initButtonsArray(); }
 			static void initButtonsArray();
-			void button_down(int button_idx);
-			void button_up(int button_idx);
-		} staticState;
+			static void button_down(int button_idx);
+			static void button_up(int button_idx);
+		} static staticState;
 		class _localState
 		{
 		public:
@@ -170,9 +193,9 @@ namespace RollingBall
 		MouseEvent(WindowMessage wm) : MouseEvent(wm.hwnd, wm.iMsg, wm.wParam, wm.lParam) {} 
 
 		POINT pos();
-		BOOL isLButtonDown();
-		BOOL isMButtonDown();
-		BOOL isRButtonDown();
+		static BOOL isLButtonDown();
+		static BOOL isMButtonDown();
+		static BOOL isRButtonDown();
 	};
 
 	class KeyboardEvent : public Event
