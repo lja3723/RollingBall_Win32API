@@ -216,9 +216,9 @@ namespace RollingBall
 		BOOL isRButtonDragging() { return staticState.drag.isDragging(staticState.RButton); }
 
 		POINT pos();
-		static BOOL isLButtonDown();
-		static BOOL isMButtonDown();
-		static BOOL isRButtonDown();
+		BOOL isLButtonDown();
+		BOOL isMButtonDown();
+		BOOL isRButtonDown();
 	};
 
 	class KeyboardEvent : public Event
