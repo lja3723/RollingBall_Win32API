@@ -1,5 +1,5 @@
 ﻿#include "rolling_ball.h"
-
+#include "debugger.h"
 using namespace RollingBall;
 
 void RollingBall::RollingBallClass::paint_BallSwitchArrow()
@@ -71,6 +71,9 @@ void RollingBallClass::update_window()
 	PhysicalVector cen = scaler.get_fix_point_physical();
 	_stprintf_s(buff, 256, _T("center position:(%3.2f, %3.2f)"), cen.x, cen.y);
 	paint.text(buff, 300, 70);
+	paint.text(buffdrag[0], 300, 90);
+	paint.text(buffdrag[1], 300, 110);
+	paint.text(buffdrag[2], 300, 130);
 
 	//공 그리기
 	for (int i = 0; i < ball.size(); i++)
@@ -186,12 +189,25 @@ void RollingBallClass::kill_timer()
 void RollingBallClass::event_keyboard(KeyboardEvent e) {}
 void RollingBallClass::event_mouse(MouseEvent e)
 {
+	POINT dif = { e.pos().x - e.prevPos().x, e.pos().y - e.prevPos().y };
+	//_stprintf_s(buffdrag[1], 256, _T("(%d, %d)"), e.pos().x, e.pos().y);
+	_stprintf_s(buffdrag[1], 256, _T("(%d, %d)"), dif.x, dif.y);
+	_stprintf_s(buffdrag[2], 256, _T("(%d, %d)"), e.prevPos().x, e.prevPos().y);
 	//trace_dragging(e);
 	if (e.isLButtonDragging())
 	{
-		PhysicalVector diff = scaler.transform(e.pos()) - scaler.transform(e.drag.getPrevPos());
+		_stprintf_s(buffdrag[0], 256, _T("dragging"));
+		PhysicalVector diff = scaler.transform(e.pos()) - scaler.transform(e.prevPos());
+		//_stprintf_s(buffdrag[1], 256, _T("(%lf, %lf)"), diff.x, diff.y);
 		dragging_action(diff, e);
 	}
+	else
+	{
+		_stprintf_s(buffdrag[0], 256, _T(""));
+		//_stprintf_s(buffdrag[1], 256, _T(""));
+		//_stprintf_s(buffdrag[2], 256, _T(""));
+	}
+
 	
 	map_scale(e);
 	ball_add(e);
