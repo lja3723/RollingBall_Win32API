@@ -137,7 +137,6 @@ namespace RollingBall
 			//POINT pos;
 			//마우스 스크롤 회전 방향
 			//int scroll;
-
 			//_localState() {
 				//pos = { 0, 0 };
 				//scroll = 0;

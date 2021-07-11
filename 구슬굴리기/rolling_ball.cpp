@@ -189,9 +189,9 @@ void RollingBallClass::kill_timer()
 void RollingBallClass::event_keyboard(KeyboardEvent e) {}
 void RollingBallClass::event_mouse(MouseEvent e)
 {
-	POINT dif = { e.pos().x - e.prevPos().x, e.pos().y - e.prevPos().y };
-	//_stprintf_s(buffdrag[1], 256, _T("(%d, %d)"), e.pos().x, e.pos().y);
-	_stprintf_s(buffdrag[1], 256, _T("(%d, %d)"), dif.x, dif.y);
+	//POINT dif = { e.pos().x - e.prevPos().x, e.pos().y - e.prevPos().y };
+	_stprintf_s(buffdrag[1], 256, _T("(%d, %d)"), e.pos().x, e.pos().y);
+	//_stprintf_s(buffdrag[1], 256, _T("(%d, %d)"), dif.x, dif.y);
 	_stprintf_s(buffdrag[2], 256, _T("(%d, %d)"), e.prevPos().x, e.prevPos().y);
 	//trace_dragging(e);
 	if (e.isLButtonDragging())

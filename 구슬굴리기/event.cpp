@@ -72,7 +72,8 @@ void MouseEvent::_staticState::init()
 	{
 		for (int i = 0; i < numofButtons; i++)
 			buttons[i] = FALSE;
-		pos = prevPos = { 0, 0 };
+		pos = { 0, 0 };
+		prevPos = { 0, 0 };
 		scroll = 0;
 		isInit = TRUE;
 	}
